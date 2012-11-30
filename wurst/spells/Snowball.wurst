@@ -1,0 +1,42 @@
+package Snowball
+import Projectile
+import Fx
+import Child
+
+constant real SPEED = 10
+
+public class Snowball extends Projectile
+
+	construct(vec3 pos, player owner, real angle)
+		super(pos, owner)
+		fx = new Fx(pos, 0, "war3mapImported\\snowball.mdx")
+		fx.setOwner(owner)
+		setTimed(4.)
+		xyangle = angle
+		setXYSpeed(SPEED)
+		
+	override function update()
+		super.update()
+		if pos.z < terrainZ
+			terminate()
+				
+		Entity e = Entity.first
+		while e != null
+			if e != this and owner != e.owner and IsPlayerEnemy( e.owner, owner )
+				debugPrint(pos.distToVecSquared(e.pos).toString(),1)
+				if pos.distToVecSquared(e.pos) < 4096.
+					debugPrint("inRange",1)
+					onHit(e)
+					debugPrint("hit",1)
+					
+			e = e.next
+			
+			
+	function onHit(Entity e)
+		terminate()
+		if e instanceof Child
+			var c = e castTo Child
+			fx.dummy.damageTarget(c.actor, 55.)
+		else if e instanceof Projectile
+			e.terminate()
+		

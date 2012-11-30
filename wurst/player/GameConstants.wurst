@@ -1,0 +1,115 @@
+package GameConstants
+	import RGBA
+	
+	public string array mbPic
+	public string array names
+	public string array tags
+	public string array colorcode
+	public integer array expBounds
+	public string array ranks
+	
+	public constant string MAP_VER = "|cffE66321in|cffADADADWarcraft |cffF7F7F7Schneeballschlacht|r"
+	
+	
+	public enum COLOR
+		WHITE
+		RED
+		BLUE
+		TEAL	
+		PURPLE
+		YELLOW
+		ORANGE
+		GREEN		
+		PINK
+		GREY
+		LIGHTBLUE
+		DARKGREEN
+		BROWN
+
+	public color array colors
+
+	init
+		colors[0] = color(255,255,255)
+		colors[1] = color(255,2,2)
+		colors[2] = color(0,65,255)
+		colors[3] = color(27,230,184)
+		colors[4] = color(83,0,128)
+		colors[5] = color(255,204,0)
+		colors[6] = color(255,255,1)
+		colors[7] = color(31,191,0)
+		colors[8] = color(229,90,175)
+		colors[9] = color(148,149,150)
+		colors[10] = color(125,190,241)
+		colors[11] = color(15,97,69)
+		colors[12] = color(77,41,3)
+		
+	
+	
+		mbPic[ 0 ] = "ReplaceableTextures\\CommandButtons\\BTNPriest.blp"
+		mbPic[ 1 ] = "ReplaceableTextures\\CommandButtons\\BTNFootman.blp"
+		mbPic[ 2 ] = "ReplaceableTextures\\CommandButtons\\BTNPeasant.blp"
+		mbPic[ 3 ] = "ReplaceableTextures\\CommandButtons\\BTNIceTrollBeserker.blp"
+
+		names   [0] = "Frotty"
+		tags    [0] = "|cffEF6B21[God]"
+		names   [1] = "FrottyZ"
+		tags    [1] = "|cffEF6B21[God]"
+		names   [2] = "Feuerblume"
+		tags    [2] = "|cff9C94E6[Tester]"
+		names   [3] = "jkkopp"
+		tags    [3] = "|cff9C94E6[Tester]"
+		names   [4] = "fortress_na-f"
+		tags    [4] = "|cff9C94E6[Tester]"
+		names   [5] = "Kornblume"
+		tags    [5] = "|cff9C94E6[Tester]"
+		names   [6] = "Gamestargamer"
+		tags    [6] = "|cff9C94E6[Tester]"
+		names   [7] = "gamestargamer"
+		tags    [7] = "|cff9C94E6[Tester]"
+		names   [8] = "mooniii"
+		tags    [8] = "|cff9C94E6[Tester]"
+		names   [9] = "Carlor01"
+		tags    [9] = "|cff9C94E6[Tester]"
+		names   [10] = "Mo0ni[behh]"
+		tags    [10] = "|cff9C94E6[Tester]"
+		names   [11] = "metactylic"
+		tags    [11] = "|cffB5DE42[Art]"
+		names   [12] = "nore.abfl"
+		tags    [12] = "|cff9C94E6[Tester]"
+		names   [13] = "kleinerhauck"
+		tags    [13] = "|cff9C94E6[Tester]"
+		names	[14] = "kari0003"
+		tags	[14] = "|cffFFE87C[Adept]"
+
+		colorcode[ 0 ] = "|cffFF0202" // red
+		colorcode[ 1 ] = "|cff0041FF" // blue
+		colorcode[ 2 ] = "|cff1BE6B8" // teal
+		colorcode[ 3 ] = "|cff530080" // lila
+		colorcode[ 4 ] = "|cffFFFC00" // yellow
+		colorcode[ 5 ] = "|cffFE890D" // orange
+		colorcode[ 6 ] = "|cff1FBF00" // green
+		colorcode[ 7 ] = "|cffE55AAF" // pink
+		colorcode[ 8 ] = "|cff949596" // gray
+		colorcode[ 9 ] = "|cff7DBEF1" // lightblue
+		colorcode[ 10 ] = "|cff0F6145" // darkgreen
+
+		expBounds[0] = 10
+		expBounds[1] = 30
+		expBounds[2] = 50
+		expBounds[3] = 100
+		expBounds[4] = 150
+		expBounds[5] = 300
+		expBounds[6] = 500
+		expBounds[7] = 1000
+		expBounds[8] = 10000
+
+		ranks[0] = "Newbie"
+		ranks[1] = "Beginner"
+		ranks[2] = "Amateur"
+		ranks[3] = "Player"
+		ranks[4] = "Rooter"
+		ranks[5] = "Pro"
+		ranks[6] = "Expert"
+		ranks[7] = "Addict"
+
+endpackage 

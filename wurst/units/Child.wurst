@@ -1,0 +1,51 @@
+package Child
+import PhysicsEntity
+import EventHandling
+import Terrain
+import HomingProjectile
+import Entity
+import Snowball
+
+public class Child extends PhysicsEntity
+	unit actor
+	
+	construct( vec3 pos, player owner )
+		super(pos, owner)
+		restitution = .2
+		
+		actor = CreateUnit(owner, 'H001', pos.x, pos.y, 0)
+		actor.registerCastEvent(Condition(function Child.onCast))
+		actor.setUserData(this castTo int)
+		actor.addAbility(HEIGHT_ENABLER).removeAbility(HEIGHT_ENABLER)
+		
+	static function onCast() returns boolean
+		var id = GetSpellAbilityId()
+		var data = GetTriggerUnit().getUserData() castTo Child
+		var tx = GetSpellTargetX()
+		var ty = GetSpellTargetY()
+		let angle = angleBetweenCoordsR(data.pos.x, data.pos.y, tx, ty)
+		switch id
+			case 'A000'
+				print("casted")
+				var zz= getTerrainZ(data.pos.x,data.pos.y) + 40.
+				new Snowball(vec3(data.pos.x, data.pos.y, data.pos.z+40.), data.owner, angle )
+				PlaySoundOnUnitBJ(gg_snd_FrostBoltLaunch1, 80., data.actor)
+			case 'A001'
+				print("casted")
+				var p = new HomingProjectile(vec3(0,0,1200), DUMMY_PLAYER, 0, "Abilities\\Weapons\\SpiritOfVengeanceMissile\\SpiritOfVengeanceMissile.mdl")
+				p.setHomingTarget(data)
+				
+		return false
+		
+				
+				
+	override function update()
+		pos.x = actor.getX()
+		pos.y = actor.getY()
+		super.update()
+		
+		actor.setXY(pos.toVec2())
+		actor.setFlyHeight(pos.z-terrainZ, 0.)
+
+		
+		

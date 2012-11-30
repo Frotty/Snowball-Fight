@@ -1,0 +1,16 @@
+package EntityManagement
+import public Entity
+
+function updateEntities()
+	Entity e = Entity.first
+	while e != null
+		if e.done
+			destroy e
+			debugPrint("destroyed Entity", 0)
+		else 
+			e.update()
+		e = e.next
+
+public function startEntityLoop() returns boolean
+	getTimer().startPeriodic(0.03, function updateEntities)
+	return true

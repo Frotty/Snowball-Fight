@@ -1,0 +1,11 @@
+package GameInit
+import Child
+import EntityManagement
+
+function startGame()
+	new Child(vec3(-3600,800,200.), Player(0))
+	new Child(vec3(-3400,800,200.), Player(6))
+	startEntityLoop()
+
+init
+	getTimer().start(0.1, function startGame)

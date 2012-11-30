@@ -1,0 +1,41 @@
+package Projectile
+import public Entity
+import Fx
+import Terrain
+
+public class Projectile extends Entity
+	Fx fx
+	boolean timed = false
+	real time
+	real xyspeed
+	real xyangle
+	boolean keepHeight = true
+	real terrainZ = 0.
+	
+	construct(vec3 pos, player owner)
+		super(pos, owner)
+		
+	function setTimed(real duration)
+		timed = true
+		time = duration		
+		
+	function setXYSpeed(real speed)
+		xyspeed = speed
+		vel = vec3(Cos(xyangle)*speed, Sin(xyangle)*speed, vel.z)
+		
+	override function update()
+		terrainZ = getTerrainZ(pos.x, pos.y)
+		pos += vel
+		if keepHeight
+			fx.setPos(pos.x, pos.y, pos.z-terrainZ)
+		else
+			fx.setPos(pos)
+		if timed
+			time -= ANIMATION_PERIOD
+			if time < 0
+				terminate()
+				
+				
+	ondestroy
+		destroy fx
+		

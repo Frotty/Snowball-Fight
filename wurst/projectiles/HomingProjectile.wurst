@@ -1,0 +1,77 @@
+package HomingProjectile
+import Projectile
+import Fx
+import Terrain
+
+public class HomingProjectile extends Projectile
+	Entity target
+	real speed = 8.
+	real angularSpeed = 0.15
+	real zangle
+	
+
+	
+	construct(vec3 pos, player owner, real angle, string fxpath)
+		super(pos, owner)
+		fx = new Fx(pos, angle, fxpath)
+		print("created!")
+		
+	function setHomingTarget(Entity e)
+		target = e
+		vel = (target.pos - pos).setLength(speed)
+		let dist = distanceBetweenCoords(pos.x, pos.y, target.pos.x, target.pos.y)
+		xyangle = angleBetweenCoordsR(pos.x, pos.y, target.pos.x, target.pos.y)
+		zangle = getSlopeAngle(pos.z, target.pos.z, dist )
+		
+	override function update()
+		let dist = distanceBetweenCoords(pos.x, pos.y, target.pos.x, target.pos.y)
+		let anglexy = angleBetweenCoordsR(pos.x, pos.y, target.pos.x, target.pos.y)
+		let anglez = getSlopeAngle(pos.z, target.pos.z, dist )
+	
+		var df1 = anglexy - xyangle
+		var df2 = (PI2 + anglexy) - xyangle
+		var ns = angularSpeed
+
+		if df1 <= 0
+			if df2 <= 0 
+				if df2 >= df1 
+					df1 = df2
+			else
+				if -df1 >= df2
+					df1 = df2
+		else
+			if df2 <= 0 
+				if -df2 <= df1
+					df1 = df2
+			else
+				if df2 <= df1 
+					df1 = df2
+		if df1 <= 0 
+			if -df1 >= ns 
+				ns = -ns
+			else
+				ns = df1
+		else
+			if df1 <= ns 
+				ns = df1
+		var d = xyangle
+		d += ns
+		if d >= PI2
+			d -= PI2
+		else if d < 0
+			d += PI2
+
+		xyangle = d
+
+		if anglez > zangle
+			if anglez - zangle < angularSpeed
+				zangle += anglez - zangle
+			else
+				zangle += angularSpeed
+		else if zangle > anglez
+			if zangle - anglez < angularSpeed
+				zangle -= zangle - anglez
+			else
+				zangle -= angularSpeed
+		vel = vec3( speed * Cos(xyangle), speed * Sin(xyangle), speed * Sin(zangle)  )
+		super.update()
