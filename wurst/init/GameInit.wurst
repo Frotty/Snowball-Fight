@@ -1,10 +1,13 @@
 package GameInit
 import Child
+import Flag
 import EntityManagement
 
 function startGame()
 	new Child(vec3(-3600,800,200.), Player(0))
 	new Child(vec3(-3400,800,200.), Player(6))
+	Flag f = new Flag(vec3(-3500,1200,0.), CreateUnit(Player(0),'hpea', -3500, 1200, 0.))
+	f.redTeam = false
 	startEntityLoop()
 
 init
