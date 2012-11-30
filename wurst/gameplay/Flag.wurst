@@ -1,0 +1,76 @@
+package Flag
+import Entity
+import PlayerData
+
+enum State
+	CARRIED
+	DROPPED
+	INBASE
+
+public class Flag extends Entity
+	State state
+	unit actor
+	unit carrier
+	boolean redTeam
+	
+	trigger inRangeTrig
+	
+	construct ( vec3 pos, unit actor )
+		super(pos, actor.getOwner())
+		this.actor = actor
+		state = State.INBASE
+		actor.setUserData(this castTo int).addAbility(HEIGHT_ENABLER).removeAbility(HEIGHT_ENABLER)
+		
+		inRangeTrig = CreateTrigger()
+		inRangeTrig.registerUnitInRangeSource( actor, 100. )
+		inRangeTrig.addAction(function Flag.onInRange )
+		
+	override function update()
+		if state == State.CARRIED
+			pos.x = carrier.getX()
+			pos.y = carrier.getY()
+			actor.setXY(pos.x,pos.y)
+		else
+			pos.x = actor.getX()
+			pos.y = actor.getY()
+		super.update()
+		
+	function setCarrier(unit u, boolean display)
+		carrier = u
+		state = State.CARRIED
+		debugPrint("carried", 1)
+		if false //display
+		//Display to all players
+			if carrier.getOwner().getId() > 5
+				if GetLocalPlayer().getId() <= 5
+					StartSound( gg_snd_CreepAggroWhat1 )
+			else
+				if GetLocalPlayer().getId() > 5
+					StartSound( gg_snd_CreepAggroWhat1 )
+	
+	function returnFlag()
+		skip
+			
+	static function onInRange()
+		debugPrint("inrange", 1)
+		unit u = GetTriggerUnit()
+		player p = u.getOwner()
+		var flag = GetTriggeringTrigger().getSource().getUserData() castTo Flag
+		if flag.state == State.INBASE
+			if (not flag.redTeam and p.getId()  < 5)
+				debugPrint("team2", 1)
+				flag.setCarrier(u, true)
+			else if (flag.redTeam and p.getId()  > 5)
+				debugPrint("team1", 1)
+				flag.setCarrier(u, true)
+		if flag.state == State.DROPPED
+			if p.getId() <5
+				if flag.redTeam
+					flag.returnFlag()
+				else
+					flag.setCarrier(u, false)
+			else 
+				if not flag.redTeam
+					flag.returnFlag()
+				else
+					flag.setCarrier(u, false)
