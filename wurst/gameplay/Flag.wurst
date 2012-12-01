@@ -2,6 +2,9 @@ package Flag
 import Entity
 import PlayerData
 
+public Flag redflag
+public Flag greenflag
+
 enum State
 	CARRIED
 	DROPPED
@@ -12,6 +15,7 @@ public class Flag extends Entity
 	unit actor
 	unit carrier
 	boolean redTeam
+	vec2 base
 	
 	trigger inRangeTrig
 	
@@ -19,6 +23,7 @@ public class Flag extends Entity
 		super(pos, actor.getOwner())
 		this.actor = actor
 		state = State.INBASE
+		base = vec2(pos.x, pos.y)
 		actor.setUserData(this castTo int).addAbility(HEIGHT_ENABLER).removeAbility(HEIGHT_ENABLER)
 		
 		inRangeTrig = CreateTrigger()
@@ -39,8 +44,8 @@ public class Flag extends Entity
 		carrier = u
 		state = State.CARRIED
 		debugPrint("carried", 1)
-		if false //display
-		//Display to all players
+		if display
+		//Display to opponent team players
 			if carrier.getOwner().getId() > 5
 				if GetLocalPlayer().getId() <= 5
 					StartSound( gg_snd_CreepAggroWhat1 )
@@ -49,7 +54,20 @@ public class Flag extends Entity
 					StartSound( gg_snd_CreepAggroWhat1 )
 	
 	function returnFlag()
-		skip
+		debugPrint("returning", 1)
+		actor.setXY(base.x,base.y)
+		state = State.INBASE
+		if actor.getOwner().getId() > 5
+			if GetLocalPlayer().getId() <= 5
+				StartSound( gg_snd_CreepAggroWhat1 )
+		else
+			if GetLocalPlayer().getId() > 5
+				StartSound( gg_snd_CreepAggroWhat1 )
+	
+	function drop()
+		debugPrint("dropped", 1)
+		carrier = null
+		state = State.DROPPED
 			
 	static function onInRange()
 		debugPrint("inrange", 1)
@@ -58,10 +76,8 @@ public class Flag extends Entity
 		var flag = GetTriggeringTrigger().getSource().getUserData() castTo Flag
 		if flag.state == State.INBASE
 			if (not flag.redTeam and p.getId()  < 5)
-				debugPrint("team2", 1)
 				flag.setCarrier(u, true)
 			else if (flag.redTeam and p.getId()  > 5)
-				debugPrint("team1", 1)
 				flag.setCarrier(u, true)
 		if flag.state == State.DROPPED
 			if p.getId() <5
@@ -74,3 +90,14 @@ public class Flag extends Entity
 					flag.returnFlag()
 				else
 					flag.setCarrier(u, false)
+					
+function checkCarrierDeath()
+	unit u = GetTriggerUnit()
+	if (u == redflag.carrier or u == greenflag.carrier)
+		debugPrint("a carrier died", 1)
+		redflag.drop()
+
+init
+	trigger t = CreateTrigger()
+	t.registerAnyUnitEvent(EVENT_PLAYER_UNIT_DEATH)
+	t.addAction(function checkCarrierDeath)
