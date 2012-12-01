@@ -1,13 +1,6 @@
 package HomingMissile
 	import Fx
 	
-	
-	init
-		
-		trigger t = CreateTrigger()
-		t.addCondition(Condition(function spellCondition))
-		t.addAction(function spellStart)
-		t.registerAnyUnitEvent(EVENT_PLAYER_UNIT_SPELL_CAST)
 		
 	function spellCondition() returns boolean
 		if GetSpellAbilityId() == 'A001'

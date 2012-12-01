@@ -2,6 +2,7 @@ package Projectile
 import public Entity
 import Fx
 import Terrain
+import PhysicsConstants
 
 public class Projectile extends Entity
 	Fx fx
@@ -11,6 +12,7 @@ public class Projectile extends Entity
 	real xyangle
 	boolean keepHeight = true
 	real terrainZ = 0.
+	boolean gravityAffected = false
 	
 	construct(vec3 pos, player owner)
 		super(pos, owner)
@@ -25,6 +27,8 @@ public class Projectile extends Entity
 		
 	override function update()
 		terrainZ = getTerrainZ(pos.x, pos.y)
+		if gravityAffected
+			vel += gravity
 		pos += vel
 		if keepHeight
 			fx.setPos(pos.x, pos.y, pos.z-terrainZ)

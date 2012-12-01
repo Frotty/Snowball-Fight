@@ -20,6 +20,8 @@ public abstract class PhysicsEntity extends Entity
 	// Speedfactor
 	real speedFactor = 1.
 	
+	boolean flying = false
+	
 
 	construct( vec3 pos, player owner )
 		super(pos,owner)
@@ -77,3 +79,14 @@ abstract public class PhysicsUnitEntity extends PhysicsEntity
 		pos = tpos
 		actor.setPos(tpos.x,tpos.y)
 		
+	override function onGround()
+		super.onGround()
+		if flying
+			flying = false
+			SetUnitPropWindow(actor, 60.)
+		
+	override function inAir()
+		super.inAir()
+		if not flying
+			flying = true
+			SetUnitPropWindow(actor, 0.)

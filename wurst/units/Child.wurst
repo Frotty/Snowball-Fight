@@ -5,38 +5,45 @@ import Terrain
 import HomingProjectile
 import Entity
 import Snowball
+import GameConstants
+import Snowbomb
 
-public class Child extends PhysicsEntity
-	unit actor
+public class Child extends PhysicsUnitEntity
+	trigger t
 	
 	construct( vec3 pos, player owner )
-		super(pos, owner)
-		restitution = .2
-		
-		actor = CreateUnit(owner, 'H001', pos.x, pos.y, 0)
+		super(pos, CreateUnit(owner, 'H001', pos.x, pos.y, 0))
+		restitution = .15
+
 		actor.registerCastEvent(Condition(function Child.onCast))
-		actor.setUserData(this castTo int)
-		actor.addAbility(HEIGHT_ENABLER).removeAbility(HEIGHT_ENABLER)
+		t = CreateTrigger()
+		t.registerUnitEvent(actor, EVENT_UNIT_DEATH)
+		t.addAction(function Child.onDeath)
 		
 	static function onCast() returns boolean
 		var id = GetSpellAbilityId()
 		var data = GetTriggerUnit().getUserData() castTo Child
 		var tx = GetSpellTargetX()
 		var ty = GetSpellTargetY()
+		var tz = getTerrainZ(tx,ty)
 		let angle = angleBetweenCoordsR(data.pos.x, data.pos.y, tx, ty)
 		switch id
 			case 'A000'
 				print("casted")
-				var zz= getTerrainZ(data.pos.x,data.pos.y) + 40.
+				
 				new Snowball(vec3(data.pos.x, data.pos.y, data.pos.z+40.), data.owner, angle )
 				PlaySoundOnUnitBJ(gg_snd_FrostBoltLaunch1, 80., data.actor)
 			case 'A001'
 				print("casted")
-				var p = new HomingProjectile(vec3(0,0,1200), DUMMY_PLAYER, 0, "Abilities\\Weapons\\SpiritOfVengeanceMissile\\SpiritOfVengeanceMissile.mdl")
-				p.setHomingTarget(data)
+				new Snowbomb(vec3(data.pos.x, data.pos.y, data.pos.z+50.), data.owner, vec3(tx, ty, tz ))
+
 				
 		return false
 		
+	static function onDeath()
+		var p = GetKillingUnit().getOwner()
+		var p2 = GetDyingUnit().getOwner()
+		DisplayTimedTextToForce(GetPlayersAll(), 12., colorcode[p.getId()] + p.getName() + "|r hit " + colorcode[p2.getId()] + p2.getName() + "|r in the face with his snowball!" )
 				
 				
 	override function update()
@@ -46,6 +53,32 @@ public class Child extends PhysicsEntity
 		
 		actor.setXY(pos.toVec2())
 		actor.setFlyHeight(pos.z-terrainZ, 0.)
+		
+	override function onGround()
+		super.onGround()
+		if not isTerrainWalkable(pos.x, pos.y)
+			vel = getBounceVec(vel.toVec2(),getPathingNormal(pos.toVec2())).withZ(vel.z)
+		
+public function getPathingNormal(vec2 pos) returns vec2
+	int numberOfTests = 12
+	real radius = 64
+	vec2 addedVecs = vec2(0, 0)
+	for int i = 1 to numberOfTests
+		vec2 direction = vec2(0,0).polarOffset(i*2*bj_PI/numberOfTests, radius)
+		vec2 testPoint = pos + direction
+		if isTerrainWalkable(testPoint.x, testPoint.y)
+			addedVecs += direction
+	return addedVecs.setLength(1.) * (-1.)
+	
+public function getBounceVec(vec2 vel2, vec2 nor2) returns vec2
+		vec3 vel3 = vel2.toVec3()
+		vec3 nor3 = nor2.toVec3()
+		vec3 pv3 = vel3.project(nor3)
+		vec2 pv2 = pv3.toVec2()
+		pv2 *= (-2.)
+		vec2 nvel2 = vel2
+		nvel2 += pv2
+		return nvel2
 
 		
 		

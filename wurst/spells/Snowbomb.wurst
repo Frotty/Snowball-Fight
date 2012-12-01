@@ -1,0 +1,45 @@
+package Snowbomb
+import Projectile
+import Fx
+import Child
+
+constant real SPEED = 12
+constant real AOE = 200.*200.
+constant real FACTOR = 8.
+
+public class Snowbomb extends Projectile
+
+	construct(vec3 pos, player owner, vec3 target)
+		super(pos, owner)
+		fx = new Fx(pos, 0, "war3mapImported\\FrostMissile.mdx")
+		fx.setOwner(owner)
+		setTarget(target, SPEED)
+		gravityAffected = true
+		
+	override function update()
+		super.update()
+		if pos.z < terrainZ
+			onGround()
+				
+			
+			
+	function onGround()
+		terminate()
+		AddSpecialEffect("war3mapImported\\IceSparks.mdx", pos.x, pos.y).destr()
+		Entity e = Entity.first
+		while e != null
+			if e != this and owner != e.owner and e instanceof Child and IsPlayerEnemy( e.owner, owner ) 
+				debugPrint(pos.distToVecSquared(e.pos).toString(),1)
+				if pos.distToVecSquared(e.pos) < AOE
+					var c = e castTo Child
+					let angle = angleBetweenCoordsR(pos.x, pos.y, c.pos.x, c.pos.y)
+					let factor = (300 - distanceBetweenCoords(pos.x, pos.y, c.pos.x, c.pos.y)) / 100.
+					c.addVel(vec3(Cos(angle) * factor * FACTOR, Sin(angle) * factor * FACTOR, factor))
+					fx.dummy.damageTarget(c.actor, 25*factor)
+					
+			e = e.next
+		
+
+			
+		
+		
