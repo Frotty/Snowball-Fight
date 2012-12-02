@@ -21,6 +21,7 @@ package PlayerData
 		boolean left = false
 		
 		int deaths = 0
+		int kills = 0
 		
 	
 		construct (player p)
