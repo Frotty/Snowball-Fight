@@ -9,6 +9,8 @@ package PlayerData
 	trigger leaveTrig
 	
 	public LinkedList<PlayerData> players = new LinkedList<PlayerData>()
+	public Board playerboard
+	public PlayerData array pData
 
 	public class PlayerData //just the player's (constant) stuff
 		
@@ -55,8 +57,7 @@ package PlayerData
 			playercount--
 			
 		
-	public Board playerboard
-	public PlayerData array pData
+
 	
 	function initMB()
 		playerboard = new Board(playercount+1,3)

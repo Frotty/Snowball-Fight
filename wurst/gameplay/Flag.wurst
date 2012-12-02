@@ -21,7 +21,7 @@ public class Flag extends Entity
 	trigger inRangeTrig
 	
 	construct ( vec3 pos, unit actor )
-		super(pos, actor.getOwner())
+		super(pos, actor.getOwner(), 32.)
 		this.actor = actor
 		state = State.INBASE
 		base = vec2(pos.x, pos.y)

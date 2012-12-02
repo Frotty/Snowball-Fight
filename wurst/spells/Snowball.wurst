@@ -8,7 +8,7 @@ constant real SPEED = 10
 public class Snowball extends Projectile
 
 	construct(vec3 pos, player owner, real angle)
-		super(pos, owner)
+		super(pos, owner, 32.)
 		fx = new Fx(pos, 0, "war3mapImported\\snowball.mdx")
 		fx.setOwner(owner)
 		setTimed(4.)
@@ -24,7 +24,7 @@ public class Snowball extends Projectile
 		while e != null
 			if e != this and owner != e.owner and IsPlayerEnemy( e.owner, owner )
 				debugPrint(pos.distToVecSquared(e.pos).toString(),1)
-				if pos.distToVecSquared(e.pos) < 4096.
+				if pos.distToVecSquared(e.pos) < (e.radius+radius).squared()
 					debugPrint("inRange",1)
 					onHit(e)
 					debugPrint("hit",1)
