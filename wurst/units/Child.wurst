@@ -12,7 +12,7 @@ public class Child extends PhysicsUnitEntity
 	trigger t
 	
 	construct( vec3 pos, player owner )
-		super(pos, CreateUnit(owner, 'H001', pos.x, pos.y, 0))
+		super(pos, CreateUnit(owner, 'H001', pos.x, pos.y, 0), 48.)
 		restitution = .15
 
 		actor.registerCastEvent(Condition(function Child.onCast))
@@ -30,7 +30,6 @@ public class Child extends PhysicsUnitEntity
 		switch id
 			case 'A000'
 				print("casted")
-				
 				new Snowball(vec3(data.pos.x, data.pos.y, data.pos.z+40.), data.owner, angle )
 				PlaySoundOnUnitBJ(gg_snd_FrostBoltLaunch1, 80., data.actor)
 			case 'A001'

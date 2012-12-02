@@ -23,8 +23,8 @@ public abstract class PhysicsEntity extends Entity
 	boolean flying = false
 	
 
-	construct( vec3 pos, player owner )
-		super(pos,owner)
+	construct( vec3 pos, player owner, real radius )
+		super(pos,owner, radius)
 		
 	construct( vec3 pos, vec3 vel, player owner )
 		super(pos,vel,owner)
@@ -64,8 +64,8 @@ public abstract class PhysicsEntity extends Entity
 abstract public class PhysicsUnitEntity extends PhysicsEntity
 	unit actor
 	
-	construct( vec3 pos, unit actor )
-		super(pos, actor.getOwner())
+	construct( vec3 pos, unit actor, real radius )
+		super(pos, actor.getOwner(), radius)
 		this.actor = actor
 		actor.setUserData(this castTo int).addAbility(HEIGHT_ENABLER).removeAbility(HEIGHT_ENABLER)
 		unitEntityCount++

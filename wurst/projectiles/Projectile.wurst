@@ -14,8 +14,8 @@ public class Projectile extends Entity
 	real terrainZ = 0.
 	boolean gravityAffected = false
 	
-	construct(vec3 pos, player owner)
-		super(pos, owner)
+	construct(vec3 pos, player owner, real radius)
+		super(pos, owner, radius)
 		
 	function setTimed(real duration)
 		timed = true

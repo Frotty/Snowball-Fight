@@ -3,17 +3,22 @@ import Projectile
 import Fx
 import Child
 
-constant real SPEED = 12
+constant real SPEED = 10
 constant real AOE = 200.*200.
 constant real FACTOR = 8.
 
 public class Snowbomb extends Projectile
 
 	construct(vec3 pos, player owner, vec3 target)
-		super(pos, owner)
+		super(pos, owner, 16.)
 		fx = new Fx(pos, 0, "war3mapImported\\FrostMissile.mdx")
 		fx.setOwner(owner)
-		setTarget(target, SPEED)
+		let dist = target.distToVec(pos)
+		if dist < 200.
+			var ntarget = target.toVec2().polarOffset(angleBetweenCoordsR(pos.x, pos.y, target.x, target.y), 200.-dist).toVec3()
+			setTarget(ntarget, SPEED)
+		else
+			setTarget(target, SPEED)
 		gravityAffected = true
 		
 	override function update()

@@ -8,6 +8,7 @@ import Debug
 public abstract class Entity
 	use LinkedListModule
 	
+	real radius
 	// 3d vector position
 	vec3 pos
 	// 3d vector velocity
@@ -23,10 +24,11 @@ public abstract class Entity
 	// for removing
 	boolean done 		= false
 
-	construct( vec3 pos, player owner )
+	construct( vec3 pos, player owner, real radius )
 		this.pos = pos
 		this.vel = vec3(0,0,0)
 		this.owner = owner
+		this.radius = radius
 		entityCount++
 		debugPrint("EntityCount: " + entityCount.toString(), 1)
 		debugPrint("UnitEntityCount: " + unitEntityCount.toString(), 1)
@@ -65,8 +67,8 @@ public abstract class Entity
 abstract public class UnitEntity extends Entity
 	unit actor
 	
-	construct( vec3 pos, unit actor )
-		super(pos, actor.getOwner())
+	construct( vec3 pos, unit actor, real radius )
+		super(pos, actor.getOwner(), radius)
 		this.actor = actor
 		actor.setUserData(this castTo int).addAbility(HEIGHT_ENABLER).removeAbility(HEIGHT_ENABLER)
 		unitEntityCount++

@@ -3,16 +3,22 @@ import Projectile
 import Fx
 import Terrain
 
+public enum HOMING
+	attract // Direct homing
+	angular // Chaning angle
+	forced // pushed homing (warlock-like)
+
 public class HomingProjectile extends Projectile
 	Entity target
-	real speed = 8.
-	real angularSpeed = 0.15
+	real speed = 12.
+	real homingSpeed = 0.15
 	real zangle
+	HOMING homingType = HOMING.attract
 	
 
 	
-	construct(vec3 pos, player owner, real angle, string fxpath)
-		super(pos, owner)
+	construct(vec3 pos, player owner, real radius, real angle, string fxpath)
+		super(pos, owner, radius)
 		fx = new Fx(pos, angle, fxpath)
 		print("created!")
 		
@@ -28,50 +34,66 @@ public class HomingProjectile extends Projectile
 		let anglexy = angleBetweenCoordsR(pos.x, pos.y, target.pos.x, target.pos.y)
 		let anglez = getSlopeAngle(pos.z, target.pos.z, dist )
 	
-		var df1 = anglexy - xyangle
-		var df2 = (PI2 + anglexy) - xyangle
-		var ns = angularSpeed
-
-		if df1 <= 0
-			if df2 <= 0 
-				if df2 >= df1 
-					df1 = df2
-			else
-				if -df1 >= df2
-					df1 = df2
-		else
-			if df2 <= 0 
-				if -df2 <= df1
-					df1 = df2
-			else
-				if df2 <= df1 
-					df1 = df2
-		if df1 <= 0 
-			if -df1 >= ns 
-				ns = -ns
-			else
-				ns = df1
-		else
-			if df1 <= ns 
-				ns = df1
-		var d = xyangle
-		d += ns
-		if d >= PI2
-			d -= PI2
-		else if d < 0
-			d += PI2
-
-		xyangle = d
-
-		if anglez > zangle
-			if anglez - zangle < angularSpeed
-				zangle += anglez - zangle
-			else
-				zangle += angularSpeed
-		else if zangle > anglez
-			if zangle - anglez < angularSpeed
-				zangle -= zangle - anglez
-			else
-				zangle -= angularSpeed
-		vel = vec3( speed * Cos(xyangle), speed * Sin(xyangle), speed * Sin(zangle)  )
+		switch homingType
+			case HOMING.attract
+				vel = (target.pos - this.pos).setLength(speed)
+			case HOMING.angular
+				var df1 = anglexy - xyangle
+				var df2 = (PI2 + anglexy) - xyangle
+				var ns = homingSpeed
+		
+				if df1 <= 0
+					if df2 <= 0 
+						if df2 >= df1 
+							df1 = df2
+					else
+						if -df1 >= df2
+							df1 = df2
+				else
+					if df2 <= 0 
+						if -df2 <= df1
+							df1 = df2
+					else
+						if df2 <= df1 
+							df1 = df2
+				if df1 <= 0 
+					if -df1 >= ns 
+						ns = -ns
+					else
+						ns = df1
+				else
+					if df1 <= ns 
+						ns = df1
+				var d = xyangle
+				d += ns
+				if d >= PI2
+					d -= PI2
+				else if d < 0
+					d += PI2
+		
+				xyangle = d
+		
+				if anglez > zangle
+					if anglez - zangle < homingSpeed
+						zangle += anglez - zangle
+					else
+						zangle += homingSpeed
+				else if zangle > anglez
+					if zangle - anglez < homingSpeed
+						zangle -= zangle - anglez
+					else
+						zangle -= homingSpeed
+				vel = vec3( speed * Cos(xyangle), speed * Sin(xyangle), speed * Sin(zangle)  )
+			case HOMING.forced
+				vec3 tmp = vec3(polarProjectionXR(pos.x, speed, anglexy), polarProjectionYR(pos.y, speed, anglexy), polarProjectionZR(pos.z, speed, anglez))
+				
+				tmp -= pos
+				
+				vel += tmp
+				
+				pos += vel
+				
+				fx.setPos(pos)
+				
+				vel -= (vel*homingSpeed)
 		super.update()
