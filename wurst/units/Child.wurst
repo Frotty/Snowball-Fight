@@ -31,7 +31,6 @@ public class Child extends PhysicsUnitEntity
 			case 'A000'
 				print("casted")
 				new Snowball(vec3(data.pos.x, data.pos.y, data.pos.z+40.), data.owner, angle )
-				PlaySoundOnUnitBJ(gg_snd_FrostBoltLaunch1, 80., data.actor)
 			case 'A001'
 				print("casted")
 				new Snowbomb(vec3(data.pos.x, data.pos.y, data.pos.z+50.), data.owner, vec3(tx, ty, tz ))

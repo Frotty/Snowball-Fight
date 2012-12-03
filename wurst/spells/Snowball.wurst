@@ -2,6 +2,8 @@ package Snowball
 import Projectile
 import Fx
 import Child
+import Sound
+import SoundQueue
 
 constant real SPEED = 10
 
@@ -14,16 +16,18 @@ public class Snowball extends Projectile
 		setTimed(4.)
 		xyangle = angle
 		setXYSpeed(SPEED)
+		throwSound.playOnPoint(pos)
 		
 	override function update()
 		super.update()
 		if pos.z < terrainZ
+			terrainHitSound.playOnPoint(pos)
 			terminate()
 				
 		Entity e = Entity.first
 		while e != null
 			if e != this and owner != e.owner and IsPlayerEnemy( e.owner, owner )
-				debugPrint(pos.distToVecSquared(e.pos).toString(),1)
+				//debugPrint(pos.distToVecSquared(e.pos).toString(),1)
 				if pos.distToVecSquared(e.pos) < (e.radius+radius).squared()
 					debugPrint("inRange",1)
 					onHit(e)
@@ -39,4 +43,15 @@ public class Snowball extends Projectile
 			fx.dummy.damageTarget(c.actor, 55.)
 		else if e instanceof Projectile
 			e.terminate()
+			
+	ondestroy
+		AddSpecialEffect("Abilities\\Spells\\Undead\\FrostArmor\\FrostArmorDamage.mdl", pos.x, pos.y).destr()
+	
+Sound throwSound
+Sound terrainHitSound
+
+	
+init
+	throwSound = new Sound("Abilities\\Spells\\Other\\FrostBolt\\FrostBoltLaunch1.wav", 1100, false, true, true, 10, 10, "CombatSoundsEAX")
+	terrainHitSound = new Sound("Abilities\\Spells\\Other\\FrostBolt\\FrostBoltHit1.wav", 1347, false, true, true, 10, 10, "CombatSoundsEAX")
 		
