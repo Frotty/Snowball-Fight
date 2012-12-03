@@ -1,0 +1,49 @@
+package Rollingball
+import Projectile
+import Fx
+import Child
+
+constant real STARTMOMENTUM = 4
+
+public class Rollingball extends Projectile
+	real momentum
+
+	construct(vec3 pos, player owner, real angle)
+		super(pos, owner, 32.)
+		fx = new Fx(pos, 0, "war3mapImported\\snowball.mdx")
+		fx.setOwner(owner)
+		setTimed(4.)
+		xyangle = angle
+		setXYSpeed(STARTMOMENTUM)
+		momentum = STARTMOMENTUM
+		
+	override function update()
+		if momentum < 40
+			momentum += 0.25
+			fx.setScale(momentum*0.25)
+			setXYSpeed(momentum)
+			radius = momentum*3
+		super.update()
+		if pos.z < terrainZ
+			terminate()
+			
+		Entity e = Entity.first
+		while e != null
+			if e != this and owner != e.owner and IsPlayerEnemy( e.owner, owner )
+				debugPrint(pos.distToVecSquared(e.pos).toString(),1)
+				if pos.distToVecSquared(e.pos) < (e.radius+radius).squared()
+					debugPrint("inRange",1)
+					onHit(e)
+					debugPrint("hit",1)
+					
+			e = e.next
+			
+			
+	function onHit(Entity e)
+		terminate()
+		if e instanceof Child
+			var c = e castTo Child
+			fx.dummy.damageTarget(c.actor, momentum*3)
+		else if e instanceof Projectile
+			e.terminate()
+		

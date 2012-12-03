@@ -63,7 +63,7 @@ package HomingMissile
 			x = polarProjectionXD(fx.getX(), push, angle)
 			y = polarProjectionYD(fx.getY(), push, angle)
 			
-			x = x - fx.getX()
+			x = x - fx.getX() // why not polarProjectionXD(0., push, angle) ?
 			y = y - fx.getY()
 			
 			x2 = x2 + x

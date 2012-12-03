@@ -1,0 +1,35 @@
+package KillStreaks
+import PlayerData
+
+
+
+public function adjustKills(player killer, player dead)
+	var p1 = pData[killer.getId()]
+	p1.kills ++
+	pData[dead.getId()].deaths ++
+	playerboard.updateValue(killer.getId()+1,1,p1.kills.toString())
+	playerboard.updateValue(dead.getId()+1,2,pData[dead.getId()].deaths.toString())
+	pData[killer.getId()].killstreak ++
+	if p1.killstreak > 4
+		if p1.killstreak > 6
+			//sound - 6
+		else
+			//sound - 4
+	timer t = getTimer()
+	if p1.indouble
+		//sound Doublekill
+		t.setData(killer.getId()).start(4,function clearKillMultiplier)
+	else if p1.intriple
+		//sound Triplekill
+		p1.intriple = true
+		t.setData(killer.getId()).start(7,function clearKillMultiplier)
+	else
+		t.setData(killer.getId()).start(2,function clearKillMultiplier)
+		p1.indouble = true
+	
+function clearKillMultiplier()
+	var p = pData[GetExpiredTimer().getData()]
+	if p.indouble
+		p.indouble = false
+	if p.intriple
+		p.intriple = false

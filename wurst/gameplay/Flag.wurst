@@ -1,6 +1,7 @@
 package Flag
 import Entity
 import PlayerData
+import GameConstants
 
 public Flag redflag
 public Flag greenflag
@@ -42,16 +43,21 @@ public class Flag extends Entity
 		
 	function setCarrier(unit u, boolean display)
 		carrier = u
+		var p = u.getOwner()
 		state = State.CARRIED
 		debugPrint("carried", 1)
+		string message = colorcode[p.getId()] + p.getName() + "|r stole your team's flag!"
 		if display
 		//Display to opponent team players
 			if carrier.getOwner().getId() > 5
 				if GetLocalPlayer().getId() <= 5
 					StartSound( gg_snd_CreepAggroWhat1 )
+					DisplayTextToPlayer(GetLocalPlayer(), 0, 0, message)
+					PingMinimap(pos.x, pos.y, 5)
 			else
 				if GetLocalPlayer().getId() > 5
 					StartSound( gg_snd_CreepAggroWhat1 )
+					DisplayTextToPlayer(GetLocalPlayer(), 0, 0, message)
 	
 	function returnFlag()
 		debugPrint("returning", 1)
