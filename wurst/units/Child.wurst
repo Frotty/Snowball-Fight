@@ -48,6 +48,8 @@ public class Child extends PhysicsUnitEntity
 		DisplayTimedTextToForce(GetPlayersAll(), 12., colorcode[p.getId()] + p.getName() + "|r hit " + colorcode[p2.getId()] + p2.getName() + "|r in the face with his snowball!" )
 		pData[p.getId()].kills ++
 		pData[p2.getId()].deaths ++
+		playerboard.updateValue(p.getId()+1,1,pData[p.getId()].kills.toString())
+		playerboard.updateValue(p2.getId()+1,2,pData[p.getId()].deaths.toString())
 		var child = GetDyingUnit().getUserData() castTo Child
 		child.revive()
 				
