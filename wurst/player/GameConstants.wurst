@@ -1,6 +1,6 @@
 package GameConstants
 	import RGBA
-	import Sound
+	import SoundHelper
 	
 	public string array mbPic
 	public string array names

@@ -2,7 +2,7 @@ package Snowman
 import Projectile
 import Fx
 import Child
-import Sound
+import SoundHelper
 import SoundQueue
 
 constant real SPEED = 10
