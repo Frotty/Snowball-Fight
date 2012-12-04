@@ -11,25 +11,24 @@ constant real MELT = 192
 public class Snowman extends Projectile
 	boolean impacted = false
 	real meltingtime
-	unit target
+	Child target
 
 	construct(vec3 pos, player owner, real angle)
-		super(pos, owner, 32.)
+		super(pos, owner, 16.)
 		fx = new Fx(pos, angle, "Abilities\\Weapons\\LichMissile\\LichMissile.mdl")
 		setTimed(4.)
 		xyangle = angle
 		setXYSpeed(SPEED)
 		throwSound.playOnPoint(pos)
 		meltingtime = MELT
+		hiddenDestroy = true
 		
 	override function update()
 		super.update()
 		if impacted
-			pos.x = target.getX()
-			pos.y = target.getY()
 			debugPrint(meltingtime.toString(),1)
-			meltingtime --
-			fx.dummy.damageTarget(target, .1).setVertexColor(255,255,255,meltingtime.toInt()+48).setFacing(target.getFacing())
+			meltingtime--
+			fx.dummy.damageTarget(target.actor, .1).setVertexColor(255,255,255,meltingtime.toInt()+48)
 			if meltingtime < 0
 				boolean canrelease = true
 				Entity e = Entity.first
@@ -40,7 +39,9 @@ public class Snowman extends Projectile
 							canrelease = false
 					e = e.next
 				if canrelease
-					SetUnitPropWindow(target,60)
+					SetUnitPropWindow(target.actor,60)
+					SetUnitTimeScale(target.actor, 1.)
+					target.actor.setVertexColor(255,255,255,255)
 				terminate()
 		else
 			if pos.z < terrainZ
@@ -60,17 +61,23 @@ public class Snowman extends Projectile
 	function onHit(Entity e)
 		if e instanceof Child
 			var c = e castTo Child
-			target = c.actor
+			target = c
 			debugPrint("impacted",1)
 			impacted = true
-			SetUnitPropWindow(target,0)
-			fx.setFx("Doodads\\Icecrown\\Props\\SnowMan\\SnowMan.mdl").dummy.setFacing(target.getFacing()).setFlyHeight(0,0)
+			SetUnitPropWindow(target.actor,0)
+			fx.setFx("Doodads\\Icecrown\\Props\\SnowMan\\SnowMan.mdl")
+			AddSpecialEffect("Abilities\\Spells\\Human\\Polymorph\\PolyMorphTarget.mdl", c.pos.x, c.pos.y).destr()
+			pos = c.pos
+			keepHeight = false
+			xyangle = target.actor.getFacing()
+			fx.setXYAngle(xyangle)
+			fx.setScale(1.4)
+			SetUnitTimeScale(c.actor, 0)
+			target.actor.setVertexColor(155,155,255,255)
 			setXYSpeed(0)
 		else if e instanceof Projectile
 			e.terminate()
 			
-	ondestroy
-		fx.hiddenDestroy()
 	
 Sound throwSound
 
