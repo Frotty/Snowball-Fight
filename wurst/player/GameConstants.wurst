@@ -1,5 +1,6 @@
 package GameConstants
 	import RGBA
+	import Sound
 	
 	public string array mbPic
 	public string array names
@@ -7,6 +8,7 @@ package GameConstants
 	public string array colorcode
 	public integer array expBounds
 	public string array ranks
+	public Sound array announcer
 	
 	public constant string MAP_VER = "|cffE66321in|cffADADADWarcraft |cffF7F7F7Schneeballschlacht|r"
 	
@@ -111,5 +113,7 @@ package GameConstants
 		ranks[5] = "Pro"
 		ranks[6] = "Expert"
 		ranks[7] = "Addict"
+		
+		announcer[0] = new Sound("Abilities\\Spells\\Other\\FrostBolt\\FrostBoltLaunch1.wav", 1100, false, true, true, 10, 10, "CombatSoundsEAX")
 
 endpackage 

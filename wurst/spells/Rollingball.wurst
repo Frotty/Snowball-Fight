@@ -10,7 +10,7 @@ public class Rollingball extends Projectile
 
 	construct(vec3 pos, player owner, real angle)
 		super(pos, owner, 32.)
-		fx = new Fx(pos, 0, "war3mapImported\\snowball.mdx")
+		fx = new Fx(pos, angle, "war3mapImported\\snowball.mdx")
 		fx.setOwner(owner)
 		setTimed(4.)
 		xyangle = angle
