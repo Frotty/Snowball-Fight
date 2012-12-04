@@ -9,12 +9,14 @@ public function adjustKills(player killer, player dead)
 	pData[dead.getId()].deaths ++
 	playerboard.updateValue(killer.getId()+1,1,p1.kills.toString())
 	playerboard.updateValue(dead.getId()+1,2,pData[dead.getId()].deaths.toString())
+	pData[dead.getId()].killstreak = 0
 	pData[killer.getId()].killstreak ++
-	if p1.killstreak > 4
-		if p1.killstreak > 6
-			//sound - 6
-		else
-			//sound - 4
+	if p1.killstreak == 4
+		skip
+	if p1.killstreak == 6
+		skip
+	if p1.killstreak == 8
+		skip
 	timer t = getTimer()
 	if p1.indouble
 		//sound Doublekill
@@ -29,7 +31,5 @@ public function adjustKills(player killer, player dead)
 	
 function clearKillMultiplier()
 	var p = pData[GetExpiredTimer().getData()]
-	if p.indouble
-		p.indouble = false
-	if p.intriple
-		p.intriple = false
+	p.indouble = false
+	p.intriple = false

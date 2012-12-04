@@ -9,6 +9,7 @@ import GameConstants
 import Snowbomb
 import PlayerData
 import Rollingball
+import KillStreaks
 
 public class Child extends PhysicsUnitEntity
 	trigger t
@@ -45,31 +46,21 @@ public class Child extends PhysicsUnitEntity
 		var p = GetKillingUnit().getOwner()
 		var p2 = GetDyingUnit().getOwner()
 		DisplayTimedTextToForce(GetPlayersAll(), 12., colorcode[p.getId()] + p.getName() + "|r hit " + colorcode[p2.getId()] + p2.getName() + "|r in the face with his snowball!" )
-		pData[p.getId()].kills ++
-		pData[p2.getId()].deaths ++
-		playerboard.updateValue(p.getId()+1,1,pData[p.getId()].kills.toString())
-		playerboard.updateValue(p2.getId()+1,2,pData[p.getId()].deaths.toString())
-		var child = GetDyingUnit().getUserData() castTo Child
-		child.revive()
+		adjustKills(p, p2)
+		timer t = getTimer()
+		t.setData(GetDyingUnit().getUserData()).start(3., function Child.revive)
 				
-	function revive()
+	static function revive()
 			debugPrint("rev", 1)
-	/*		var t = GetExpiredTimer()
-			Escaper e = t.getData() castTo Escaper
-			var revX = currentRevivepoint.pos.x
-			var revY = currentRevivepoint.pos.y
-			ReviveHero(e.actor, revX, revY, false)
-			e.setVel(vec3(0,0,0))
-			e.slideVelocity = vec3(0,0,0)
-			e.setNewPos(vec3(revX, revY, 530.))
-			if e.owner.getId() < 8
-				if (GetLocalPlayer() == e.owner)
-					PanCameraToTimed(revX, revY, 0)
-					ClearSelection()
-					SelectUnit(e.actor, true)
-			e.alive = true
-			t.release()
-	*/
+			var t = GetExpiredTimer()
+			Child c = t.getData() castTo Child
+			var revX = c.pos.x
+			var revY = c.pos.y
+			ReviveHero(c.actor, revX, revY, false)
+			c.setVel(vec3(0,0,0))
+			c.setNewPos(vec3(revX, revY, 530.))
+			t.release()	
+
 	override function update()
 		pos.x = actor.getX()
 		pos.y = actor.getY()

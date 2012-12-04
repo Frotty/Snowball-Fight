@@ -25,6 +25,9 @@ package PlayerData
 		int deaths = 0
 		int kills = 0
 		
+		int killstreak = 0
+		boolean indouble = false
+		boolean intriple = false
 	
 		construct (player p)
 			this.p = p
