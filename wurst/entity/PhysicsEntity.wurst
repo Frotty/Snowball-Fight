@@ -20,6 +20,8 @@ public abstract class PhysicsEntity extends Entity
 	// Speedfactor
 	real speedFactor = 1.
 	
+	boolean enableTrimming
+	
 	boolean flying = false
 	
 
@@ -37,7 +39,9 @@ public abstract class PhysicsEntity extends Entity
 			onGround()
 		else
 			inAir()
-			
+		
+		if enableTrimming
+			vel.trim(1.)
 		pos += (vel * speedFactor)
 		
 	// When the Entity is on or near the ground	

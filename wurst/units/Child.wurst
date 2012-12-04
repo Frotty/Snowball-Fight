@@ -16,7 +16,7 @@ public class Child extends PhysicsUnitEntity
 	construct( vec3 pos, player owner )
 		super(pos, CreateUnit(owner, 'H001', pos.x, pos.y, 0), 48.)
 		restitution = .15
-
+		friction = 0.7
 		actor.registerCastEvent(Condition(function Child.onCast))
 		t = CreateTrigger()
 		t.registerUnitEvent(actor, EVENT_UNIT_DEATH)
@@ -81,7 +81,7 @@ public class Child extends PhysicsUnitEntity
 	override function onGround()
 		super.onGround()
 		if not isTerrainWalkable(pos.x, pos.y)
-			vel = getBounceVec(vel.toVec2(),getPathingNormal(pos.toVec2())).withZ(vel.z)
+			vel += getBounceVec(vel.toVec2(),getPathingNormal(pos.toVec2())).withZ(0)
 		
 public function getPathingNormal(vec2 pos) returns vec2
 	int numberOfTests = 12
@@ -99,10 +99,8 @@ public function getBounceVec(vec2 vel2, vec2 nor2) returns vec2
 		vec3 nor3 = nor2.toVec3()
 		vec3 pv3 = vel3.project(nor3)
 		vec2 pv2 = pv3.toVec2()
-		pv2 *= (-2.)
-		vec2 nvel2 = vel2
-		nvel2 += pv2
-		return nvel2
+		pv2 *= (-1.4)
+		return pv2
 
 		
 		

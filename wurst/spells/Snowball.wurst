@@ -2,7 +2,7 @@ package Snowball
 import Projectile
 import Fx
 import Child
-import Sound
+import SoundHelper
 import SoundQueue
 
 constant real SPEED = 10
@@ -12,7 +12,7 @@ public class Snowball extends Projectile
 	construct(vec3 pos, player owner, real angle)
 		super(pos, owner, 32.)
 		fx = new Fx(pos, 0, "war3mapImported\\snowball.mdx")
-		fx.setOwner(owner)
+		fx.setTeamcolor(GetPlayerColor(Player(3)))
 		setTimed(4.)
 		xyangle = angle
 		setXYSpeed(SPEED)
