@@ -34,12 +34,12 @@ public class Child extends PhysicsUnitEntity
 		switch id
 			case 'A000'
 				print("casted")
-				new Snowball(vec3(data.pos.x, data.pos.y, data.pos.z+40.), data.owner, angle )
+				new Snowball(vec3(data.actor.getX(), data.actor.getY(), data.pos.z+16.), data.owner, angle )
 			case 'A001'
 				debugPrint("casted", 1)
-				new Snowbomb(vec3(data.pos.x, data.pos.y, data.pos.z+50.), data.owner, vec3(tx, ty, tz ))
+				new Snowbomb(vec3(data.pos.x, data.pos.y, data.pos.z), data.owner, vec3(tx, ty, tz ))
 			case 'A002'
-				new Rollingball(vec3(data.pos.x, data.pos.y, data.pos.z+40.), data.owner, angle )
+				new Rollingball(vec3(data.pos.x + Cos(angle) * 16., data.pos.y + Sin(angle) * 16., data.pos.z), data.owner, angle )
 				
 		return false
 		

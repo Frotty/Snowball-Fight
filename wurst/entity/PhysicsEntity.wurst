@@ -41,7 +41,7 @@ public abstract class PhysicsEntity extends Entity
 			inAir()
 		
 		if enableTrimming
-			vel.trim(1.)
+			vel.trim(.5)
 		pos += (vel * speedFactor)
 		
 	// When the Entity is on or near the ground	

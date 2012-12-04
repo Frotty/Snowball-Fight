@@ -13,6 +13,7 @@ public class Projectile extends Entity
 	boolean keepHeight = true
 	real terrainZ = 0.
 	boolean gravityAffected = false
+	boolean hiddenDestroy = false
 	
 	construct(vec3 pos, player owner, real radius)
 		super(pos, owner, radius)
@@ -41,5 +42,8 @@ public class Projectile extends Entity
 				
 				
 	ondestroy
-		destroy fx
+		if hiddenDestroy
+			fx.hiddenDestroy()
+		else
+			destroy fx
 		

@@ -2,29 +2,48 @@ package Rollingball
 import Projectile
 import Fx
 import Child
+import Terrain
+import SoundHelper
 
-constant real STARTMOMENTUM = 4
+constant real STARTMOMENTUM = 1
+constant real MOMENTUMGAIN = .15
+constant real MOMENTUMMAX = 20
+constant real SIZEGAIN = .05
+constant real MAXSIZE = 15
 
 public class Rollingball extends Projectile
 	real momentum
+	real size = 2
 
 	construct(vec3 pos, player owner, real angle)
 		super(pos, owner, 32.)
 		fx = new Fx(pos, angle*RADTODEG, "war3mapImported\\rollingball.mdx")
 		fx.setOwner(owner)
-		setTimed(4.)
 		xyangle = angle
 		setXYSpeed(STARTMOMENTUM)
 		momentum = STARTMOMENTUM
+		startRoll.playOnPoint(pos)
+
 		
 	override function update()
-		if momentum < 40
-			momentum += 0.25
-			fx.setScale(momentum*0.25)
+		if momentum < MOMENTUMMAX
+			momentum += MOMENTUMGAIN
 			setXYSpeed(momentum)
-			radius = momentum*3
+		if size < MAXSIZE
+			size += SIZEGAIN
+			fx.setScale(size)
+			pos.z = size*4
+			radius = size*8
 		super.update()
-		if pos.z < terrainZ
+		var x = polarProjectionXR(pos.x,radius -2., xyangle+90*DEGTORAD )
+		var y = polarProjectionYR(pos.y,radius -2., xyangle+90*DEGTORAD )
+		//AddSpecialEffect("Abilities\\Weapons\\SpiritOfVengeanceMissile\\SpiritOfVengeanceMissile.mdl", x, y)
+		let tz1 = getTerrainZ(x,y)
+		x = polarProjectionXR(pos.x,radius -2., xyangle-90*DEGTORAD )
+		y = polarProjectionYR(pos.y,radius -2., xyangle-90*DEGTORAD )
+		//AddSpecialEffect("Abilities\\Weapons\\SpiritOfVengeanceMissile\\SpiritOfVengeanceMissile.mdl", x, y)
+		let tz2 = getTerrainZ(x,y)
+		if pos.z < terrainZ or pos.z < tz1 or pos.z < tz2 or not isTerrainWalkable(pos.x, pos.y)
 			terminate()
 			
 		Entity e = Entity.first
@@ -46,4 +65,17 @@ public class Rollingball extends Projectile
 			fx.dummy.damageTarget(c.actor, momentum*3)
 		else if e instanceof Projectile
 			e.terminate()
+	
+	ondestroy
+		AddSpecialEffect("war3mapImported\\rollingExplosion.mdx", pos.x, pos.y)
+		hitTarget.playOnPoint(pos)
 		
+Sound startRoll
+Sound hitTarget
+
+init
+	startRoll = new Sound("Abilities\\Spells\\Orc\\EarthQuake\\EarthquakeRock.wav", 2972, false, true, true, 10, 10, "CombatSoundsEAX")
+	hitTarget = new Sound("Abilities\\Spells\\Human\\FlakCannons\\FlakCannon.wav", 1419, false, true, true, 10, 10, "CombatSoundsEAX")
+	
+
+				
