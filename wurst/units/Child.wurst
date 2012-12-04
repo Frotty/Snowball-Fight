@@ -40,13 +40,10 @@ public class Child extends PhysicsUnitEntity
 				debugPrint("casted", 1)
 				new Snowbomb(vec3(data.pos.x, data.pos.y, data.pos.z), data.owner, vec3(tx, ty, tz ))
 			case 'A002'
-<<<<<<< HEAD
 				new Rollingball(vec3(data.pos.x + Cos(angle) * 16., data.pos.y + Sin(angle) * 16., data.pos.z), data.owner, angle )
-=======
-				new Rollingball(vec3(data.pos.x, data.pos.y, data.pos.z+40.), data.owner, angle )
 			case 'A003'
 				new Snowman(vec3(data.pos.x, data.pos.y, data.pos.z+40.), data.owner, angle )
->>>>>>> ca73324e9d6fd36fca842edfab529eb3853d3588
+
 				
 		return false
 		
