@@ -13,6 +13,7 @@ import KillStreaks
 
 public class Child extends PhysicsUnitEntity
 	trigger t
+	boolean fixPos = false
 	
 	construct( vec3 pos, player owner )
 		super(pos, CreateUnit(owner, 'H001', pos.x, pos.y, 0), 48.)
@@ -66,13 +67,19 @@ public class Child extends PhysicsUnitEntity
 		pos.y = actor.getY()
 		super.update()
 		
-		actor.setXY(pos.toVec2())
+		if fixPos
+			actor.setPos(pos.toVec2())
+			fixPos = false
+		else
+			actor.setXY(pos.toVec2())
 		actor.setFlyHeight(pos.z-terrainZ, 0.)
 		
 	override function onGround()
 		super.onGround()
-		if not isTerrainWalkable(pos.x, pos.y)
-			vel += getBounceVec(vel.toVec2(),getPathingNormal(pos.toVec2())).withZ(0)
+		if vel.lengthSquared() > 4.
+			if not isTerrainWalkable(pos.x, pos.y)
+				vel += getBounceVec(vel.toVec2(),getPathingNormal(pos.toVec2())).withZ(0)
+				fixPos = true
 		
 public function getPathingNormal(vec2 pos) returns vec2
 	int numberOfTests = 12

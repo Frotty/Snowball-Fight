@@ -5,7 +5,7 @@ import Child
 
 constant real SPEED = 10
 constant real AOE = 200.*200.
-constant real FACTOR = 8.
+constant real FACTOR = 10.
 
 public class Snowbomb extends Projectile
 
@@ -39,7 +39,7 @@ public class Snowbomb extends Projectile
 					var c = e castTo Child
 					let angle = angleBetweenCoordsR(pos.x, pos.y, c.pos.x, c.pos.y)
 					let factor = (300 - distanceBetweenCoords(pos.x, pos.y, c.pos.x, c.pos.y)) / 100.
-					c.addVel(vec3(Cos(angle) * factor * FACTOR, Sin(angle) * factor * FACTOR, factor))
+					c.addVel(vec3(Cos(angle) * factor * FACTOR, Sin(angle) * factor * FACTOR, 4.))
 					fx.dummy.damageTarget(c.actor, 25*factor)
 					
 			e = e.next

@@ -11,8 +11,8 @@ public class Snowball extends Projectile
 
 	construct(vec3 pos, player owner, real angle)
 		super(pos, owner, 32.)
-		fx = new Fx(pos, 0, "war3mapImported\\snowball.mdx")
-		fx.setTeamcolor(GetPlayerColor(Player(3)))
+		fx = new Fx(pos, angle*RADTODEG, "war3mapImported\\snowball.mdx")
+		fx.setTeamcolor(GetPlayerColor(owner))
 		setTimed(4.)
 		xyangle = angle
 		setXYSpeed(SPEED)
