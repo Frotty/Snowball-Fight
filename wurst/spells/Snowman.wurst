@@ -26,6 +26,8 @@ public class Snowman extends Projectile
 	override function update()
 		super.update()
 		if impacted
+			if target.actor.getHP() > .405
+				
 			debugPrint(meltingtime.toString(),1)
 			meltingtime--
 			fx.dummy.damageTarget(target.actor, .1).setVertexColor(255,255,255,meltingtime.toInt()+48)

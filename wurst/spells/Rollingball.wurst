@@ -32,8 +32,8 @@ public class Rollingball extends Projectile
 		if size < MAXSIZE
 			size += SIZEGAIN
 			fx.setScale(size)
-			pos.z = size*4
 			radius = size*8
+			pos.z = radius-16.
 		super.update()
 		var x = polarProjectionXR(pos.x,radius -2., xyangle+90*DEGTORAD )
 		var y = polarProjectionYR(pos.y,radius -2., xyangle+90*DEGTORAD )
