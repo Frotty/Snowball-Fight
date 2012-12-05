@@ -1,5 +1,6 @@
 package Snowman
-import Projectile
+import HomingProjectile
+import Entity
 import Fx
 import Child
 import SoundHelper
@@ -8,78 +9,82 @@ import SoundQueue
 constant real SPEED = 10
 constant real MELT = 192
 
-public class Snowman extends Projectile
-	boolean impacted = false
-	real meltingtime
-	Child target
+public class SnowmanMissile extends HomingProjectile
 
-	construct(vec3 pos, player owner, real angle)
-		super(pos, owner, 16.)
-		fx = new Fx(pos, angle, "Abilities\\Weapons\\LichMissile\\LichMissile.mdl")
-		setTimed(4.)
-		xyangle = angle
+	construct(vec3 pos, player owner, vec2 target)
+		super(pos, owner, 16., angleBetweenCoordsR(pos.x, pos.y, target.x, target.y), "Abilities\\Weapons\\LichMissile\\LichMissile.mdl")
+		real dst = 0.
+		Child chld = null
+		for c in childs
+			if not IsPlayerAlly(c.owner, owner)  and c.owner != owner
+				if dst == 0.
+					chld = c
+					dst = distanceBetweenCoords(c.pos.x, c.pos.y, target.x, target.y)
+				else
+					let dist = distanceBetweenCoords(c.pos.x, c.pos.y, target.x, target.y)
+					if dist < dst
+						dst = dist
+						chld = c
+		setHomingTarget(chld)
+		homingType = HOMING.angular
+		homingSpeed = 0.035
+		setTimed(6.)
 		setXYSpeed(SPEED)
 		throwSound.playOnPoint(pos)
-		meltingtime = MELT
 		hiddenDestroy = true
 		
 	override function update()
 		super.update()
-		if impacted
-			if target.actor.getHP() > .405
-				
-			debugPrint(meltingtime.toString(),1)
-			meltingtime--
-			fx.dummy.damageTarget(target.actor, .1).setVertexColor(255,255,255,meltingtime.toInt()+48)
-			if meltingtime < 0
-				boolean canrelease = true
-				Entity e = Entity.first
-				while e != null
-					if e instanceof Snowman and e != this
-						var m = e castTo Snowman
-						if m.target == this.target
-							canrelease = false
-					e = e.next
-				if canrelease
-					SetUnitPropWindow(target.actor,60)
-					SetUnitTimeScale(target.actor, 1.)
-					target.actor.setVertexColor(255,255,255,255)
-				terminate()
-		else
-			if pos.z < terrainZ
-				terminate()
+		var chld = target castTo Child
+
 					
-			Entity e = Entity.first
-			while e != null
-				if e != this and owner != e.owner and IsPlayerEnemy( e.owner, owner )
-					if pos.distToVecSquared(e.pos) < (e.radius+radius).squared()
-						debugPrint("inRange",1)
-						onHit(e)
-						debugPrint("hit",1)
-						
-				e = e.next
+		Entity e = Entity.first
+		while e != null
+			if e instanceof Child and e != this and owner != e.owner and IsPlayerEnemy( e.owner, owner )
+				if pos.distToVecSquared(e.pos) < (e.radius+radius).squared()
+					onHit(e)
+					
+			e = e.next
 			
 			
 	function onHit(Entity e)
-		if e instanceof Child
-			var c = e castTo Child
-			target = c
-			debugPrint("impacted",1)
-			impacted = true
-			SetUnitPropWindow(target.actor,0)
-			fx.setFx("Doodads\\Icecrown\\Props\\SnowMan\\SnowMan.mdl")
-			AddSpecialEffect("Abilities\\Spells\\Human\\Polymorph\\PolyMorphTarget.mdl", c.pos.x, c.pos.y).destr()
-			pos = c.pos
-			keepHeight = false
-			xyangle = target.actor.getFacing()
-			fx.setXYAngle(xyangle)
-			fx.setScale(1.4)
-			SetUnitTimeScale(c.actor, 0)
-			target.actor.setVertexColor(155,155,255,255)
-			setXYSpeed(0)
-		else if e instanceof Projectile
-			e.terminate()
-			
+		new SnowmanDummy(pos, owner, e castTo Child)
+		terminate()
+
+		
+class SnowmanDummy extends Entity
+	Fx fx
+	real melttime = MELT
+	Child target
+	
+	construct(vec3 pos, player owner, Child target )
+		super(pos, owner, 0.)
+		fx = new Fx(pos, target.actor.getFacing(), "Doodads\\Icecrown\\Props\\SnowMan\\SnowMan.mdl")
+		fx.setScale(1.4)
+		AddSpecialEffect("Abilities\\Spells\\Human\\Polymorph\\PolyMorphTarget.mdl", pos.x, pos.y).destr()
+		this.target = target
+		PauseUnit(target.actor, true)
+		target.actor.setVertexColor(155,155,255,255)
+		SetUnitTimeScale(target.actor, 0)
+		
+	override function update()
+		melttime--
+
+		if target.actor.getHP() > .405
+			pos = target.pos
+			target.vel.z = 0.
+			fx.setPos(pos)
+			fx.dummy.damageTarget(target.actor, .1).setVertexColor(255,255,255,melttime.toInt()+28)
+			if melttime < 0
+				terminate()
+		else
+			terminate()
+
+	ondestroy
+		fx.hiddenDestroy()
+		PauseUnit(target.actor, false)
+		target.actor.setVertexColor(255,255,255,255)
+		SetUnitTimeScale(target.actor, 1.)
 	
 Sound throwSound
 

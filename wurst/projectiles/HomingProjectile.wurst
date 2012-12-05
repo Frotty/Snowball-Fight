@@ -1,5 +1,5 @@
 package HomingProjectile
-import Projectile
+import public Projectile
 import Fx
 import Terrain
 
@@ -19,21 +19,18 @@ public class HomingProjectile extends Projectile
 	
 	construct(vec3 pos, player owner, real radius, real angle, string fxpath)
 		super(pos, owner, radius)
-		fx = new Fx(pos, angle, fxpath)
+		fx = new Fx(pos, angle*RADTODEG, fxpath)
+		xyangle = angle
 		print("created!")
 		
 	function setHomingTarget(Entity e)
 		target = e
-		vel = (target.pos - pos).setLength(speed)
-		let dist = distanceBetweenCoords(pos.x, pos.y, target.pos.x, target.pos.y)
-		xyangle = angleBetweenCoordsR(pos.x, pos.y, target.pos.x, target.pos.y)
-		zangle = getSlopeAngle(pos.z, target.pos.z, dist )
+
 		
 	override function update()
 		let dist = distanceBetweenCoords(pos.x, pos.y, target.pos.x, target.pos.y)
 		let anglexy = angleBetweenCoordsR(pos.x, pos.y, target.pos.x, target.pos.y)
 		let anglez = getSlopeAngle(pos.z, target.pos.z, dist )
-	
 		switch homingType
 			case HOMING.attract
 				vel = (target.pos - this.pos).setLength(speed)
@@ -84,6 +81,7 @@ public class HomingProjectile extends Projectile
 					else
 						zangle -= homingSpeed
 				vel = vec3( speed * Cos(xyangle), speed * Sin(xyangle), speed * Sin(zangle)  )
+				
 			case HOMING.forced
 				vec3 tmp = vec3(polarProjectionXR(pos.x, speed, anglexy), polarProjectionYR(pos.y, speed, anglexy), polarProjectionZR(pos.z, speed, anglez))
 				

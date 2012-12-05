@@ -12,6 +12,10 @@ import Rollingball
 import KillStreaks
 import Snowman
 import IceWall
+import LinkedList
+
+public LinkedList<Child> childs = new LinkedList<Child>()
+
 
 public class Child extends PhysicsUnitEntity
 	trigger t
@@ -19,6 +23,7 @@ public class Child extends PhysicsUnitEntity
 	
 	construct( vec3 pos, player owner )
 		super(pos, CreateUnit(owner, 'H001', pos.x, pos.y, 0), 48.)
+		childs.add(this)
 		restitution = .15
 		friction = 0.7
 		actor.registerCastEvent(Condition(function Child.onCast))
@@ -42,9 +47,9 @@ public class Child extends PhysicsUnitEntity
 				new Snowbomb(vec3(data.pos.x, data.pos.y, data.pos.z), data.owner, vec3(tx, ty, tz ))
 			case 'A002'
 				new Rollingball(vec3(data.pos.x + Cos(angle) * 16., data.pos.y + Sin(angle) * 16., data.pos.z), data.owner, angle )
-			case 'A004'
-				new Snowman(vec3(data.pos.x, data.pos.y, data.pos.z+40.), data.owner, angle )
 			case 'A003'
+				new SnowmanMissile(vec3(data.pos.x, data.pos.y, data.pos.z+40.), data.owner, vec2(tx, ty) )
+			case 'A004'
 				new Iceblock(vec3(polarProjectionXR(data.pos.x, 100.,angle), polarProjectionYR(data.pos.y, 100.,angle), data.pos.z), data.owner,.6 )
 				new Iceblock(vec3(polarProjectionXR(data.pos.x, 100.,angle-.8), polarProjectionYR(data.pos.y, 100.,angle-.8), data.pos.z), data.owner,.4 )
 				new Iceblock(vec3(polarProjectionXR(data.pos.x, 100.,angle+.8), polarProjectionYR(data.pos.y, 100.,angle+.8), data.pos.z), data.owner,.4 )
