@@ -11,6 +11,7 @@ import PlayerData
 import Rollingball
 import KillStreaks
 import Snowman
+import IceWall
 
 public class Child extends PhysicsUnitEntity
 	trigger t
@@ -41,8 +42,12 @@ public class Child extends PhysicsUnitEntity
 				new Snowbomb(vec3(data.pos.x, data.pos.y, data.pos.z), data.owner, vec3(tx, ty, tz ))
 			case 'A002'
 				new Rollingball(vec3(data.pos.x + Cos(angle) * 16., data.pos.y + Sin(angle) * 16., data.pos.z), data.owner, angle )
-			case 'A003'
+			case 'A004'
 				new Snowman(vec3(data.pos.x, data.pos.y, data.pos.z+40.), data.owner, angle )
+			case 'A003'
+				new Iceblock(vec3(polarProjectionXR(data.pos.x, 100.,angle), polarProjectionYR(data.pos.y, 100.,angle), data.pos.z), data.owner,.6 )
+				new Iceblock(vec3(polarProjectionXR(data.pos.x, 100.,angle-.8), polarProjectionYR(data.pos.y, 100.,angle-.8), data.pos.z), data.owner,.4 )
+				new Iceblock(vec3(polarProjectionXR(data.pos.x, 100.,angle+.8), polarProjectionYR(data.pos.y, 100.,angle+.8), data.pos.z), data.owner,.4 )
 
 				
 		return false
@@ -50,7 +55,6 @@ public class Child extends PhysicsUnitEntity
 	static function onDeath()
 		var p = GetKillingUnit().getOwner()
 		var p2 = GetDyingUnit().getOwner()
-		DisplayTimedTextToForce(GetPlayersAll(), 12., colorcode[p.getId()] + p.getName() + "|r hit " + colorcode[p2.getId()] + p2.getName() + "|r in the face with his snowball!" )
 		adjustKills(p, p2)
 		timer t = getTimer()
 		t.setData(GetDyingUnit().getUserData()).start(3., function Child.revive)

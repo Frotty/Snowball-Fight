@@ -1,33 +1,43 @@
 package KillStreaks
 import PlayerData
-
+import GameConstants
 
 
 public function adjustKills(player killer, player dead)
 	var p1 = pData[killer.getId()]
+	var p2 = pData[dead.getId()]
 	p1.kills ++
-	pData[dead.getId()].deaths ++
-	playerboard.updateValue(killer.getId()+1,1,p1.kills.toString())
-	playerboard.updateValue(dead.getId()+1,2,pData[dead.getId()].deaths.toString())
-	pData[dead.getId()].killstreak = 0
-	pData[killer.getId()].killstreak ++
+	p2.deaths ++
+	playerboard.updateValue(p1.gameId+1,1,p1.kills.toString())
+	playerboard.updateValue(p2.gameId+1,2,p2.deaths.toString())
+	p1.killstreak ++
+	//p2.killstreak = 0
+	string announce = ""
+	debugPrint("kills: "+p1.killstreak.toString(), 1)
 	if p1.killstreak == 4
-		skip
+		announcers[GetRandomInt(2,3)].play()
+		announce += " KillingSpree"
 	if p1.killstreak == 6
-		skip
+		announcers[GetRandomInt(4,5)].play()
+		announce += " Unstoppable!"
 	if p1.killstreak == 8
-		skip
+		announcers[GetRandomInt(6,7)].play()
+		announce += " Godlike!!!"
 	timer t = getTimer()
-	if p1.indouble
-		//sound Doublekill
-		t.setData(killer.getId()).start(4,function clearKillMultiplier)
-	else if p1.intriple
-		//sound Triplekill
+	if p1.intriple
+		announcers[1].play()
+		announce += " Triplekill"
+		p1.indouble = false
+		t.setData(killer.getId()).start(0.,function clearKillMultiplier)
+	else if p1.indouble
+		announcers[0].play()
+		announce += " Doublekill"
 		p1.intriple = true
-		t.setData(killer.getId()).start(7,function clearKillMultiplier)
+		t.setData(killer.getId()).start(40,function clearKillMultiplier)
 	else
-		t.setData(killer.getId()).start(2,function clearKillMultiplier)
+		t.setData(killer.getId()).start(20,function clearKillMultiplier)
 		p1.indouble = true
+	DisplayTimedTextToForce(GetPlayersAll(), 12., colorcode[killer.getId()] + killer.getName() + "|r hit " + colorcode[dead.getId()] + dead.getName() + "|r in the face with his snowball!" + " -"+ announce)
 	
 function clearKillMultiplier()
 	var p = pData[GetExpiredTimer().getData()]
