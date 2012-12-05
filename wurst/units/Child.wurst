@@ -45,10 +45,7 @@ public class Child extends PhysicsUnitEntity
 			case 'A004'
 				new Snowman(vec3(data.pos.x, data.pos.y, data.pos.z+40.), data.owner, angle )
 			case 'A003'
-				new Iceblock(vec3(polarProjectionXR(data.pos.x, 100.,angle), polarProjectionYR(data.pos.y, 100.,angle), data.pos.z), data.owner,.6 )
-				new Iceblock(vec3(polarProjectionXR(data.pos.x, 100.,angle-.8), polarProjectionYR(data.pos.y, 100.,angle-.8), data.pos.z), data.owner,.4 )
-				new Iceblock(vec3(polarProjectionXR(data.pos.x, 100.,angle+.8), polarProjectionYR(data.pos.y, 100.,angle+.8), data.pos.z), data.owner,.4 )
-
+				new Icemissile(vec3(data.actor.getX(), data.actor.getY(), data.pos.z+16.), data.owner, vec3(tx,ty,tz))
 				
 		return false
 		

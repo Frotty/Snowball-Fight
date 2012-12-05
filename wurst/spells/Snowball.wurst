@@ -27,7 +27,7 @@ public class Snowball extends Projectile
 				
 		Entity e = Entity.first
 		while e != null
-			if (e != this and owner != e.owner and IsPlayerEnemy( e.owner, owner )) or e instanceof Iceblock
+			if e != this and owner != e.owner and IsPlayerEnemy( e.owner, owner )
 				//debugPrint(pos.distToVecSquared(e.pos).toString(),1)
 				if pos.distToVecSquared(e.pos) < (e.radius+radius).squared()
 					debugPrint("inRange",1)
@@ -44,9 +44,6 @@ public class Snowball extends Projectile
 			fx.dummy.damageTarget(c.actor, 55.)
 		else if e instanceof Projectile
 			e.terminate()
-		else if e instanceof Iceblock
-			var ib = e castTo Iceblock
-			ib.onHit()
 	ondestroy
 		AddSpecialEffect("Abilities\\Spells\\Undead\\FrostArmor\\FrostArmorDamage.mdl", pos.x, pos.y).destr()
 	

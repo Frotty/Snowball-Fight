@@ -2,31 +2,107 @@ package IceWall
 import Projectile
 import Fx
 import Child
-//import PhysicsEntity
+import LinkedList
 
 constant real SPEED = 10
-constant real AOE = 200.*200.
-constant real FACTOR = 10.
+constant real FACTOR = 2.
+constant int COLLOSION = 'e002'
+
+public class Icemissile extends Projectile
+	vec3 target
+
+	construct(vec3 pos, player owner, vec3 target)
+		super(pos, owner, 32.)
+		this.target = target
+		let angle = angleBetweenCoordsR(pos.x, pos.y, target.x, target.y)
+		fx = new Fx(pos, angle*RADTODEG, "Abilities\\Weapons\\WingedSerpentMissile\\WingedSerpentMissile.mdl")
+		fx.setTeamcolor(GetPlayerColor(owner))
+		setTimed(4.)
+		xyangle = angle
+		setXYSpeed(SPEED)
+		//throwSound.playOnPoint(pos)
+		
+	override function update()
+		super.update()
+		if pos.z < terrainZ
+			//terrainHitSound.playOnPoint(pos)
+			terminate()
+		if pos.distToVecSquared(target) < 32*32
+			terminate()
+			
+		Entity e = Entity.first
+		while e != null
+			if e != this and owner != e.owner and IsPlayerEnemy( e.owner, owner )
+				if pos.distToVecSquared(e.pos) < (e.radius+radius).squared()
+					debugPrint("inRange",1)
+					onHit(e)
+					debugPrint("hit",1)
+			e = e.next
+			
+			
+	function onHit(Entity e)
+		terminate()
+		if e instanceof Child
+			let angle = angleBetweenCoordsR(pos.x, pos.y, e.pos.x, e.pos.y)
+			e.addVel(vec3(Cos(angle) * FACTOR, Sin(angle) * FACTOR, 1.))
+		else if e instanceof Projectile
+			e.terminate()
+			
+	ondestroy
+		if not pos.z < terrainZ
+			new Iceblock(vec3(pos.x, pos.y, pos.z), owner,.5 )
+			new Iceblock(vec3(polarProjectionXR(pos.x, 48.,xyangle-1.8), polarProjectionYR(pos.y, 48.,xyangle-1.8), pos.z), owner,.4 )
+			new Iceblock(vec3(polarProjectionXR(pos.x, 48.,xyangle+1.8), polarProjectionYR(pos.y, 48.,xyangle+1.8), pos.z), owner,.4 )
 
 public class Iceblock extends Entity
 	real scale
 	Fx block
+	unit collosion
+	LinkedList<Child> childs
 
 	construct(vec3 pos, player owner, real scale)
 		super(pos, owner, scale*16)
 		debugPrint("Created",1)
-		block = new Fx(pos, 0, "Doodads\\Icecrown\\Rocks\\Icecrown_Crystal\\Icecrown_Crystal"+ GetRandomInt(0,8).toString() +".mdl")
+		collosion =CreateUnit(owner, COLLOSION, pos.x,pos.y,0)
+		SetUnitPathing(collosion,false)
+		collosion.setXY(pos.x,pos.y)
+		SetUnitPathing(collosion,true)
+		block = new Fx(pos, GetRandomReal(0,360), "Doodads\\Icecrown\\Rocks\\Icecrown_Crystal\\Icecrown_Crystal"+ GetRandomInt(0,8).toString() +".mdl")
 		block.setOwner(owner)
 		this.scale = scale
-		block.dummy.setScale(scale).setFacing(GetRandomReal(0,360))
+		block.dummy.setScale(scale)
 		
 	override function update()
 		super.update()
-		
+		Entity e = Entity.first
+		while e != null
+			if e instanceof Projectile 
+				if pos.distToVecSquared(e.pos) < (e.radius+radius).squared()
+					e.terminate()
+					onHit()
+			/*if e instanceof Child
+				var c = e castTo Child
+				var inlist = false
+				Child cd = childs.get(0)
+				while cd != null
+					if c == cd
+						inlist = true
+				if inlist
+					var dist = pos.distToVecSquared(c.pos)
+				
+					if dist < (c.radius+radius).squared()
+						if  
+				cd = cd.next */
+			e = e.next
+					
 	function onHit()
-		scale -= .22
+		scale -= .12
 		debugPrint("scale: " + scale.toString(),1)
 		block.dummy.setScale(scale)
 		radius = scale*16
 		if scale < .2
 			terminate()
+
+	ondestroy
+		collosion.remove()
+		block.hiddenDestroy()
