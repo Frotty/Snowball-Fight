@@ -35,7 +35,7 @@ public abstract class PhysicsEntity extends Entity
 	// This function is called every ANIMATION_PERIOD tick if the Entity is active
 	override function update()
 		terrainZ = getTerrainZ(pos.x, pos.y)
-		if pos.z <= terrainZ + .2
+		if pos.z <= terrainZ + .6 or vel.lengthSquared() < 4.
 			onGround()
 		else
 			inAir()
@@ -53,8 +53,8 @@ public abstract class PhysicsEntity extends Entity
 			return
 
 		vec3 pv = vel.project(normal)
-		pv *= (-1.5)
-		if pv.z > 4.
+		pv *= (-1. + restitution)
+		if pv.z > friction
 			vel += pv
 		else	
 			vel *= friction

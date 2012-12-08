@@ -27,17 +27,17 @@ public class SnowmanMissile extends HomingProjectile
 						chld = c
 		setHomingTarget(chld)
 		homingType = HOMING.angular
-		homingSpeed = 0.035
+		homingSpeed = 0.0375
 		setTimed(6.)
 		setXYSpeed(SPEED)
 		throwSound.playOnPoint(pos)
-		hiddenDestroy = true
+
 		
 	override function update()
 		super.update()
 		var chld = target castTo Child
 
-					
+		debugPrint(pos.toString(),1)					
 		Entity e = Entity.first
 		while e != null
 			if e instanceof Child and e != this and owner != e.owner and IsPlayerEnemy( e.owner, owner )
@@ -48,7 +48,7 @@ public class SnowmanMissile extends HomingProjectile
 			
 			
 	function onHit(Entity e)
-		new SnowmanDummy(pos, owner, e castTo Child)
+		new SnowmanDummy(vec3(pos.x, pos.y, 0.), owner, e castTo Child)
 		terminate()
 
 		
@@ -59,6 +59,7 @@ class SnowmanDummy extends Entity
 	
 	construct(vec3 pos, player owner, Child target )
 		super(pos, owner, 0.)
+		print("SNOWMAN POS " + pos.toString())
 		fx = new Fx(pos, target.actor.getFacing(), "Doodads\\Icecrown\\Props\\SnowMan\\SnowMan.mdl")
 		fx.setScale(1.4)
 		AddSpecialEffect("Abilities\\Spells\\Human\\Polymorph\\PolyMorphTarget.mdl", pos.x, pos.y).destr()
@@ -72,8 +73,9 @@ class SnowmanDummy extends Entity
 
 		if target.actor.getHP() > .405
 			pos = target.pos
-			target.vel.z = 0.
-			fx.setPos(pos)
+			if target.vel.z > 0.
+				target.vel.z = 0.
+			fx.setPos(pos.toVec2())
 			fx.dummy.damageTarget(target.actor, .1).setVertexColor(255,255,255,melttime.toInt()+28)
 			if melttime < 0
 				terminate()

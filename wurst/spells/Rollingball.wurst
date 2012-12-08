@@ -14,15 +14,18 @@ constant real MAXSIZE = 15
 public class Rollingball extends Projectile
 	real momentum
 	real size = 2
+	real startz
 
 	construct(vec3 pos, player owner, real angle)
 		super(pos, owner, 32.)
+		startz = pos.z
 		fx = new Fx(pos, angle*RADTODEG, "war3mapImported\\rollingball.mdx")
 		fx.setOwner(owner)
 		xyangle = angle
 		setXYSpeed(STARTMOMENTUM)
 		momentum = STARTMOMENTUM
 		startRoll.playOnPoint(pos)
+		hiddenDestroy = true
 
 		
 	override function update()
@@ -33,7 +36,7 @@ public class Rollingball extends Projectile
 			size += SIZEGAIN
 			fx.setScale(size)
 			radius = size*8
-			pos.z = radius-16.
+			pos.z = startz+radius-16.
 		super.update()
 		var x = polarProjectionXR(pos.x,radius -2., xyangle+90*DEGTORAD )
 		var y = polarProjectionYR(pos.y,radius -2., xyangle+90*DEGTORAD )
@@ -45,6 +48,8 @@ public class Rollingball extends Projectile
 		let tz2 = getTerrainZ(x,y)
 		if pos.z < terrainZ or pos.z < tz1 or pos.z < tz2 or not isTerrainWalkable(pos.x, pos.y)
 			terminate()
+		else if terrainZ < startz
+			startz = terrainZ
 			
 		Entity e = Entity.first
 		while e != null
