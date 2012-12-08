@@ -11,8 +11,8 @@ public function adjustKills(player killer, player dead)
 	playerboard.updateValue(p1.gameId+1,1,p1.kills.toString())
 	playerboard.updateValue(p2.gameId+1,2,p2.deaths.toString())
 	p1.killstreak ++
-	p2.killstreak = 0
-	string announce = ""
+	//p2.killstreak = 0
+	string announce = " -"
 	debugPrint("kills: "+p1.killstreak.toString(), 1)
 	if p1.killstreak == 4
 		announcers[GetRandomInt(2,3)].play()
@@ -37,7 +37,10 @@ public function adjustKills(player killer, player dead)
 	else
 		t.setData(killer.getId()).start(20,function clearKillMultiplier)
 		p1.indouble = true
-	DisplayTimedTextToForce(GetPlayersAll(), 12., colorcode[killer.getId()] + killer.getName() + "|r hit " + colorcode[dead.getId()] + dead.getName() + "|r in the face with his snowball!" + " -"+ announce)
+	if announce != " -"
+		DisplayTimedTextToForce(GetPlayersAll(), 12., colorcode[killer.getId()] + killer.getName() + "|r hit " + colorcode[dead.getId()] + dead.getName() + "|r in the face with his snowball!" + announce)
+	else
+		DisplayTimedTextToForce(GetPlayersAll(), 12., colorcode[killer.getId()] + killer.getName() + "|r hit " + colorcode[dead.getId()] + dead.getName() + "|r in the face with his snowball!")
 	
 function clearKillMultiplier()
 	var p = pData[GetExpiredTimer().getData()]

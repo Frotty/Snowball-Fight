@@ -1,0 +1,39 @@
+package Presents
+import Fx
+import Entity
+import TimerUtils
+constant int ITEM_ID = 'evtl'
+		
+constant real CT_X = 0.
+constant real CT_Y = 4096.
+public function spawnPresent()
+	var dist = GetRandomReal(400,800)
+	var angle = GetRandomReal(-PI,PI)
+	CreateItem(ITEM_ID,polarProjectionXR(CT_X,dist,angle),polarProjectionYR(CT_Y,dist,angle))
+	//var p = new Present(vec3(,0))
+	DisplayTimedTextToForce(GetPlayersAll(), 12., "A present spawned at middle!")
+	
+function isPresent() returns boolean
+	if GetItemTypeId(GetFilterItem()) == ITEM_ID
+		return true
+	return false
+int presents
+
+function addOne()
+	presents++
+	
+public function onPresentTime()
+	debugPrint("PresentTime",1)
+	presents = 0
+	rect r = Rect(-6000,-19000,6000,10000)
+	EnumItemsInRect(r,Condition(function isPresent),function addOne)
+	timer t = getTimer()
+	t.start(0.01,function checkPresents)
+function checkPresents()
+	debugPrint("presents: "+presents.toString(),1)
+	if presents <= 2
+		spawnPresent()
+		
+init
+	timer t = getTimer()
+	t.startPeriodic(3.,function onPresentTime)
