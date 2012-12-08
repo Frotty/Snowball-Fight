@@ -35,6 +35,8 @@ public class Projectile extends Entity
 			fx.setPos(pos.x, pos.y, pos.z-terrainZ)
 		else
 			fx.setPos(pos)
+		print(xyangle.toString() + " angle")
+		fx.setXYAngle(xyangle*RADTODEG)
 		if timed
 			time -= ANIMATION_PERIOD
 			if time < 0

@@ -6,9 +6,9 @@ import LinkedList
 
 constant real SPEED = 10
 constant real FACTOR = 2.
-constant int COLLOSION = 'e002'
+constant int COLLOSION = 'e001'
 
-public class Icemissile extends Projectile
+public class IceMissile extends Projectile
 	vec3 target
 
 	construct(vec3 pos, player owner, vec3 target)
@@ -50,9 +50,9 @@ public class Icemissile extends Projectile
 			
 	ondestroy
 		if not pos.z < terrainZ
-			new Iceblock(vec3(pos.x, pos.y, pos.z), owner,.5 )
-			new Iceblock(vec3(polarProjectionXR(pos.x, 48.,xyangle-1.8), polarProjectionYR(pos.y, 48.,xyangle-1.8), pos.z), owner,.4 )
-			new Iceblock(vec3(polarProjectionXR(pos.x, 48.,xyangle+1.8), polarProjectionYR(pos.y, 48.,xyangle+1.8), pos.z), owner,.4 )
+			new Iceblock(vec3(pos.x, pos.y, 0), owner,.5 )
+			new Iceblock(vec3(polarProjectionXR(pos.x, 48.,xyangle-1.8), polarProjectionYR(pos.y, 48.,xyangle-1.8), 0), owner,.4 )
+			new Iceblock(vec3(polarProjectionXR(pos.x, 48.,xyangle+1.8), polarProjectionYR(pos.y, 48.,xyangle+1.8), 0), owner,.4 )
 
 public class Iceblock extends Entity
 	real scale
