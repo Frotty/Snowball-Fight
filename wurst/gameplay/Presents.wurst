@@ -2,7 +2,7 @@ package Presents
 import Fx
 import Entity
 import TimerUtils
-constant int ITEM_ID = 'evtl'
+constant int ITEM_ID = 'I002'
 		
 constant real CT_X = 0.
 constant real CT_Y = 4096.
@@ -36,4 +36,4 @@ function checkPresents()
 		
 init
 	timer t = getTimer()
-	t.startPeriodic(3.,function onPresentTime)
+	t.startPeriodic(30.,function onPresentTime)
