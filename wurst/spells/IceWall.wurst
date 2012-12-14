@@ -27,7 +27,7 @@ public class IceMissile extends Projectile
 		if pos.z < terrainZ
 			//terrainHitSound.playOnPoint(pos)
 			terminate()
-		if pos.distToVecSquared(target) < 32*32
+		if pos.distToVecSquared(target) < 48*48
 			terminate()
 			
 		Entity e = Entity.first
@@ -61,7 +61,7 @@ public class Iceblock extends Entity
 	LinkedList<Child> childs
 
 	construct(vec3 pos, player owner, real scale)
-		super(pos, owner, scale*16)
+		super(pos, owner, scale*24)
 		debugPrint("Created",1)
 		collosion =CreateUnit(owner, COLLOSION, pos.x,pos.y,0)
 		SetUnitPathing(collosion,false)
@@ -104,5 +104,6 @@ public class Iceblock extends Entity
 			terminate()
 
 	ondestroy
+		collosion.kill()
 		collosion.remove()
 		block.hiddenDestroy()

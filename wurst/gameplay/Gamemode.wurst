@@ -1,0 +1,48 @@
+package Gamemode
+import PlayerData
+import GameConstants
+public int maxkills = 10
+dialog gamemode
+button array modebutton
+
+public function checkEnd()
+	int teamkills = 0
+	for int i = 0 to 5
+		teamkills += pData[i].kills
+	if teamkills >= maxkills
+		endgame(0)
+	teamkills = 0
+	for int i = 6 to 11
+		teamkills += pData[i].kills
+	if teamkills >= maxkills
+		endgame(1)
+	
+
+public function createDialog()
+	gamemode = DialogCreate()
+	DialogSetMessage(gamemode, "Select Gamemode")
+	modebutton[0] = DialogAddButton(gamemode, "Short (40 kills)", 111)
+	modebutton[1] = DialogAddButton(gamemode, "Avarage (60 kills)", 113)
+	modebutton[2] = DialogAddButton(gamemode, "Long (80 kills)", 112)
+	DialogDisplay(players.get(0).p, gamemode,true)
+	trigger t = CreateTrigger()
+	TriggerRegisterDialogEvent(t, gamemode)
+	TriggerAddAction(t,function getGameMode)
+
+function getGameMode()
+	button b = GetClickedButton()
+	if b == modebutton[0]
+		maxkills = 40
+		DisplayTimedTextToForce(GetPlayersAll(), 12., colorcode[GetTriggerPlayer().getId()] + GetTriggerPlayer().getName() + "|r has chosen short game!")
+	if b == modebutton[1]
+		maxkills = 60
+		DisplayTimedTextToForce(GetPlayersAll(), 12., colorcode[GetTriggerPlayer().getId()] + GetTriggerPlayer().getName() + "|r has chosen avarage game!")
+	if b == modebutton[2]
+		maxkills = 80
+		DisplayTimedTextToForce(GetPlayersAll(), 12., colorcode[GetTriggerPlayer().getId()] + GetTriggerPlayer().getName() + "|r has chosen long game!")
+
+function endgame(int winningteam)
+	if winningteam == 1
+		DisplayTimedTextToForce(GetPlayersAll(), 12., "Green has won the game!")
+	else if winningteam == 0
+		DisplayTimedTextToForce(GetPlayersAll(), 12., "Red has won the game!")
