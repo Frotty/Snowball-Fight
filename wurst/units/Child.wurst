@@ -17,12 +17,18 @@ import LinkedList
 public LinkedList<Child> childs = new LinkedList<Child>()
 
 
+public constant real SX1 = -2340.
+public constant real SY1 = 3810
+public constant real SX2 = 2174
+public constant real SY2 = 4000
+
+
 public class Child extends PhysicsUnitEntity
 	trigger t
 	boolean fixPos = false
 	
-	construct( vec3 pos, player owner )
-		super(pos, CreateUnit(owner, 'H001', pos.x, pos.y, 0), 48.)
+	construct( vec3 pos, player owner, int id)
+		super(pos, CreateUnit(owner, id, pos.x, pos.y, 0), 48.)
 		childs.add(this)
 		restitution = .25
 		friction = 0.75
@@ -65,11 +71,15 @@ public class Child extends PhysicsUnitEntity
 			debugPrint("rev", 1)
 			var t = GetExpiredTimer()
 			Child c = t.getData() castTo Child
-			var revX = c.pos.x
-			var revY = c.pos.y
-			ReviveHero(c.actor, revX, revY, false)
+			
+			if c.owner.getId() > 5
+				ReviveHero(c.actor, SX2 + 64 * c.owner.getId(), SY2, false)
+				c.setNewPos(vec3(SX2 + 64 * c.owner.getId(), SY2, 530.))
+			else
+				ReviveHero(c.actor, SX1 + 64 * c.owner.getId(), SY1, false)
+				c.setNewPos(vec3(SX1 + 64 * c.owner.getId(), SY1, 530.))
 			c.setVel(vec3(0,0,0))
-			c.setNewPos(vec3(revX, revY, 530.))
+			c.actor.setVertexColor(255,255,255,255)
 			SetUnitPropWindow(c.actor,60)
 			t.release()	
 

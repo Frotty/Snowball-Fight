@@ -4,13 +4,20 @@ import Flag
 import EntityManagement
 import Presents
 import Gamemode
+import PlayerData
+
 
 function startGame()
-	new Child(vec3(-2327,3800,200.), Player(0))
-	new Child(vec3(-2300,4000,200.), Player(6))
+	for p in players
+		if p.id > 5 
+			new Child(vec3(SX2 + 64 * p.id, SY2, 200.), p.p, 'H007')
+		else
+			new Child(vec3(SX1 + 64 * p.id, SY1, 200.), p.p, 'H001')
+			
+	SetTimeOfDay(12.)
 	/*redflag = new Flag(vec3(-3500,1200,0.), CreateUnit(Player(0),'hpea', -3500, 1200, 0.))
 	redflag.redTeam = true*/
-	getTimer().start(2,function createDialog)
+	getTimer().start(.5,function createDialog)
 	startEntityLoop()
 
 init

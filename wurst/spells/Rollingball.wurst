@@ -46,10 +46,11 @@ public class Rollingball extends Projectile
 		y = polarProjectionYR(pos.y,radius -2., xyangle-90*DEGTORAD )
 		//AddSpecialEffect("Abilities\\Weapons\\SpiritOfVengeanceMissile\\SpiritOfVengeanceMissile.mdl", x, y)
 		let tz2 = getTerrainZ(x,y)
-		if pos.z < terrainZ or pos.z < tz1 or pos.z < tz2 or not isTerrainWalkable(pos.x, pos.y)
-			terminate()
-		else if terrainZ < startz
-			startz = terrainZ
+		if radius > 32.
+			if pos.z < terrainZ or pos.z < tz1 or pos.z < tz2 or not isTerrainWalkable(pos.x, pos.y)
+				terminate()
+			else if terrainZ < startz
+				startz = terrainZ
 			
 		Entity e = Entity.first
 		while e != null
