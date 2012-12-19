@@ -1,0 +1,71 @@
+package ItemHandling
+
+int array items
+int array spells
+int array maxstack
+
+public function onPickup()
+	debugPrint("PICKUP", 1)
+	let u = GetManipulatingUnit()
+	let itm = GetManipulatedItem()
+	let itid = GetItemTypeId(itm)
+	item foundItem = null
+	int itemid
+	if GetItemCharges(itm) == 0
+		SetItemCharges(itm, 1)
+	for i = 0 to 3
+		if GetItemTypeId(itm) == items[i]
+			itemid = i
+			break
+	debugPrint("PICKUP1", 1)
+	int charges = 1
+	for i = 0 to 5
+		var uit = UnitItemInSlot(u, i)
+		if GetItemTypeId(uit) == GetItemTypeId(itm) and uit != itm
+			debugPrint("PICKUP FOUND", 1)
+			charges = (GetItemCharges(uit) + GetItemCharges(itm))
+			debugPrint(charges.toString() + " " + maxstack[itemid].toString(), 1)
+			if GetItemCharges(uit) + GetItemCharges(itm) <= maxstack[itemid]
+				debugPrint("PICKUP FOUND YES", 1)
+				foundItem = uit
+				RemoveItem(itm)
+				break
+	if foundItem != null
+		debugPrint("PICKUP FOUND SET " + (charges).toString(), 1)
+		SetItemCharges(foundItem, charges)
+
+public function onDrop()
+	let u = GetManipulatingUnit()
+	let itm = GetManipulatedItem()
+	let itid = GetItemTypeId(itm)
+	if not UnitHasItem(u, itm)
+		for i = 0 to 3
+			if items[i] == itid
+				u.removeAbility(spells[i])
+				break
+
+
+init
+	trigger t = CreateTrigger()
+//	t.registerAnyUnitEvent(EVENT_PLAYER_UNIT_DROP_ITEM)
+//	t.addAction(function onDrop)
+	trigger t2 = CreateTrigger()
+	t2.registerAnyUnitEvent(EVENT_PLAYER_UNIT_PICKUP_ITEM)
+	t2.addAction(function onPickup)
+	// Icewall
+	items[0] = 'I003'
+	spells[0] = 'A004'
+	maxstack[0] = 3
+	// SNowbomb
+	items[1] = 'I006'
+	spells[1] = 'A001'
+	maxstack[1] = 2
+	// Rolling Ball
+	items[2] = 'I004'
+	spells[2] = 'A002'
+	maxstack[2] = 1
+	// Snowman
+	items[3] = 'I005'
+	spells[3] = 'A003'
+	maxstack[3] = 2
+	

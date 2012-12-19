@@ -1,5 +1,5 @@
 package GameConstants
-	import RGBA
+	import Colors
 	import SoundHelper
 	
 	public string array mbPic

@@ -37,6 +37,7 @@ public class Child extends PhysicsUnitEntity
 		t.registerUnitEvent(actor, EVENT_UNIT_DEATH)
 		t.addAction(function Child.onDeath)
 		
+		
 	static function onCast() returns boolean
 		var id = GetSpellAbilityId()
 		var data = GetTriggerUnit().getUserData() castTo Child
