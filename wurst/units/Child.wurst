@@ -13,6 +13,7 @@ import KillStreaks
 import Snowman
 import IceWall
 import LinkedList
+import ItemHandling
 
 public LinkedList<Child> childs = new LinkedList<Child>()
 
@@ -51,13 +52,44 @@ public class Child extends PhysicsUnitEntity
 			case 'A001'
 				debugPrint("casted", 1)
 				new Snowbomb(vec3(data.pos.x, data.pos.y, data.pos.z+16.), data.owner, vec3(tx, ty, tz ))
+				for int i = 0 to 5
+					var uit = UnitItemInSlot(data.actor, i)
+					if GetItemTypeId(uit) == 'I006'
+						debugPrint("MISSILE FOUND", 1)
+						SetItemCharges(uit,GetItemCharges(uit) -1)
+						if GetItemCharges(uit) == 0
+							data.actor.removeAbility('A001')
+						break
 			case 'A002'
 				new Rollingball(vec3(data.pos.x + Cos(angle) * 16., data.pos.y + Sin(angle) * 16., data.pos.z +16.), data.owner, angle )
+				for int i = 0 to 5
+					var uit = UnitItemInSlot(data.actor, i)
+					if GetItemTypeId(uit) == 'I003'
+						debugPrint("MISSILE FOUND", 1)
+						SetItemCharges(uit,GetItemCharges(uit) -1)
+						if GetItemCharges(uit) == 0
+							data.actor.removeAbility('A004')
+						break
 			case 'A003'
 				new SnowmanMissile(vec3(data.pos.x, data.pos.y, data.pos.z+40.), data.owner, vec2(tx, ty) )
+				for int i = 0 to 5
+					var uit = UnitItemInSlot(data.actor, i)
+					if GetItemTypeId(uit) == 'I004'
+						debugPrint("MISSILE FOUND", 1)
+						SetItemCharges(uit,GetItemCharges(uit) -1)
+						if GetItemCharges(uit) == 0
+							data.actor.removeAbility('A002')
+						break
 			case 'A004'
 				new IceMissile(vec3(data.actor.getX(), data.actor.getY(), data.pos.z+16.), data.owner, vec3(tx,ty,tz))
-
+				for int i = 0 to 5
+					var uit = UnitItemInSlot(data.actor, i)
+					if GetItemTypeId(uit) == 'I005'
+						debugPrint("MISSILE FOUND", 1)
+						SetItemCharges(uit,GetItemCharges(uit) -1)
+						if GetItemCharges(uit) == 0
+							data.actor.removeAbility('A003')
+						break
 				
 		return false
 		

@@ -33,6 +33,8 @@ public function onPickup()
 	if foundItem != null
 		debugPrint("PICKUP FOUND SET " + (charges).toString(), 1)
 		SetItemCharges(foundItem, charges)
+	else
+		u.addAbility(spells[itemid])
 
 public function onDrop()
 	let u = GetManipulatingUnit()
