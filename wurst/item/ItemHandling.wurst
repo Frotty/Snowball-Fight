@@ -11,8 +11,6 @@ public function onPickup()
 	let itid = GetItemTypeId(itm)
 	item foundItem = null
 	int itemid
-	if GetItemCharges(itm) == 0
-		SetItemCharges(itm, 1)
 	for i = 0 to 3
 		if GetItemTypeId(itm) == items[i]
 			itemid = i
