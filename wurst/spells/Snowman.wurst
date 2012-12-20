@@ -6,13 +6,14 @@ import Child
 import SoundHelper
 import SoundQueue
 
-constant real SPEED = 10
+constant real SPEED = 8.
 constant real MELT = 192
 
 public class SnowmanMissile extends HomingProjectile
 
 	construct(vec3 pos, player owner, vec2 target)
 		super(pos, owner, 16., angleBetweenCoordsR(pos.x, pos.y, target.x, target.y), "Abilities\\Weapons\\LichMissile\\LichMissile.mdl")
+		fx.setOwner(owner)
 		real dst = 0.
 		Child chld = null
 		for c in childs
@@ -59,7 +60,6 @@ class SnowmanDummy extends Entity
 	
 	construct(vec3 pos, player owner, Child target )
 		super(pos, owner, 0.)
-		print("SNOWMAN POS " + pos.toString())
 		fx = new Fx(pos, target.actor.getFacing(), "Doodads\\Icecrown\\Props\\SnowMan\\SnowMan.mdl")
 		fx.setScale(1.4)
 		AddSpecialEffect("Abilities\\Spells\\Human\\Polymorph\\PolyMorphTarget.mdl", pos.x, pos.y).destr()

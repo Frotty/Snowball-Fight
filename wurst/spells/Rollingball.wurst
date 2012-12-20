@@ -65,10 +65,10 @@ public class Rollingball extends Projectile
 			
 			
 	function onHit(Entity e)
-		terminate()
 		if e instanceof Child
 			var c = e castTo Child
-			fx.dummy.damageTarget(c.actor, momentum*3)
+			terminate()
+			fx.dummy.damageTarget(c.actor, momentum*4)
 		else if e instanceof Projectile
 			e.terminate()
 	

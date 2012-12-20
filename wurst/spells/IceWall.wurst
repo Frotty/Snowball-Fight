@@ -4,7 +4,7 @@ import Fx
 import Child
 import LinkedList
 
-constant real SPEED = 10
+constant real SPEED = 18.
 constant real FACTOR = 2.
 constant int COLLOSION = 'e001'
 
@@ -16,7 +16,7 @@ public class IceMissile extends Projectile
 		this.target = target
 		let angle = angleBetweenCoordsR(pos.x, pos.y, target.x, target.y)
 		fx = new Fx(pos, angle*RADTODEG, "Abilities\\Weapons\\WingedSerpentMissile\\WingedSerpentMissile.mdl")
-		fx.setTeamcolor(GetPlayerColor(owner))
+		fx.setOwner(owner)
 		setTimed(4.)
 		xyangle = angle
 		setXYSpeed(SPEED)
@@ -24,10 +24,7 @@ public class IceMissile extends Projectile
 		
 	override function update()
 		super.update()
-		if pos.z < terrainZ
-			//terrainHitSound.playOnPoint(pos)
-			terminate()
-		if pos.distToVecSquared(target) < 48*48
+		if pos.toVec2().distToVecSquared(target.toVec2()) < 48*48
 			terminate()
 			
 		Entity e = Entity.first
@@ -59,14 +56,13 @@ public class Iceblock extends Entity
 	Fx block
 	unit collosion
 	LinkedList<Child> childs
+	real timeout = 20.
 
 	construct(vec3 pos, player owner, real scale)
 		super(pos, owner, scale*24)
 		debugPrint("Created",1)
 		collosion =CreateUnit(owner, COLLOSION, pos.x,pos.y,0)
-		SetUnitPathing(collosion,false)
 		collosion.setXY(pos.x,pos.y)
-		SetUnitPathing(collosion,true)
 		block = new Fx(pos, GetRandomReal(0,360), "Doodads\\Icecrown\\Rocks\\Icecrown_Crystal\\Icecrown_Crystal"+ GetRandomInt(0,8).toString() +".mdl")
 		block.setOwner(owner)
 		this.scale = scale
@@ -75,6 +71,10 @@ public class Iceblock extends Entity
 	override function update()
 		super.update()
 		Entity e = Entity.first
+		timeout -= ANIMATION_PERIOD
+		if timeout <= 0.
+			terminate()
+			return
 		while e != null
 			if e instanceof Projectile 
 				if pos.distToVecSquared(e.pos) < (e.radius+radius).squared()

@@ -21,7 +21,6 @@ public class HomingProjectile extends Projectile
 		super(pos, owner, radius)
 		fx = new Fx(pos, angle*RADTODEG, fxpath)
 		xyangle = angle
-		print("created!")
 		
 	function setHomingTarget(Entity e)
 		target = e

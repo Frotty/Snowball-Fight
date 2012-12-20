@@ -3,9 +3,9 @@ import Projectile
 import Fx
 import Child
 
-constant real SPEED = 10
-constant real AOE = 200.*200.
-constant real FACTOR = 10.
+constant real SPEED = 12
+constant real AOE = 300.*300.
+constant real FACTOR = 14.
 
 public class Snowbomb extends Projectile
 
