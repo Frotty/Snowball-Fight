@@ -57,8 +57,10 @@ public class Child extends PhysicsUnitEntity
 					if GetItemTypeId(uit) == 'I006'
 						debugPrint("MISSILE FOUND", 1)
 						SetItemCharges(uit,GetItemCharges(uit) -1)
-						if GetItemCharges(uit) == 0
-							data.actor.removeAbility('A001')
+						if GetItemCharges(uit) <= 1
+							RemoveItem(uit)
+						else
+							SetItemCharges(uit,GetItemCharges(uit) -1)
 						break
 			case 'A002'
 				new Rollingball(vec3(data.pos.x + Cos(angle) * 16., data.pos.y + Sin(angle) * 16., data.pos.z +16.), data.owner, angle )
@@ -66,7 +68,7 @@ public class Child extends PhysicsUnitEntity
 					var uit = UnitItemInSlot(data.actor, i)
 					if GetItemTypeId(uit) == 'I003'
 						debugPrint("MISSILE FOUND", 1)
-						if GetItemCharges(uit) == 0
+						if GetItemCharges(uit) <= 1
 							RemoveItem(uit)
 						else
 							SetItemCharges(uit,GetItemCharges(uit) -1)
@@ -77,7 +79,7 @@ public class Child extends PhysicsUnitEntity
 					var uit = UnitItemInSlot(data.actor, i)
 					if GetItemTypeId(uit) == 'I004'
 						debugPrint("MISSILE FOUND", 1)
-						if GetItemCharges(uit) == 0
+						if GetItemCharges(uit) <= 1
 							RemoveItem(uit)
 						else
 							SetItemCharges(uit,GetItemCharges(uit) -1)
@@ -88,7 +90,7 @@ public class Child extends PhysicsUnitEntity
 					var uit = UnitItemInSlot(data.actor, i)
 					if GetItemTypeId(uit) == 'I005'
 						debugPrint("MISSILE FOUND", 1)
-						if GetItemCharges(uit) == 0
+						if GetItemCharges(uit) <= 1
 							RemoveItem(uit)
 						else
 							SetItemCharges(uit,GetItemCharges(uit) -1)
@@ -102,6 +104,7 @@ public class Child extends PhysicsUnitEntity
 		adjustKills(p, p2)
 		timer t = getTimer()
 		t.setData(GetDyingUnit().getUserData()).start(3., function Child.revive)
+		removeallspell(GetDyingUnit())
 				
 	static function revive()
 			debugPrint("rev", 1)

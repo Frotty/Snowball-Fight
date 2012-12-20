@@ -4,19 +4,13 @@ import GameConstants
 public int maxkills = 10
 dialog gamemode
 button array modebutton
-int redscore = 0
-int greenscore = 0
+public int redscore = 0
+public int greenscore = 0
 
 public function checkEnd()
-	int redteamkills = 0
-	for int i = 0 to 5
-		redteamkills += pData[i].kills
-	if redteamkills >= maxkills
+	if redscore >= maxkills
 		endgame(0)
-	int greenteamkills = 0
-	for int i = 6 to 11
-		greenteamkills += pData[i].kills
-	if greenteamkills >= maxkills
+	if greenscore >= maxkills
 		endgame(1)
 	
 
