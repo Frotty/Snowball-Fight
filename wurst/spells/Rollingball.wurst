@@ -9,7 +9,7 @@ constant real STARTMOMENTUM = 1
 constant real MOMENTUMGAIN = .15
 constant real MOMENTUMMAX = 20
 constant real SIZEGAIN = .05
-constant real MAXSIZE = 15
+constant real MAXSIZE = 20
 
 public class Rollingball extends Projectile
 	real momentum
@@ -47,7 +47,7 @@ public class Rollingball extends Projectile
 		//AddSpecialEffect("Abilities\\Weapons\\SpiritOfVengeanceMissile\\SpiritOfVengeanceMissile.mdl", x, y)
 		let tz2 = getTerrainZ(x,y)
 		if radius > 32.
-			if pos.z < terrainZ or pos.z < tz1 or pos.z < tz2 or not isTerrainWalkable(pos.x, pos.y)
+			if pos.z < terrainZ or pos.z < tz1 or pos.z < tz2
 				terminate()
 			else if terrainZ < startz
 				startz = terrainZ
