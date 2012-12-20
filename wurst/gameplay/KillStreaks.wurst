@@ -12,7 +12,7 @@ public function adjustKills(player killer, player dead)
 	playerboard.updateValue(p2.gameId+1,2,p2.deaths.toString())
 	SetPlayerState(killer, PLAYER_STATE_RESOURCE_GOLD, GetPlayerState(killer, PLAYER_STATE_RESOURCE_GOLD)+10)
 	p1.killstreak ++
-	//p2.killstreak = 0
+	p2.killstreak = 0
 	string announce = " -"
 	debugPrint("kills: "+p1.killstreak.toString(), 1)
 	if p1.killstreak == 4
