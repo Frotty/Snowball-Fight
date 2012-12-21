@@ -21,11 +21,11 @@ public class Snowball extends Projectile
 		
 	override function update()
 		super.update()
-		if pos.z < terrainZ
+		if pos.z + radius < terrainZ
 			terrainHitSound.playOnPoint(pos)
 			terminate()
 		else if pos.z - radius > terrainZ
-			pos.z = terrainZ - (pos.z-radius)
+			pos.z -= (pos.z-radius) - terrainZ
 			
 				
 		Entity e = Entity.first
