@@ -24,6 +24,9 @@ public class Snowball extends Projectile
 		if pos.z < terrainZ
 			terrainHitSound.playOnPoint(pos)
 			terminate()
+		else if pos.z - radius > terrainZ
+			pos.z = terrainZ - (pos.z-radius)
+			
 				
 		Entity e = Entity.first
 		while e != null

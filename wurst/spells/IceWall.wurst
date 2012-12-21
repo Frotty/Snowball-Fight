@@ -54,7 +54,7 @@ public class Iceblock extends Entity
 	real scale
 	Fx block
 	unit collision
-	real timeout = 20.
+	real timeout = 25.
 
 	construct(vec3 pos, player owner, real scale)
 		super(pos, owner, scale*24)
