@@ -44,6 +44,11 @@ public function onDrop()
 				u.removeAbility(spells[i])
 				break
 
+public function removeallspell(unit u)
+	for i = 0 to 3
+		u.removeAbility(spells[i])
+
+
 
 init
 	trigger t = CreateTrigger()

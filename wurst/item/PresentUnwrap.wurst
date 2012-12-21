@@ -1,0 +1,59 @@
+package PresentUnwrap
+import Colors
+import Texttag
+import Gamemode
+import GameConstants
+
+constant int PRESENT_ID = 'I002'
+constant int UNWRAP_ID = 'A007'
+constant int CIRCLE_ID = 'ncop'
+int array PRESENTS
+
+function checkUnwrap()
+	let u = GetSpellAbilityUnit()
+	if GetSpellAbilityId() == UNWRAP_ID
+		for int i = 0 to 5
+			var uit = UnitItemInSlot(u, i)
+			if GetItemTypeId(uit) == PRESENT_ID
+				RemoveItem(uit)
+				u.addItem(PRESENTS[GetRandomInt(0,3)])
+				break
+
+function isChild() returns boolean
+	if GetUnitTypeId(GetFilterUnit()) == 'H001' or GetUnitTypeId(GetFilterUnit()) == 'H007'
+		return true
+	return false
+
+function sellPresent()
+	let u = GetTriggerUnit()
+	let p = GetOwningPlayer(u)
+	for int i = 0 to 5
+			var uit = UnitItemInSlot(u, i)
+			if GetItemTypeId(uit) == PRESENT_ID
+				RemoveItem(uit)
+				SetPlayerState(p, PLAYER_STATE_RESOURCE_GOLD, GetPlayerState(p, PLAYER_STATE_RESOURCE_GOLD)+100)
+				createTTEx(vec3(u.getX(),u.getY(),20.), vec2(0,0.05), "|cffffcc00+100|r", 10,  2., colorA(255,255,255,0), p )
+				DisplayTimedTextToForce(GetPlayersAll(), 12., colorcode[p.getId()] + p.getName() + " have just earned 1 points for his team!")	
+				if p.getId() > 5
+					redscore ++
+				else
+					greenscore ++
+				checkEnd()
+
+trigger t
+unit scircle
+unit ncircle
+public function initPresentCircles()
+	scircle = CreateUnit(Player(15),CIRCLE_ID, -256, 1344,0.)
+	ncircle = CreateUnit(Player(15),CIRCLE_ID, 0, 6592,0.)
+	t = CreateTrigger()
+	t.registerUnitInRange(scircle, 128,Condition(function isChild))
+	t.addAction(function sellPresent)
+	
+init
+	t = CreateTrigger()
+	t.registerAnyUnitEvent(EVENT_PLAYER_UNIT_SPELL_EFFECT)
+	t.addAction(function checkUnwrap)
+	PRESENTS[0] = 'I000'
+	PRESENTS[1] = 'I001'
+	PRESENTS[2] = 'I00B'
