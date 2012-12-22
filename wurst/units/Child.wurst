@@ -56,7 +56,6 @@ public class Child extends PhysicsUnitEntity
 					var uit = UnitItemInSlot(data.actor, i)
 					if GetItemTypeId(uit) == 'I006'
 						debugPrint("MISSILE FOUND", 1)
-						SetItemCharges(uit,GetItemCharges(uit) -1)
 						if GetItemCharges(uit) <= 1
 							RemoveItem(uit)
 						else

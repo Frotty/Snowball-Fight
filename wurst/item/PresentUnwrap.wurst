@@ -3,6 +3,7 @@ import Colors
 import Texttag
 import Gamemode
 import GameConstants
+import CustomBar
 
 constant int PRESENT_ID = 'I002'
 constant int UNWRAP_ID = 'A007'
@@ -33,12 +34,40 @@ function sellPresent()
 				RemoveItem(uit)
 				SetPlayerState(p, PLAYER_STATE_RESOURCE_GOLD, GetPlayerState(p, PLAYER_STATE_RESOURCE_GOLD)+100)
 				createTTEx(vec3(u.getX(),u.getY(),20.), vec2(0,0.05), "|cffffcc00+100|r", 10,  2., colorA(255,255,255,0), p )
-				DisplayTimedTextToForce(GetPlayersAll(), 12., colorcode[p.getId()] + p.getName() + " have just earned 1 points for his team!")	
+				DisplayTimedTextToForce(GetPlayersAll(), 12., colorcode[p.getId()] + p.getName() + "|r have just earned 1 points for his team!")	
 				if p.getId() > 5
 					redscore ++
 				else
 					greenscore ++
 				checkEnd()
+class WrapBar
+	CustomBar bar //visible bar
+	timer t //update timer
+	unit u //unwrapping unit
+	
+	construct (unit u )
+		int id =u.getUserData()
+		bar = new CustomBar(vec3(u.getX(),u.getY(),20), "/" , 50 , 10)
+		bar.changeVisibility(GetPlayersAll())
+		t = getTimer()
+		t.setData(id).startPeriodic(0.1, function updateBar)
+	
+	static function updateBar()
+		var data = GetExpiredTimer().getData() castTo WrapBar
+		if data.bar.getValue() >= 100
+			destroy data
+		else
+			data.bar.setValue(data.bar.getValue()+1)
+	
+	ondestroy
+		t.release()
+		destroy bar
+
+function startBar()
+	new WrapBar(GetSpellAbilityUnit())
+function stopBar()
+	destroy GetSpellAbilityUnit().getUserData() castTo WrapBar
+
 
 trigger t
 unit scircle
@@ -49,11 +78,18 @@ public function initPresentCircles()
 	t = CreateTrigger()
 	t.registerUnitInRange(scircle, 128,Condition(function isChild))
 	t.addAction(function sellPresent)
+	t = CreateTrigger()
+	t.registerUnitInRange(ncircle, 128,Condition(function isChild))
+	t.addAction(function sellPresent)
 	
 init
 	t = CreateTrigger()
 	t.registerAnyUnitEvent(EVENT_PLAYER_UNIT_SPELL_EFFECT)
 	t.addAction(function checkUnwrap)
+	t.registerAnyUnitEvent(EVENT_PLAYER_UNIT_SPELL_CAST)
+	t.addAction(function startBar)
+	t.registerAnyUnitEvent(EVENT_PLAYER_UNIT_SPELL_ENDCAST)
+	t.addAction(function stopBar)
 	PRESENTS[0] = 'I000'
 	PRESENTS[1] = 'I001'
 	PRESENTS[2] = 'I00B'
