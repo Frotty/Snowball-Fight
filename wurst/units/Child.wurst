@@ -12,6 +12,7 @@ import Rollingball
 import KillStreaks
 import Snowman
 import IceWall
+import Iceshard
 import LinkedList
 import ItemHandling
 
@@ -56,7 +57,6 @@ public class Child extends PhysicsUnitEntity
 					var uit = UnitItemInSlot(data.actor, i)
 					if GetItemTypeId(uit) == 'I006'
 						debugPrint("MISSILE FOUND", 1)
-						SetItemCharges(uit,GetItemCharges(uit) -1)
 						if GetItemCharges(uit) <= 1
 							RemoveItem(uit)
 						else
@@ -95,6 +95,16 @@ public class Child extends PhysicsUnitEntity
 						else
 							SetItemCharges(uit,GetItemCharges(uit) -1)
 						break
+			case 'A008'
+				new Iceshard(vec3(data.actor.getX(), data.actor.getY(), data.pos.z+16.), data.owner, angle )
+				for int i = 0 to 5
+					var uit = UnitItemInSlot(data.actor, i)
+					if GetItemTypeId(uit) == 'I00E'
+						debugPrint("MISSILE FOUND", 1)
+						if GetItemCharges(uit) <= 1
+							RemoveItem(uit)
+						else
+							SetItemCharges(uit,GetItemCharges(uit) -1)
 				
 		return false
 		

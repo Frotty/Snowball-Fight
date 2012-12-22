@@ -12,8 +12,8 @@ constant real MELT = 192
 public class SnowmanMissile extends HomingProjectile
 
 	construct(vec3 pos, player owner, vec2 target)
-		super(pos, owner, 16., angleBetweenCoordsR(pos.x, pos.y, target.x, target.y), "Abilities\\Weapons\\LichMissile\\LichMissile.mdl")
-		fx.setOwner(owner)
+		super(pos, owner, 16., angleBetweenCoordsR(pos.x, pos.y, target.x, target.y), "Abilities\\Weapons\\FrostWyrmMissile\\FrostWyrmMissile.mdl")
+		fx.setOwner(owner).setScale(.7)
 		real dst = 0.
 		Child chld = null
 		for c in childs
