@@ -12,9 +12,9 @@ Sound s
 function startGame()
 	for p in players
 		if p.id > 5 
-			new Child(vec3(SX2 + 64 * p.id, SY2, 260.), p.p, 'H007')
+			new Child(vec3(SX2 + 64 * p.id, SY2, 200.), p.p, 'H007')
 		else
-			new Child(vec3(SX1 + 64 * p.id, SY1, 260.), p.p, 'H001')
+			new Child(vec3(SX1 + 64 * p.id, SY1, 200.), p.p, 'H001')
 
 	SetTimeOfDay(12.)
 	/*redflag = new Flag(vec3(-3500,1200,0.), CreateUnit(Player(0),'hpea', -3500, 1200, 0.))
