@@ -6,6 +6,7 @@ import Presents
 import Gamemode
 import PlayerData
 import SoundHelper
+import PresentUnwrap
 
 Sound s
 
@@ -21,6 +22,7 @@ function startGame()
 	redflag.redTeam = true*/
 	getTimer().start(.5,function createDialog)
 	startEntityLoop()
+	initPresentCircles()
 
 init
 	getTimer().start(0.1, function startGame)
