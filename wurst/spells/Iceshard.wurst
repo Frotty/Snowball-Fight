@@ -1,0 +1,57 @@
+package Iceshard
+import Projectile
+import Fx
+import Child
+import SoundHelper
+import SoundQueue
+import IceWall
+
+constant real SPEED = 24
+
+public class Iceshard extends Projectile
+
+	construct(vec3 pos, player owner, real angle)
+		super(pos, owner, 32.)
+		fx = new Fx(pos, angle*RADTODEG, "Abilities\\Weapons\\LichMissile\\LichMissile.mdl")
+		fx.setOwner(owner)
+		setTimed(4.)
+		xyangle = angle
+		setXYSpeed(SPEED)
+		throwSound.playOnPoint(pos)
+		
+	override function update()
+		super.update()
+		if pos.z < terrainZ
+			terrainHitSound.playOnPoint(pos)
+			terminate()
+				
+		Entity e = Entity.first
+		while e != null
+			if e != this and owner != e.owner and IsPlayerEnemy( e.owner, owner )
+				//debugPrint(pos.distToVecSquared(e.pos).toString(),1)
+				if pos.distToVecSquared(e.pos) < (e.radius+radius).squared()
+					debugPrint("inRange",1)
+					onHit(e)
+					debugPrint("hit",1)
+					
+			e = e.next
+			
+			
+	function onHit(Entity e)
+		terminate()
+		if e instanceof Child
+			var c = e castTo Child
+			fx.dummy.damageTarget(c.actor, 65.)
+		else if e instanceof Projectile
+			e.terminate()
+	ondestroy
+		AddSpecialEffect("Abilities\\Spells\\Undead\\FrostArmor\\FrostArmorDamage.mdl", pos.x, pos.y).destr()
+	
+Sound throwSound
+Sound terrainHitSound
+
+	
+init
+	throwSound = new Sound("Abilities\\Spells\\Other\\FrostBolt\\FrostBoltLaunch1.wav", 1100, false, true, true, 10, 10, "CombatSoundsEAX")
+	terrainHitSound = new Sound("Abilities\\Spells\\Other\\FrostBolt\\FrostBoltHit1.wav", 1347, false, true, true, 10, 10, "CombatSoundsEAX")
+		
