@@ -6,12 +6,14 @@ dialog gamemode
 button array modebutton
 public int redscore = 0
 public int greenscore = 0
+boolean gameover = false
 
 public function checkEnd()
-	if redscore >= maxkills
-		endgame(0)
-	if greenscore >= maxkills
-		endgame(1)
+	if not gameover
+		if redscore >= maxkills
+			endgame(0)
+		if greenscore >= maxkills
+			endgame(1)
 	
 
 public function createDialog()
@@ -43,5 +45,6 @@ function endgame(int winningteam)
 		DisplayTimedTextToForce(GetPlayersAll(), 12., "Das grüne team hat gewonnen!")
 	else if winningteam == 0
 		DisplayTimedTextToForce(GetPlayersAll(), 12., "Das rote Team hat gewonnen!")
+	gameover = true
 	PauseGame(true)
 	
