@@ -19,24 +19,24 @@ public function adjustKills(player killer, player dead)
 		greenscore += 2
 	string announce = " -"
 	debugPrint("kills: "+p1.killstreak.toString(), 1)
+	if p1.killstreak == 3
+		announcers[2].play()
+		announce += " |cff860B00KillingSpree|n"
 	if p1.killstreak == 4
-		announcers[GetRandomInt(2,3)].play()
-		announce += " KillingSpree"
+		announcers[3].play()
+		announce += " |cff0058A6Unstoppable!|n"
 	if p1.killstreak == 6
-		announcers[GetRandomInt(4,5)].play()
-		announce += " Unstoppable!"
-	if p1.killstreak == 8
-		announcers[GetRandomInt(6,7)].play()
-		announce += " Godlike!!!"
+		announcers[4].play()
+		announce += " |cffFFDA84Godlike!!!|n"
 	timer t = getTimer()
 	if p1.intriple
 		announcers[1].play()
-		announce += " Triplekill"
+		announce += " |cff2DCB2DTriplekill|n"
 		p1.indouble = false
 		t.setData(killer.getId()).start(0.,function clearKillMultiplier)
 	else if p1.indouble
 		announcers[0].play()
-		announce += " Doublekill"
+		announce += " |cff2DCB2DDoublekill|n"
 		p1.intriple = true
 		t.setData(killer.getId()).start(15,function clearKillMultiplier)
 	else
