@@ -36,10 +36,10 @@ function sellPresent()
 				SetPlayerState(p, PLAYER_STATE_RESOURCE_GOLD, GetPlayerState(p, PLAYER_STATE_RESOURCE_GOLD)+100)
 				createTTEx(vec3(u.getX(),u.getY(),20.), vec2(0,0.05), "|cffffcc00+100|r", 10,  2., colorA(255,255,255,0), p )
 				DisplayTimedTextToForce(GetPlayersAll(), 12., colorcode[p.getId()] + p.getName() + "|r hat ein Geschenk abgegeben und 2 Punkte für sein team geholt!")	
-				if p.getId() > 5
-					redscore ++
+				if p.getId() <= 5
+					redscore += 2
 				else
-					greenscore ++
+					greenscore += 2
 				checkEnd()
 
 

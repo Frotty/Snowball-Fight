@@ -13,30 +13,30 @@ public function adjustKills(player killer, player dead)
 	SetPlayerState(killer, PLAYER_STATE_RESOURCE_GOLD, GetPlayerState(killer, PLAYER_STATE_RESOURCE_GOLD)+10)
 	p1.killstreak ++
 	p2.killstreak = 0				
-	if p1.id > 5
-		redscore += 2
+	if p1.id <= 5
+		redscore += 1
 	else
-		greenscore += 2
+		greenscore += 1
 	string announce = " -"
 	debugPrint("kills: "+p1.killstreak.toString(), 1)
 	if p1.killstreak == 3
 		announcers[2].play()
-		announce += " |cff860B00KillingSpree|n"
+		announce += " |cff860B00KillingSpree|r"
 	if p1.killstreak == 4
 		announcers[3].play()
-		announce += " |cff0058A6Unstoppable!|n"
+		announce += " |cff0058A6Unstoppable!|r"
 	if p1.killstreak == 6
 		announcers[4].play()
-		announce += " |cffFFDA84Godlike!!!|n"
+		announce += " |cffFFDA84Godlike!!!|r"
 	timer t = getTimer()
 	if p1.intriple
 		announcers[1].play()
-		announce += " |cff2DCB2DTriplekill|n"
+		announce += " |cff2DCB2DTriplekill|r"
 		p1.indouble = false
 		t.setData(killer.getId()).start(0.,function clearKillMultiplier)
 	else if p1.indouble
 		announcers[0].play()
-		announce += " |cff2DCB2DDoublekill|n"
+		announce += " |cff2DCB2DDoublekill|r"
 		p1.intriple = true
 		t.setData(killer.getId()).start(15,function clearKillMultiplier)
 	else

@@ -38,7 +38,7 @@ function getGameMode()
 		DisplayTimedTextToForce(GetPlayersAll(), 12., colorcode[GetTriggerPlayer().getId()] + GetTriggerPlayer().getName() + "|r hat ein langes Spiel ausgewählt!")
 
 function endgame(int winningteam)
-	announcers[0].play()
+	announcers[5].play()
 	if winningteam == 1
 		DisplayTimedTextToForce(GetPlayersAll(), 12., "Das grüne team hat gewonnen!")
 	else if winningteam == 0

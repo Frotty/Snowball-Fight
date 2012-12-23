@@ -118,6 +118,7 @@ public class Child extends PhysicsUnitEntity
 								data.actor.removeAbility('A008')
 						else
 							SetItemCharges(uit,GetItemCharges(uit) -1)
+						break
 				
 		return false
 		

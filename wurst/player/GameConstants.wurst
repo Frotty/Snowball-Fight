@@ -94,6 +94,7 @@ package GameConstants
 		colorcode[ 8 ] = "|cff949596" // gray
 		colorcode[ 9 ] = "|cff7DBEF1" // lightblue
 		colorcode[ 10 ] = "|cff0F6145" // darkgreen
+		colorcode[ 11 ] = "|cff4D2902" // brown
 
 		expBounds[0] = 10
 		expBounds[1] = 30
