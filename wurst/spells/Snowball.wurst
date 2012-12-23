@@ -6,7 +6,7 @@ import SoundHelper
 import SoundQueue
 import IceWall
 
-constant real SPEED = 10
+constant real SPEED = 14
 
 public class Snowball extends Projectile
 

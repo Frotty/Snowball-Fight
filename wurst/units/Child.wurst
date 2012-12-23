@@ -15,6 +15,7 @@ import IceWall
 import Iceshard
 import LinkedList
 import ItemHandling
+import TimedBar
 
 public LinkedList<Child> childs = new LinkedList<Child>()
 
@@ -28,6 +29,7 @@ public constant real SY2 = 4000
 public class Child extends PhysicsUnitEntity
 	trigger t
 	boolean fixPos = false
+	TimedBar wrapBar
 	
 	construct( vec3 pos, player owner, int id)
 		super(pos, CreateUnit(owner, id, pos.x, pos.y, pos.z), 52.)
@@ -111,6 +113,9 @@ public class Child extends PhysicsUnitEntity
 	static function onDeath()
 		var p = GetKillingUnit().getOwner()
 		var p2 = GetDyingUnit().getOwner()
+		var chld = GetDyingUnit().getUserData()castTo Child
+		if chld.wrapBar != null
+			chld.wrapBar.terminate()
 		adjustKills(p, p2)
 		timer t = getTimer()
 		t.setData(GetDyingUnit().getUserData()).start(3., function Child.revive)

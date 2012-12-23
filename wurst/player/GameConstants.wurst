@@ -114,7 +114,7 @@ package GameConstants
 		ranks[6] = "Expert"
 		ranks[7] = "Addict"
 		
-		announcers[0] = new Sound("war3mapImported\\doubleKill.mp3", 4690, false, false, false, 10, 10, "CombatSoundsEAX")
+		announcers[0] = new Sound("war3mapImported\\double.mp3", 4690, false, false, false, 10, 10, "CombatSoundsEAX")
 		announcers[1] = new Sound("war3mapImported\\tripleKill.mp3", 3484, false, false, false, 10, 10, "CombatSoundsEAX")
 		announcers[2] = new Sound("war3mapImported\\hohoho.wav", 2016, false, false, false, 10, 10, "CombatSoundsEAX")
 		announcers[3] = new Sound("war3mapImported\\veryMerryChristmas.mp3", 7112, false, false, false, 10, 10, "CombatSoundsEAX")

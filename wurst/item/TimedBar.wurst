@@ -1,0 +1,39 @@
+package TimedBar
+	import Entity
+	import CustomBar
+	import public Colors
+	import PresentUnwrap
+	import Child
+	
+	public class TimedBar extends Entity
+		CustomBar bar
+		real cvalue = 0
+		real time
+		unit u
+		boolean correct = false
+		construct( vec3 pos, string char, int chars, real value, real time, colorA bg, colorA fg, unit u )
+			super(pos, DUMMY_PLAYER, 0.)
+			this.u = u
+			this.time = time
+			bar = new CustomBar(pos,char, chars, 5)
+			bar.setValue(value)
+			bar.setBackground(bg)
+			bar.setForeground(fg)
+			
+		override function update()
+			cvalue += ANIMATION_PERIOD
+			bar.setValue(cvalue/time*100)
+			if cvalue >= time
+				correct = true
+				done = true
+				
+		ondestroy
+			checkUnwrap(u)
+			print("unwrap")
+			(u.getUserData() castTo Child).wrapBar = null
+			destroy bar
+			
+		
+			
+			
+endpackage
