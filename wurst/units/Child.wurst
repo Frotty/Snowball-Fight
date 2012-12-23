@@ -61,6 +61,8 @@ public class Child extends PhysicsUnitEntity
 						debugPrint("MISSILE FOUND", 1)
 						if GetItemCharges(uit) <= 1
 							RemoveItem(uit)
+							if not UnitHasItemOfTypeBJ(data.actor, 'I006')
+								data.actor.removeAbility('A001')
 						else
 							SetItemCharges(uit,GetItemCharges(uit) -1)
 						break
@@ -72,6 +74,8 @@ public class Child extends PhysicsUnitEntity
 						debugPrint("MISSILE FOUND", 1)
 						if GetItemCharges(uit) <= 1
 							RemoveItem(uit)
+							if not UnitHasItemOfTypeBJ(data.actor, 'I004')
+								data.actor.removeAbility('A002')
 						else
 							SetItemCharges(uit,GetItemCharges(uit) -1)
 						break
@@ -83,6 +87,8 @@ public class Child extends PhysicsUnitEntity
 						debugPrint("MISSILE FOUND", 1)
 						if GetItemCharges(uit) <= 1
 							RemoveItem(uit)
+							if not UnitHasItemOfTypeBJ(data.actor, 'I005')
+								data.actor.removeAbility('A003')
 						else
 							SetItemCharges(uit,GetItemCharges(uit) -1)
 						break
@@ -94,6 +100,8 @@ public class Child extends PhysicsUnitEntity
 						debugPrint("MISSILE FOUND", 1)
 						if GetItemCharges(uit) <= 1
 							RemoveItem(uit)
+							if not UnitHasItemOfTypeBJ(data.actor, 'I003')
+								data.actor.removeAbility('A004')
 						else
 							SetItemCharges(uit,GetItemCharges(uit) -1)
 						break
@@ -105,6 +113,8 @@ public class Child extends PhysicsUnitEntity
 						debugPrint("MISSILE FOUND", 1)
 						if GetItemCharges(uit) <= 1
 							RemoveItem(uit)
+							if not UnitHasItemOfTypeBJ(data.actor, 'I00E')
+								data.actor.removeAbility('A008')
 						else
 							SetItemCharges(uit,GetItemCharges(uit) -1)
 				
@@ -119,7 +129,7 @@ public class Child extends PhysicsUnitEntity
 		adjustKills(p, p2)
 		timer t = getTimer()
 		t.setData(GetDyingUnit().getUserData()).start(3., function Child.revive)
-		removeallspell(GetDyingUnit())
+		removeallspell(chld.actor)
 				
 	static function revive()
 			var t = GetExpiredTimer()
