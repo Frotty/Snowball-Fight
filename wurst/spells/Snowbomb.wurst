@@ -12,7 +12,7 @@ public class Snowbomb extends Projectile
 	construct(vec3 pos, player owner, vec3 target)
 		super(pos, owner, 16.)
 		fx = new Fx(pos, 0, "war3mapImported\\FrostMissile.mdx")
-		fx.setOwner(owner)
+		fx.setOwner(owner, false)
 		let dist = target.distToVec(pos)
 		if dist < 200.
 			var ntarget = target.toVec2().polarOffset(angleBetweenCoordsR(pos.x, pos.y, target.x, target.y), 200.-dist).toVec3()

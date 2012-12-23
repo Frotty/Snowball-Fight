@@ -7,6 +7,7 @@ package MultiboardClass
 		multiboard board
 		hashtable mbdata
 		
+		
 		construct(int row, int column )
 			board = CreateMultiboard()
 			board.setColumnCount(column)
@@ -16,6 +17,9 @@ package MultiboardClass
 				for int j = 1 to column
 					setNewItem(i,j,null,null)
 					board.getItem(i,j).setStyle(false,false) //Hide everything, updateItem() func will show stuff automatically
+					
+		function show()
+			board.display(true)
 			
 		function setNewItem(int i,int j,string value, string icon)
 			SaveInteger(mbdata,i,j,counter)

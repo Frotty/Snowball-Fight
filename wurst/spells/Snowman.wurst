@@ -13,7 +13,7 @@ public class SnowmanMissile extends HomingProjectile
 
 	construct(vec3 pos, player owner, vec2 target)
 		super(pos, owner, 16., angleBetweenCoordsR(pos.x, pos.y, target.x, target.y), "Abilities\\Weapons\\FrostWyrmMissile\\FrostWyrmMissile.mdl")
-		fx.setOwner(owner).setScale(.7)
+		fx.setOwner(owner, false).setScale(.7)
 		real dst = 0.
 		Child chld = null
 		for c in childs
@@ -28,7 +28,7 @@ public class SnowmanMissile extends HomingProjectile
 						chld = c
 		setHomingTarget(chld)
 		homingType = HOMING.angular
-		homingSpeed = 0.0375
+		homingSpeed = 0.03
 		setTimed(6.)
 		setXYSpeed(SPEED)
 		throwSound.playOnPoint(pos)

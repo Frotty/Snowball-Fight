@@ -46,9 +46,9 @@ package PlayerData
 			playerboard.setNewItem(r,1,kills.toString(),null)
 			playerboard.setNewItem(r,2,deaths.toString(),null)
 			if id < 6
-				playerboard.setNewItem(r,3,"|cffff6347Rote Team",null)
+				playerboard.setNewItem(r,3,"|cffff6347Rotes Team",null)
 			else
-				playerboard.setNewItem(r,3,"|cff3cb371Grüne Team",null)
+				playerboard.setNewItem(r,3,"|cff3cb371Grünes Team",null)
 
 		
 		function setMbIcon(int typ)

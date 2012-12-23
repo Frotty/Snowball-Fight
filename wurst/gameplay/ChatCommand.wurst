@@ -2,7 +2,7 @@ package ChatCommand
 import Gamemode
 	
 function displayScore()
-	DisplayTimedTextToForce(bj_FORCE_PLAYER[GetPlayerId(GetTriggerPlayer())], 12., "|cffff6347Rote Team: |r" + redscore.toString() + "\n\n|cff3cb371Grüne Team: |r" + greenscore.toString())
+	DisplayTimedTextToForce(bj_FORCE_PLAYER[GetPlayerId(GetTriggerPlayer())], 12., "|cffff6347Rotes Team: |r" + redscore.toString() + "\n\n|cff3cb371Grünes Team: |r" + greenscore.toString())
 
 
 init

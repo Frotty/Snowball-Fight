@@ -8,8 +8,8 @@ import SoundHelper
 constant real STARTMOMENTUM = 1
 constant real MOMENTUMGAIN = .15
 constant real MOMENTUMMAX = 20
-constant real SIZEGAIN = .05
-constant real MAXSIZE = 20
+constant real SIZEGAIN = .075
+constant real MAXSIZE = 22.5
 
 public class Rollingball extends Projectile
 	real momentum
@@ -20,7 +20,7 @@ public class Rollingball extends Projectile
 		super(pos, owner, 32.)
 		startz = pos.z
 		fx = new Fx(pos, angle*RADTODEG, "war3mapImported\\rollingball.mdx")
-		fx.setOwner(owner)
+		fx.setOwner(owner, true)
 		xyangle = angle
 		setXYSpeed(STARTMOMENTUM)
 		momentum = STARTMOMENTUM

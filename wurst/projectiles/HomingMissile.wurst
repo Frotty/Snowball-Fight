@@ -45,7 +45,7 @@ package HomingMissile
 			y2 = 0
 			
 			fx = new Fx(u.getX(),u.getY(),angle,"Abilities\\Weapons\\IllidanMissile\\IllidanMissile.mdl")
-			fx.setOwner(GetOwningPlayer(u))
+			fx.setOwner(GetOwningPlayer(u), false)
 			fx.setZ(50)
 			
 			t = getTimer()

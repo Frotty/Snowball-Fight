@@ -5,6 +5,7 @@ import Child
 import SoundHelper
 import SoundQueue
 import IceWall
+import Snowball
 
 constant real SPEED = 24
 
@@ -13,7 +14,7 @@ public class Iceshard extends Projectile
 	construct(vec3 pos, player owner, real angle)
 		super(pos, owner, 32.)
 		fx = new Fx(pos, angle*RADTODEG, "Abilities\\Weapons\\LichMissile\\LichMissile.mdl")
-		fx.setOwner(owner)
+		fx.setOwner(owner, false)
 		setTimed(4.)
 		xyangle = angle
 		setXYSpeed(SPEED)
@@ -42,16 +43,12 @@ public class Iceshard extends Projectile
 		if e instanceof Child
 			var c = e castTo Child
 			fx.dummy.damageTarget(c.actor, 65.)
-		else if e instanceof Projectile
-			e.terminate()
+			childHitSound.playOnPoint(pos)
+			
 	ondestroy
 		AddSpecialEffect("Abilities\\Spells\\Undead\\FrostArmor\\FrostArmorDamage.mdl", pos.x, pos.y).destr()
 	
-Sound throwSound
-Sound terrainHitSound
+
 
 	
-init
-	throwSound = new Sound("Abilities\\Spells\\Other\\FrostBolt\\FrostBoltLaunch1.wav", 1100, false, true, true, 10, 10, "CombatSoundsEAX")
-	terrainHitSound = new Sound("Abilities\\Spells\\Other\\FrostBolt\\FrostBoltHit1.wav", 1347, false, true, true, 10, 10, "CombatSoundsEAX")
 		

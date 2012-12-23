@@ -2,6 +2,8 @@ package Presents
 import Fx
 import Entity
 import TimerUtils
+import ItemObject
+
 constant int ITEM_ID = 'I002'
 		
 constant real CT_X = 0.
@@ -9,9 +11,9 @@ constant real CT_Y = 4096.
 public function spawnPresent()
 	var dist = GetRandomReal(400,800)
 	var angle = GetRandomReal(-PI,PI)
-	CreateItem(ITEM_ID,polarProjectionXR(CT_X,dist,angle),polarProjectionYR(CT_Y,dist,angle))
+	new ItemObject( CreateItem(ITEM_ID,polarProjectionXR(CT_X,dist,angle),polarProjectionYR(CT_Y,dist,angle)))
 	//var p = new Present(vec3(,0))
-	DisplayTimedTextToForce(GetPlayersAll(), 12., "A present spawned at middle!")
+	DisplayTimedTextToForce(GetPlayersAll(), 12., "In der Mitte ist ein geschenk erschienen!")
 	
 function isPresent() returns boolean
 	if GetItemTypeId(GetFilterItem()) == ITEM_ID

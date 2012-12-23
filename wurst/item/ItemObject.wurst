@@ -1,0 +1,19 @@
+package ItemObject
+import Entity
+
+public class ItemObject extends Entity
+	item actorItem
+
+	construct( item i )
+		super( vec3(i.getX(),i.getY(),0.), DUMMY_PLAYER, 0. )
+		actorItem = i
+		SetItemUserData(actorItem, this castTo int)
+		active = false
+
+	override function update()
+		
+	ondestroy
+		actorItem.remove()
+		
+
+

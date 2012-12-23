@@ -16,7 +16,7 @@ public class IceMissile extends Projectile
 		this.target = target
 		let angle = angleBetweenCoordsR(pos.x, pos.y, target.x, target.y)
 		fx = new Fx(pos, angle*RADTODEG, "Abilities\\Weapons\\WingedSerpentMissile\\WingedSerpentMissile.mdl")
-		fx.setOwner(owner)
+		fx.setOwner(owner, false)
 		setTimed(4.)
 		xyangle = angle
 		setXYSpeed(SPEED)
@@ -62,7 +62,7 @@ public class Iceblock extends Entity
 		collision =CreateUnit(owner, COLLOSION, pos.x,pos.y,0)
 		collision.setXY(pos.x,pos.y)
 		block = new Fx(pos, GetRandomReal(0,360), "Doodads\\Icecrown\\Rocks\\Icecrown_Crystal\\Icecrown_Crystal"+ GetRandomInt(0,8).toString() +".mdl")
-		block.setOwner(owner)
+		block.setOwner(owner, false)
 		this.scale = scale
 		block.setScale(scale)
 		
