@@ -1,14 +1,20 @@
 package ItemHandling
+import GameConstants
 
 int array items
 int array spells
 int array maxstack
+
+constant int PRESENT_ID = 'I002'
 
 public function onPickup()
 	debugPrint("PICKUP", 1)
 	let u = GetManipulatingUnit()
 	let itm = GetManipulatedItem()
 	let itid = GetItemTypeId(itm)
+	if itid == PRESENT_ID
+		DisplayTimedTextToForce(GetPlayersAll(), 12., colorcode[u.getOwner().getId()] + u.getOwner().getName() + "|r picked up a present!")	
+		return
 	item foundItem = null
 	int itemid
 	for i = 0 to 4

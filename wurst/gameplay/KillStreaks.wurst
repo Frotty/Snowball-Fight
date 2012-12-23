@@ -43,9 +43,9 @@ public function adjustKills(player killer, player dead)
 		t.setData(killer.getId()).start(20,function clearKillMultiplier)
 		p1.indouble = true
 	if announce != " -"
-		DisplayTimedTextToForce(GetPlayersAll(), 12., colorcode[killer.getId()] + killer.getName() + "|r hit " + colorcode[dead.getId()] + dead.getName() + "|r in the face with his snowball!" + announce)
+		DisplayTimedTextToForce(GetPlayersAll(), 12., colorcode[killer.getId()] + killer.getName() + "|r hat " + colorcode[dead.getId()] + dead.getName() + "|r mit seinem Schneeball ins Gesicht getroffen!" + announce + "|n(2 Punkte)")
 	else
-		DisplayTimedTextToForce(GetPlayersAll(), 12., colorcode[killer.getId()] + killer.getName() + "|r hit " + colorcode[dead.getId()] + dead.getName() + "|r in the face with his snowball!")
+		DisplayTimedTextToForce(GetPlayersAll(), 12., colorcode[killer.getId()] + killer.getName() + "|r hat " + colorcode[dead.getId()] + dead.getName() + "|r mit seinem Schneeball ins Gesicht getroffen!|n(2 Punkte)")
 	checkEnd()
 	
 	

@@ -36,4 +36,4 @@ function checkPresents()
 		
 init
 	timer t = getTimer()
-	t.startPeriodic(4.,function onPresentTime)
+	t.startPeriodic(30.,function onPresentTime)

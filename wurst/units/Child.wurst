@@ -16,6 +16,7 @@ import Iceshard
 import LinkedList
 import ItemHandling
 import TimedBar
+import MapBounds
 
 public LinkedList<Child> childs = new LinkedList<Child>()
 
@@ -139,6 +140,11 @@ public class Child extends PhysicsUnitEntity
 	override function update()
 		pos.x = actor.getX()
 		pos.y = actor.getY()
+		if not pos.toVec2().inBounds()
+			printError("Child out of Bounds")
+			pos = vec3(0,0,200)
+			vel = vec3(0,0,0)
+			actor.setPos(pos.toVec2())
 		super.update()
 		
 		if fixPos
