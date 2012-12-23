@@ -152,7 +152,7 @@ public class Child extends PhysicsUnitEntity
 		pos.y = actor.getY()
 		if not pos.toVec2().inBounds()
 			printError("Child out of Bounds")
-			pos = vec3(0,0,200)
+			pos = vec3(0,3600,200)
 			vel = vec3(0,0,0)
 			actor.setPos(pos.toVec2())
 		super.update()
