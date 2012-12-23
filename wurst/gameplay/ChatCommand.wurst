@@ -1,0 +1,12 @@
+package ChatCommand
+import Gamemode
+	
+function displayScore()
+	DisplayTimedTextToForce(bj_FORCE_PLAYER[GetPlayerId(GetTriggerPlayer())], 12., "|cffff6347Rote Team: |r" + redscore.toString() + "\n\n|cff3cb371Grüne Team: |r" + greenscore.toString())
+
+
+init
+	trigger t = CreateTrigger()
+	for int i = 0 to 11
+		TriggerRegisterPlayerChatEvent(t,Player(i),"-score",true)
+	t.addAction(function displayScore)
