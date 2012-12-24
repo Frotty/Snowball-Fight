@@ -31,6 +31,7 @@ public function onPresentTime()
 	EnumItemsInRect(r,Condition(function isPresent),function addOne)
 	timer t = getTimer()
 	t.start(0.01,function checkPresents)
+	
 function checkPresents()
 	debugPrint("presents: "+presents.toString(),1)
 	if presents <= 2
@@ -38,4 +39,4 @@ function checkPresents()
 		
 init
 	timer t = getTimer()
-	t.startPeriodic(20.,function onPresentTime)
+	t.startPeriodic(4.,function onPresentTime)
