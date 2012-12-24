@@ -3,8 +3,11 @@ import Fx
 import Entity
 import TimerUtils
 import ItemObject
+import SoundHelper
 
 constant int ITEM_ID = 'I002'
+
+Sound presentSpawn = new Sound("war3mapImported\\bells.mp3", 2072, false )
 		
 constant real CT_X = 0.
 constant real CT_Y = 4096.
@@ -13,7 +16,7 @@ public function spawnPresent()
 	var angle = GetRandomReal(-PI,PI)
 	new ItemObject( CreateItem(ITEM_ID,polarProjectionXR(CT_X,dist,angle),polarProjectionYR(CT_Y,dist,angle)))
 	//var p = new Present(vec3(,0))
-	DisplayTimedTextToForce(GetPlayersAll(), 12., "In der Mitte ist ein geschenk erschienen!")
+	DisplayTimedTextToForce(GetPlayersAll(), 12., "|cffFFAD29» |cffFF7329In der Mitte ist ein Geschenk erschienen!")
 	
 function isPresent() returns boolean
 	if GetItemTypeId(GetFilterItem()) == ITEM_ID
@@ -36,7 +39,9 @@ function checkPresents()
 	debugPrint("presents: "+presents.toString(),1)
 	if presents <= 2
 		spawnPresent()
+		presentSpawn.play()
 		
 init
 	timer t = getTimer()
-	t.startPeriodic(4.,function onPresentTime)
+	t.startPeriodic(25.,function onPresentTime)
+	

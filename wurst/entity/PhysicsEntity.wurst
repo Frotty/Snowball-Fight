@@ -47,14 +47,14 @@ public abstract class PhysicsEntity extends Entity
 	// When the Entity is on or near the ground	
 	function onGround()
 		// If the Entity is moving towards 
-		vec3 normal = getTerrainNormal(pos.x, pos.y, 2.)
+		vec3 normal = getTerrainNormal(pos.x, pos.y, 8.)
 		// Is the Entity going away from the ground?
 		if vel.dot(normal) > 0 
 			return
 
 		vec3 pv = vel.project(normal)
-		pv *= (-1. + restitution)
-		if pv.z > friction
+		pv *= (-1. - restitution)
+		if pv.lengthSquared() > friction
 			vel += pv
 		else	
 			vel *= friction
