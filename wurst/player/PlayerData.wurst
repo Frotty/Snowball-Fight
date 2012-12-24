@@ -2,7 +2,7 @@ package PlayerData
 	import MultiboardClass
 	import LinkedList
 	import GameConstants
-
+	import Gamemode
 	
 	public int playercount = 0
 	
@@ -108,7 +108,7 @@ package PlayerData
 		secs += "|r"
 		mins += "|r"
 		
-		playerboard.board.setTitle( MAP_VER + " [ " + mins + " : " + secs +" ]")
+		playerboard.board.setTitle( MAP_VER + " [ " + mins + " : " + secs +" ] |cffff6347" +redscore.toString() +"|r - |cff3cb371" + greenscore.toString())
 		
 		
 		

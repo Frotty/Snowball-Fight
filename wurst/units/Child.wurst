@@ -130,7 +130,7 @@ public class Child extends PhysicsUnitEntity
 			chld.wrapBar.terminate()
 		adjustKills(p, p2)
 		timer t = getTimer()
-		t.setData(GetDyingUnit().getUserData()).start(3., function Child.revive)
+		t.setData(GetDyingUnit().getUserData()).start(7., function Child.revive)
 		removeallspell(chld.actor)
 				
 	static function revive()
@@ -147,6 +147,10 @@ public class Child extends PhysicsUnitEntity
 			c.actor.setVertexColor(255,255,255,255)
 			SetUnitPropWindow(c.actor,60)
 			t.release()	
+			if GetLocalPlayer() == c.owner
+				PanCameraToTimed(c.actor.getX(), c.actor.getY(), 1.)
+				ClearSelection()
+				SelectUnit(c.actor, true)
 
 	override function update()
 		pos.x = actor.getX()
