@@ -38,7 +38,8 @@ function getGameMode()
 	if b == modebutton[2]
 		maxkills = 80
 		DisplayTimedTextToForce(GetPlayersAll(), 12., colorcode[GetTriggerPlayer().getId()] + GetTriggerPlayer().getName() + "|r hat ein langes Spiel ausgewählt!")
-
+	playerboard.getMB().display(true)
+	
 function endgame(int winningteam)
 	announcers[5].play()
 	if winningteam == 1
