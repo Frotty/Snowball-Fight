@@ -47,7 +47,7 @@ function startBar()
 	var u = GetSpellAbilityUnit()
 	var id = GetSpellAbilityId()
 	if id == UNWRAP_ID
-		(u.getUserData() castTo Child).wrapBar = new TimedBar(vec3(u.getX()-120.,u.getY(),-16), "|", 120, 0, 7.5, colorA(255,255,255,255), colorA(255,0,0,255), u )
+		(u.getUserData() castTo Child).wrapBar = new TimedBar(vec3(u.getX()-120.,u.getY(),-16), "|", 120, 0, 7.5, colorA(255,255,255,255), colorA(230,181,16,255), u )
 
 	
 
