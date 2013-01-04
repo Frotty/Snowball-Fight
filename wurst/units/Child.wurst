@@ -21,16 +21,17 @@ import MapBounds
 public LinkedList<Child> childs = new LinkedList<Child>()
 
 
-public constant real SX1 = -2340.
-public constant real SY1 = 3810
-public constant real SX2 = 2174
-public constant real SY2 = 4000
+public constant real SX1 = -2400.
+public constant real SY1 = 4100
+public constant real SX2 = 2220
+public constant real SY2 = 4100
 
 
 public class Child extends PhysicsUnitEntity
 	trigger t
 	boolean fixPos = false
 	TimedBar wrapBar
+	SnowmanDummy snowman
 	
 	construct( vec3 pos, player owner, int id)
 		super(pos, CreateUnit(owner, id, pos.x, pos.y, pos.z), 52.)
@@ -139,8 +140,8 @@ public class Child extends PhysicsUnitEntity
 			
 			if c.owner.getId() > 5
 				ReviveHero(c.actor, SX2 + 64 * c.owner.getId(), SY2, false)
-			else
 				c.setNewPos(vec3(SX2 + 64 * c.owner.getId(), SY2, 530.))
+			else
 				ReviveHero(c.actor, SX1 + 64 * c.owner.getId(), SY1, false)
 				c.setNewPos(vec3(SX1 + 64 * c.owner.getId(), SY1, 530.))
 			c.setVel(vec3(0,0,0))

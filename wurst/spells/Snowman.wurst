@@ -49,11 +49,15 @@ public class SnowmanMissile extends HomingProjectile
 			
 			
 	function onHit(Entity e)
-		new SnowmanDummy(vec3(pos.x, pos.y, 0.), owner, e castTo Child)
+		Child chl = e castTo Child
+		if chl.snowman == null
+			new SnowmanDummy(vec3(pos.x, pos.y, 0.), owner, e castTo Child)
+		else
+			chl.snowman.melttime = MELT
 		terminate()
 
 		
-class SnowmanDummy extends Entity
+public class SnowmanDummy extends Entity
 	Fx fx
 	real melttime = MELT
 	Child target
@@ -65,6 +69,7 @@ class SnowmanDummy extends Entity
 		AddSpecialEffect("Abilities\\Spells\\Human\\Polymorph\\PolyMorphTarget.mdl", pos.x, pos.y).destr()
 		this.target = target
 		PauseUnit(target.actor, true)
+		target.snowman = this
 		target.actor.setVertexColor(155,155,255,255)
 		SetUnitTimeScale(target.actor, 0)
 		
@@ -86,6 +91,7 @@ class SnowmanDummy extends Entity
 		fx.hiddenDestroy()
 		PauseUnit(target.actor, false)
 		target.actor.setVertexColor(255,255,255,255)
+		target.snowman = null
 		SetUnitTimeScale(target.actor, 1.)
 	
 Sound throwSound

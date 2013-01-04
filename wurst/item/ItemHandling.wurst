@@ -22,6 +22,10 @@ public function onPickup()
 					slot = i 
 					break
 			UnitDropItemSlot(u, itm, slot)
+			let data = itm.getUserData() castTo ItemObject
+			data.actorItem.remove()
+			data.actorItem = CreateItem(PRESENT_ID, data.pos.x, data.pos.y)
+			data.actorItem.setUserData(data castTo int)
 			createTTEx(vec3(u.getX(),u.getY(),20.), vec2(0,0.05), "|cffcccc00You can only carry one!|r", 10,  2., colorA(255,255,255,0), u.getOwner() )
 		else
 			DisplayTimedTextToForce(GetPlayersAll(), 12., colorcode[u.getOwner().getId()] + u.getOwner().getName() + "|r has acquired a present!")	
@@ -51,14 +55,6 @@ public function onPickup()
 	else
 		u.addAbility(spells[itemid])
 
-public function onDrop()
-	let u = GetManipulatingUnit()
-	let itm = GetManipulatedItem()
-	let itid = GetItemTypeId(itm)
-	if itid == PRESENT_ID
-		let data = itm.getUserData() castTo ItemObject
-		data.pos = vec3(itm.getX(), itm.getY(), 0.)
-
 
 public function removeallspell(unit u)
 	for i = 0 to 4
@@ -68,8 +64,6 @@ public function removeallspell(unit u)
 
 init
 	trigger t = CreateTrigger()
-	t.registerAnyUnitEvent(EVENT_PLAYER_UNIT_DROP_ITEM)
-	t.addAction(function onDrop)
 	trigger t2 = CreateTrigger()
 	t2.registerAnyUnitEvent(EVENT_PLAYER_UNIT_PICKUP_ITEM)
 	t2.addAction(function onPickup)
