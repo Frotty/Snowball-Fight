@@ -13,7 +13,7 @@ public function spawnPresent()
 	var angle = GetRandomReal(-PI,PI)
 	new ItemObject( CreateItem(ITEM_ID,polarProjectionXR(CT_X,dist,angle),polarProjectionYR(CT_Y,dist,angle)))
 	//var p = new Present(vec3(,0))
-	DisplayTimedTextToForce(GetPlayersAll(), 12., "In der Mitte ist ein geschenk erschienen!")
+	DisplayTimedTextToForce(GetPlayersAll(), 12., "Item spawned in the middle!")
 	
 function isPresent() returns boolean
 	if GetItemTypeId(GetFilterItem()) == ITEM_ID

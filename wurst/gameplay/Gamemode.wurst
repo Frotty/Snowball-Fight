@@ -18,10 +18,10 @@ public function checkEnd()
 
 public function createDialog()
 	gamemode = DialogCreate()
-	DialogSetMessage(gamemode, "Spielmodus")
-	modebutton[0] = DialogAddButton(gamemode, "Kurz (30 Punkte)", 111)
-	modebutton[1] = DialogAddButton(gamemode, "Normal (50 Punkte)", 113)
-	modebutton[2] = DialogAddButton(gamemode, "Lang (80 Punkte)", 112)
+	DialogSetMessage(gamemode, "Gamemodes")
+	modebutton[0] = DialogAddButton(gamemode, "Short (30 Points)", 111)
+	modebutton[1] = DialogAddButton(gamemode, "Normal (50 Points)", 113)
+	modebutton[2] = DialogAddButton(gamemode, "Lang (80 Points)", 112)
 	DialogDisplay(players.get(0).p, gamemode,true)
 	trigger t = CreateTrigger()
 	TriggerRegisterDialogEvent(t, gamemode)
@@ -44,9 +44,9 @@ function getGameMode()
 function endgame(int winningteam)
 	announcers[5].play()
 	if winningteam == 1
-		DisplayTimedTextToForce(GetPlayersAll(), 12., "Das grüne team hat gewonnen!")
+		DisplayTimedTextToForce(GetPlayersAll(), 12., "Green Team has won the game!")
 	else if winningteam == 0
-		DisplayTimedTextToForce(GetPlayersAll(), 12., "Das rote Team hat gewonnen!")
+		DisplayTimedTextToForce(GetPlayersAll(), 12., "Red Team has won the game!")
 	gameover = true
 	PauseGame(true)
 	
