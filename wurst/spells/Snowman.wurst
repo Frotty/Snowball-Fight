@@ -3,8 +3,7 @@ import HomingProjectile
 import Entity
 import Fx
 import Child
-import SoundHelper
-import SoundQueue
+import SoundUtils
 
 constant real SPEED = 8.
 constant real MELT = 192
@@ -12,66 +11,56 @@ constant real MELT = 192
 public class SnowmanMissile extends HomingProjectile
 
 	construct(vec3 pos, player owner, vec2 target)
-		super(pos, owner, 16., angleBetweenCoordsR(pos.x, pos.y, target.x, target.y), "Abilities\\Weapons\\FrostWyrmMissile\\FrostWyrmMissile.mdl")
-		fx.setOwner(owner, false).setScale(.7)
-		real dst = 0.
-		Child chld = null
-		for c in childs
-			if not IsPlayerAlly(c.owner, owner)  and c.owner != owner
-				if dst == 0.
-					chld = c
-					dst = distanceBetweenCoords(c.pos.x, c.pos.y, target.x, target.y)
-				else
-					let dist = distanceBetweenCoords(c.pos.x, c.pos.y, target.x, target.y)
-					if dist < dst
-						dst = dist
-						chld = c
-		setHomingTarget(chld)
-		homingType = HOMING.angular
-		homingSpeed = 0.03
+		super(pos, 16., owner, pos.angleTo2d(target), "Abilities\\Weapons\\FrostWyrmMissile\\FrostWyrmMissile.mdl")
+		fx.setScale(.7)
 		setTimed(6.)
-		setXYSpeed(SPEED)
+		setSpeed(SPEED)
 		throwSound.playOnPoint(pos)
+		findTarget()
 
+	function findTarget()
+		if target == null
+			var closestDist = 2147483640.
+			Child closestChild = null
+			for c in getEnemyChildren(owner)
+				if c.owner.isEnemyOf(owner)
+					let dist = pos.distanceToSq(c.pos)
+					if dist < closestDist
+						closestDist = dist
+						closestChild = c
+			setTarget(closestChild, HOMING.angular, 0.03)
 		
 	override function update()
 		super.update()
-		var chld = target castTo Child
-
-		debugPrint(pos.toString(),1)					
-		Entity e = Entity.first
-		while e != null
-			if e instanceof Child and e != this and owner != e.owner and IsPlayerEnemy( e.owner, owner )
-				if pos.distToVecSquared(e.pos) < (e.radius+radius).squared()
-					onHit(e)
-					
-			e = e.next
+		for child in getEnemyChildren(owner)
+			if owner.isEnemyOf(child.owner)
+				if pos.distanceToSq(child.getPos()) < (child.radius+radius).squared()
+					onHit(child)
+					break
 			
 			
-	function onHit(Entity e)
-		Child chl = e castTo Child
-		if chl.snowman == null
-			new SnowmanDummy(vec3(pos.x, pos.y, 0.), owner, e castTo Child)
+	function onHit(Child child)
+		if child.snowman == null
+			new SnowmanDummy(child.getPos().add(0,0,-child.terrainZ), owner, child)
 		else
-			chl.snowman.melttime = MELT
+			child.snowman.melttime = MELT
 		terminate()
 
 		
-public class SnowmanDummy extends Entity
-	Fx fx
+public class SnowmanDummy extends FxEntity
 	real melttime = MELT
 	Child target
 	
 	construct(vec3 pos, player owner, Child target )
-		super(pos, owner, 0.)
-		fx = new Fx(pos, target.actor.getFacing(), "Doodads\\Icecrown\\Props\\SnowMan\\SnowMan.mdl")
+		super(pos, 0., owner, target.actor.getFacingAngle(), "Doodads\\Icecrown\\Props\\SnowMan\\SnowMan.mdl")
 		fx.setScale(1.4)
-		AddSpecialEffect("Abilities\\Spells\\Human\\Polymorph\\PolyMorphTarget.mdl", pos.x, pos.y).destr()
+		addEffect("Abilities\\Spells\\Human\\Polymorph\\PolyMorphTarget.mdl", pos).destr()
 		this.target = target
-		PauseUnit(target.actor, true)
+		target.actor.pause()
 		target.snowman = this
 		target.actor.setVertexColor(155,155,255,255)
 		SetUnitTimeScale(target.actor, 0)
+		silent = true
 		
 	override function update()
 		melttime--
@@ -80,23 +69,21 @@ public class SnowmanDummy extends Entity
 			pos = target.pos
 			if target.vel.z > 0.
 				target.vel.z = 0.
-			fx.setPos(pos.toVec2())
-			fx.dummy.damageTarget(target.actor, .1).setVertexColor(255,255,255,melttime.toInt()+28)
+			fx.getDummy().damageTarget(target.actor, .1)
+			fx..setColor(colorA(255,255,255,melttime.toInt()+28))
 			if melttime < 0
 				terminate()
 		else
 			terminate()
 
 	ondestroy
-		fx.hiddenDestroy()
 		PauseUnit(target.actor, false)
 		target.actor.setVertexColor(255,255,255,255)
 		target.snowman = null
 		SetUnitTimeScale(target.actor, 1.)
 	
-Sound throwSound
+SoundDefinition throwSound
 
-	
 init
-	throwSound = new Sound("Abilities\\Spells\\Other\\FrostBolt\\FrostBoltLaunch1.wav", 1100, false, true, true, 10, 10, "CombatSoundsEAX")
+	throwSound = new SoundDefinition("Abilities\\Spells\\Other\\FrostBolt\\FrostBoltLaunch1.wav", 1100, false)
 		

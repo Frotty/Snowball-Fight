@@ -1,50 +1,34 @@
 package Snowbomb
 import Projectile
 import Fx
-import Child
+import initlater Child
 
-constant real SPEED = 12
+constant real SPEED = 14
 constant real AOE = 300.*300.
-constant real FACTOR = 14.
+constant real FACTOR = 6.5
 
-public class Snowbomb extends Projectile
+public class Snowbomb extends PhysicsProjectile
 
 	construct(vec3 pos, player owner, vec3 target)
-		super(pos, owner, 16.)
-		fx = new Fx(pos, 0, "war3mapImported\\FrostMissile.mdx")
-		fx.setOwner(owner, false)
-		let dist = target.distToVec(pos)
+		super(pos, 16., owner, pos.angleTo2d(target), "war3mapImported\\FrostMissile.mdx")
+		let dist = target.distanceToSq(pos)
 		if dist < 200.
-			var ntarget = target.toVec2().polarOffset(angleBetweenCoordsR(pos.x, pos.y, target.x, target.y), 200.-dist).toVec3()
+			var ntarget = target.toVec2().polarOffset(xyAngle, 200.-dist).toVec3()
 			setTarget(ntarget, SPEED)
 		else
 			setTarget(target, SPEED)
-		gravityAffected = true
 		
 	override function update()
 		super.update()
-		if pos.z < terrainZ
-			onGround()
-				
 			
-			
-	function onGround()
+	override function onGroundHit()
 		terminate()
 		AddSpecialEffect("war3mapImported\\IceSparks.mdx", pos.x, pos.y).destr()
-		Entity e = Entity.first
-		while e != null
-			if e != this and owner != e.owner and e instanceof Child and IsPlayerEnemy( e.owner, owner ) 
-				debugPrint(pos.distToVecSquared(e.pos).toString(),1)
-				if pos.distToVecSquared(e.pos) < AOE
-					var c = e castTo Child
-					let angle = angleBetweenCoordsR(pos.x, pos.y, c.pos.x, c.pos.y)
-					let factor = (300 - distanceBetweenCoords(pos.x, pos.y, c.pos.x, c.pos.y)) / 100.
-					c.addVel(vec3(Cos(angle) * factor * FACTOR, Sin(angle) * factor * FACTOR, 4.))
-					fx.dummy.damageTarget(c.actor, 25*factor)
+		for c in getEnemyChildren(owner)
+			if pos.distanceToSq(c.pos) < AOE
+				let angle = pos.angleTo2d(c.pos)
+				let factor = (300 - pos.distanceTo(c.pos)) / 200.
+				c.addVel(angle.toVec(factor * FACTOR).withZ(12*factor))
+				fx.getDummy().damageTarget(c.actor, 75*factor)
 					
-			e = e.next
-		
-
-			
-		
 		

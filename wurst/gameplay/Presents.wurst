@@ -1,34 +1,41 @@
 package Presents
-import Fx
-import Entity
-import TimerUtils
 import ItemObject
-import SoundHelper
+import TimerUtils
+import SoundUtils
 
-constant int ITEM_ID = 'I002'
+constant int PRESENT_ID = 'I002'
 
-Sound presentSpawn = new Sound("war3mapImported\\bells.mp3", 2072, false )
-		
-constant real CT_X = 0.
-constant real CT_Y = 4096.
+let presentSpawn = new SoundDefinition("war3mapImported\\bells.mp3", 2072, false )
+let treeCenter = vec2(0., 4096.)
+
+public class Present extends ItemObject
+
+	construct(vec2 pos)
+		super(pos, PRESENT_ID, DUMMY_PLAYER)
+
+	override function update()
+
+	override function onPickup(Child e)
+	
+	override function onDrop(Child e)
+	
+	override function onUse(Child e)
+
 public function spawnPresent()
-	var dist = GetRandomReal(400,800)
-	var angle = GetRandomReal(-PI,PI)
-	new ItemObject( CreateItem(ITEM_ID,polarProjectionXR(CT_X,dist,angle),polarProjectionYR(CT_Y,dist,angle)))
-	//var p = new Present(vec3(,0))
-	DisplayTimedTextToForce(GetPlayersAll(), 12., "|cffFFAD29» |cffFF7329Item spawned in the middle!")
+	let randomPos = treeCenter.polarOffset(GetRandomReal(0,360).asAngleDegrees(), GetRandomReal(400,800))
+	new Present(randomPos)
+	printTimed("|cffFFAD29» |cffFF7329Present spawned in the middle!", 12)
 	
 function isPresent() returns boolean
-	if GetItemTypeId(GetFilterItem()) == ITEM_ID
-		return true
-	return false
+	return GetItemTypeId(GetFilterItem()) == PRESENT_ID
+
 int presents
 
 function addOne()
 	presents++
 	
 public function onPresentTime()
-	debugPrint("PresentTime",1)
+	printLog(Loglevel.DEBUG, "On Present Time")
 	presents = 0
 	rect r = Rect(-6000,-19000,6000,10000)
 	EnumItemsInRect(r,Condition(function isPresent),function addOne)
@@ -36,7 +43,6 @@ public function onPresentTime()
 	t.start(0.01,function checkPresents)
 	
 function checkPresents()
-	debugPrint("presents: "+presents.toString(),1)
 	if presents <= 2
 		spawnPresent()
 		presentSpawn.play()

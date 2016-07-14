@@ -1,39 +1,29 @@
 package Iceshard
 import Projectile
 import Fx
-import Child
-import SoundHelper
-import SoundQueue
-import IceWall
-import Snowball
+import initlater Child
 
 constant real SPEED = 24
 
-public class Iceshard extends Projectile
+public class Iceshard extends PhysicsProjectile
 
-	construct(vec3 pos, player owner, real angle)
-		super(pos, owner, 32.)
-		fx = new Fx(pos, angle*RADTODEG, "Abilities\\Weapons\\LichMissile\\LichMissile.mdl")
+	construct(vec3 pos, player owner, angle angle)
+		super(pos, 32., owner, angle, "Abilities\\Weapons\\LichMissile\\LichMissile.mdl")
 		fx.setOwner(owner, false)
 		setTimed(4.)
-		xyangle = angle
-		setXYSpeed(SPEED)
-		throwSound.playOnPoint(pos)
+		setSpeed(SPEED)
 		
 	override function update()
 		super.update()
 		if pos.z < terrainZ
-			terrainHitSound.playOnPoint(pos)
 			terminate()
 				
 		Entity e = Entity.first
 		while e != null
 			if e != this and owner != e.owner and IsPlayerEnemy( e.owner, owner )
 				//debugPrint(pos.distToVecSquared(e.pos).toString(),1)
-				if pos.distToVecSquared(e.pos) < (e.radius+radius).squared()
-					debugPrint("inRange",1)
+				if pos.distanceToSq(e.pos) < (e.radius+radius).squared()
 					onHit(e)
-					debugPrint("hit",1)
 					
 			e = e.next
 			
@@ -42,8 +32,7 @@ public class Iceshard extends Projectile
 		terminate()
 		if e instanceof Child
 			var c = e castTo Child
-			fx.dummy.damageTarget(c.actor, 65.)
-			childHitSound.playOnPoint(pos)
+			fx.getDummy().damageTarget(c.actor, 65.)
 			
 	ondestroy
 		AddSpecialEffect("Abilities\\Spells\\Undead\\FrostArmor\\FrostArmorDamage.mdl", pos.x, pos.y).destr()

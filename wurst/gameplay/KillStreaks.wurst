@@ -2,6 +2,7 @@ package KillStreaks
 import PlayerData
 import GameConstants
 import Gamemode
+import TimerUtils
 
 public function adjustKills(player killer, player dead)
 	var p1 = pData[killer.getId()]
@@ -18,7 +19,6 @@ public function adjustKills(player killer, player dead)
 	else
 		greenscore += 1
 	string announce = " -"
-	debugPrint("kills: "+p1.killstreak.toString(), 1)
 	if p1.killstreak == 3
 		announcers[2].play()
 		announce += " |cff860B00KillingSpree|r"
@@ -33,19 +33,19 @@ public function adjustKills(player killer, player dead)
 		announcers[1].play()
 		announce += " |cff2DCB2DTriplekill|r"
 		p1.indouble = false
-		t.setData(killer.getId()).start(0.,function clearKillMultiplier)
+		t..setData(killer.getId())..start(0.,function clearKillMultiplier)
 	else if p1.indouble
 		announcers[0].play()
 		announce += " |cff2DCB2DDoublekill|r"
 		p1.intriple = true
-		t.setData(killer.getId()).start(15,function clearKillMultiplier)
+		t..setData(killer.getId())..start(15,function clearKillMultiplier)
 	else
-		t.setData(killer.getId()).start(20,function clearKillMultiplier)
+		t..setData(killer.getId())..start(20,function clearKillMultiplier)
 		p1.indouble = true
 	if announce != " -"
-		DisplayTimedTextToForce(GetPlayersAll(), 12., colorcode[killer.getId()] + killer.getName() + "|r hit " + colorcode[dead.getId()] + dead.getName() + "|r with a snowball in the face!" + announce + "\n(1 Point)")
+		DisplayTimedTextToForce(GetPlayersAll(), 12., killer.getNameColored() + " hit " + dead.getNameColored() + "|r in the face with a snowball!" + announce + " (|cffFFCC00+1|r)")
 	else
-		DisplayTimedTextToForce(GetPlayersAll(), 12., colorcode[killer.getId()] + killer.getName() + "|r hit " + colorcode[dead.getId()] + dead.getName() + "|r with a snowball in the face!" + "\n(1 Point)")
+		DisplayTimedTextToForce(GetPlayersAll(), 12., killer.getNameColored() + " hit " + dead.getNameColored() + "|r in the face with a snowball! (|cffFFCC00+1|r)")
 	checkEnd()
 	
 	

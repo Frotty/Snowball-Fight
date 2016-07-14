@@ -1,129 +1,89 @@
 package Child
-import PhysicsEntity
-import EventHandling
-import Terrain
-import HomingProjectile
+import TerrainUtils
 import Entity
-import Snowball
-import GameConstants
+import initlater Snowball
 import Snowbomb
-import PlayerData
 import Rollingball
 import KillStreaks
-import Snowman
-import IceWall
+import initlater Snowman
 import Iceshard
 import LinkedList
 import ItemHandling
 import TimedBar
 import MapBounds
+import PhysicsModule
+import TimerUtils
+import IceWall
+import Assets
 
-public LinkedList<Child> childs = new LinkedList<Child>()
-
+public LinkedList<Child> humChildren = new LinkedList<Child>()
+public LinkedList<Child> orcChildren = new LinkedList<Child>()
 
 public constant real SX1 = -2400.
 public constant real SY1 = 4100
 public constant real SX2 = 2220
 public constant real SY2 = 4100
 
+public function getEnemyChildren(player owner) returns LinkedList<Child>
+	if owner.getId() > 5
+		return humChildren
+	return orcChildren
 
-public class Child extends PhysicsUnitEntity
+public class Child extends UnitEntity
+	use PhysicsModule
 	trigger t
 	boolean fixPos = false
 	TimedBar wrapBar
 	SnowmanDummy snowman
 	
 	construct( vec3 pos, player owner, int id)
-		super(pos, CreateUnit(owner, id, pos.x, pos.y, pos.z), 52.)
-		childs.add(this)
+		super(pos, 50., CreateUnit(owner, id, pos.x, pos.y, 0))
+		if owner.getId() > 5
+			orcChildren.add(this)
+		else
+			humChildren.add(this)
 		restitution = .25
-		friction = 0.75
-		actor.registerCastEvent(Condition(function Child.onCast))
-		t = CreateTrigger()
-		t.registerUnitEvent(actor, EVENT_UNIT_DEATH)
-		t.addAction(function Child.onDeath)
-		
-		
-	static function onCast() returns boolean
+		friction = 0.80
+		EventListener.add(actor, EVENT_PLAYER_UNIT_SPELL_EFFECT, () -> onCast())
+		EventListener.add(actor, EVENT_PLAYER_UNIT_DEATH, () -> onDeath())
+
+	function removeItemAndCheck(int itemid, int spellid)
+		for int i = 0 to 5
+			var uit = UnitItemInSlot(actor, i)
+			if GetItemTypeId(uit) == itemid
+				if GetItemCharges(uit) <= 1
+					RemoveItem(uit)
+					if not UnitHasItemOfTypeBJ(actor, itemid)
+						actor.removeAbility(spellid)
+				else
+					SetItemCharges(uit,GetItemCharges(uit) -1)
+				break
+
+	function onCast()
 		var id = GetSpellAbilityId()
-		var data = GetTriggerUnit().getUserData() castTo Child
-		var tx = GetSpellTargetX()
-		var ty = GetSpellTargetY()
-		var tz = getTerrainZ(tx,ty)
-		let angle = angleBetweenCoordsR(data.pos.x, data.pos.y, tx, ty)
+		var target = vec2(GetSpellTargetX(), GetSpellTargetY()).withTerrainZ()
+		let castPos = pos.add(0,0,78)
+		let angle = pos.angleTo2d(target)
 		switch id
 			case 'A000'
-				new Snowball(vec3(data.actor.getX(), data.actor.getY(), data.pos.z+16.), data.owner, angle )
+				new Snowball(castPos, owner, angle )
 			case 'A001'
-				debugPrint("casted", 1)
-				new Snowbomb(vec3(data.pos.x, data.pos.y, data.pos.z+16.), data.owner, vec3(tx, ty, tz ))
-				for int i = 0 to 5
-					var uit = UnitItemInSlot(data.actor, i)
-					if GetItemTypeId(uit) == 'I006'
-						debugPrint("MISSILE FOUND", 1)
-						if GetItemCharges(uit) <= 1
-							RemoveItem(uit)
-							if not UnitHasItemOfTypeBJ(data.actor, 'I006')
-								data.actor.removeAbility('A001')
-						else
-							SetItemCharges(uit,GetItemCharges(uit) -1)
-						break
+				new Snowbomb(castPos, owner, target)
+				removeItemAndCheck('I006', 'A001')
 			case 'A002'
-				new Rollingball(vec3(data.pos.x + Cos(angle) * 16., data.pos.y + Sin(angle) * 16., data.pos.z +16.), data.owner, angle )
-				for int i = 0 to 5
-					var uit = UnitItemInSlot(data.actor, i)
-					if GetItemTypeId(uit) == 'I004'
-						debugPrint("MISSILE FOUND", 1)
-						if GetItemCharges(uit) <= 1
-							RemoveItem(uit)
-							if not UnitHasItemOfTypeBJ(data.actor, 'I004')
-								data.actor.removeAbility('A002')
-						else
-							SetItemCharges(uit,GetItemCharges(uit) -1)
-						break
+				new Rollingball(pos.polarProject(16, angle, (90).asAngleDegrees()).add(0,0,16), owner, angle )
+				removeItemAndCheck('I004', 'A002')
 			case 'A003'
-				new SnowmanMissile(vec3(data.pos.x, data.pos.y, data.pos.z+40.), data.owner, vec2(tx, ty) )
-				for int i = 0 to 5
-					var uit = UnitItemInSlot(data.actor, i)
-					if GetItemTypeId(uit) == 'I005'
-						debugPrint("MISSILE FOUND", 1)
-						if GetItemCharges(uit) <= 1
-							RemoveItem(uit)
-							if not UnitHasItemOfTypeBJ(data.actor, 'I005')
-								data.actor.removeAbility('A003')
-						else
-							SetItemCharges(uit,GetItemCharges(uit) -1)
-						break
+				new SnowmanMissile(pos.add(0,0,16), owner, target.toVec2())
+				removeItemAndCheck('I005', 'A003')
 			case 'A004'
-				new IceMissile(vec3(data.actor.getX(), data.actor.getY(), data.pos.z+16.), data.owner, vec3(tx,ty,tz))
-				for int i = 0 to 5
-					var uit = UnitItemInSlot(data.actor, i)
-					if GetItemTypeId(uit) == 'I003'
-						debugPrint("MISSILE FOUND", 1)
-						if GetItemCharges(uit) <= 1
-							RemoveItem(uit)
-							if not UnitHasItemOfTypeBJ(data.actor, 'I003')
-								data.actor.removeAbility('A004')
-						else
-							SetItemCharges(uit,GetItemCharges(uit) -1)
-						break
+				new IceMissile(pos.add(0,0,32), owner, target)
+				removeItemAndCheck('I003', 'A004')
 			case 'A008'
-				new Iceshard(vec3(data.actor.getX(), data.actor.getY(), data.pos.z+16.), data.owner, angle )
-				for int i = 0 to 5
-					var uit = UnitItemInSlot(data.actor, i)
-					if GetItemTypeId(uit) == 'I00E'
-						debugPrint("MISSILE FOUND", 1)
-						if GetItemCharges(uit) <= 1
-							RemoveItem(uit)
-							if not UnitHasItemOfTypeBJ(data.actor, 'I00E')
-								data.actor.removeAbility('A008')
-						else
-							SetItemCharges(uit,GetItemCharges(uit) -1)
-						break
-				
-		return false
+				new Iceshard(pos.add(0,0,24), owner, angle )
+				removeItemAndCheck('I00E', 'A008')
 		
-	static function onDeath()
+	function onDeath()
 		var p = GetKillingUnit().getOwner()
 		var p2 = GetDyingUnit().getOwner()
 		var chld = GetDyingUnit().getUserData()castTo Child
@@ -131,48 +91,50 @@ public class Child extends PhysicsUnitEntity
 			chld.wrapBar.terminate()
 		adjustKills(p, p2)
 		timer t = getTimer()
-		t.setData(GetDyingUnit().getUserData()).start(7., function Child.revive)
+		t..setData(GetDyingUnit().getUserData())..start(7., function Child.revive)
 		removeallspell(chld.actor)
 				
 	static function revive()
-			var t = GetExpiredTimer()
-			Child c = t.getData() castTo Child
-			
-			if c.owner.getId() > 5
-				ReviveHero(c.actor, SX2 + 64 * c.owner.getId(), SY2, false)
-				c.setNewPos(vec3(SX2 + 64 * c.owner.getId(), SY2, 530.))
-			else
-				ReviveHero(c.actor, SX1 + 64 * c.owner.getId(), SY1, false)
-				c.setNewPos(vec3(SX1 + 64 * c.owner.getId(), SY1, 530.))
-			c.setVel(vec3(0,0,0))
-			c.actor.setVertexColor(255,255,255,255)
-			SetUnitPropWindow(c.actor,60)
-			t.release()	
-			if GetLocalPlayer() == c.owner
-				PanCameraToTimed(c.actor.getX(), c.actor.getY(), 1.)
-				ClearSelection()
-				SelectUnit(c.actor, true)
+		var t = GetExpiredTimer()
+		Child c = t.getData() castTo Child
+		
+		if c.owner.getId() > 5
+			ReviveHero(c.actor, SX2 + 64 * c.owner.getId(), SY2, false)
+			c.setPos(vec3(SX2 + 64 * c.owner.getId(), SY2, 530.))
+		else
+			ReviveHero(c.actor, SX1 + 64 * c.owner.getId(), SY1, false)
+			c.setPos(vec3(SX1 + 64 * c.owner.getId(), SY1, 530.))
+		c.setVel(vec3(0,0,0))
+		c.actor.setVertexColor(255,255,255,255)
+		SetUnitPropWindow(c.actor,60)
+		t.release()	
+		if GetLocalPlayer() == c.owner
+			PanCameraToTimed(c.actor.getX(), c.actor.getY(), 1.)
+			ClearSelection()
+			SelectUnit(c.actor, true)
 
 	override function update()
-		pos.x = actor.getX()
-		pos.y = actor.getY()
+		super.update()
+		physicsUpdate(this)
 		if not pos.toVec2().inBounds()
-			printError("Child out of Bounds")
 			pos = vec3(0,3600,200)
 			vel = vec3(0,0,0)
 			actor.setPos(pos.toVec2())
-		super.update()
-		
+		pos += vel
 		if fixPos
 			actor.setPos(pos.toVec2())
 			fixPos = false
 		else
-			actor.setXY(pos.toVec2())
-		actor.setFlyHeight(pos.z-terrainZ, 0.)
+			setXY(pos)
+
+	override function onEscapeGround()
+		actor.setPropWindow(0)
+
+	override function onGroundHit()
+		actor.setPropWindow(60)
 		
 	override function onGround()
-		super.onGround()
-		if vel.lengthSquared() > 4.
+		if vel.lengthSquared() > 6.
 			if not isTerrainWalkable(pos.x, pos.y)
 				vel += getBounceVec(vel.toVec2(),getPathingNormal(pos.toVec2())).withZ(0)
 				fixPos = true
@@ -182,7 +144,7 @@ public function getPathingNormal(vec2 pos) returns vec2
 	real radius = 64
 	vec2 addedVecs = vec2(0, 0)
 	for int i = 1 to numberOfTests
-		vec2 direction = vec2(0,0).polarOffset(i*2*bj_PI/numberOfTests, radius)
+		vec2 direction = vec2(0,0).polarOffset((i*2*bj_PI/numberOfTests).asAngleRadians(), radius)
 		vec2 testPoint = pos + direction
 		if isTerrainWalkable(testPoint.x, testPoint.y)
 			addedVecs += direction

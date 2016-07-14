@@ -1,50 +1,76 @@
 package Projectile
 import public Entity
-import Fx
-import Terrain
-import PhysicsConstants
+import Angle
+import PhysicsModule
 
-public class Projectile extends Entity
-	Fx fx
-	boolean timed = false
-	real time
-	real xyspeed
-	real xyangle
-	boolean keepHeight = true
-	real terrainZ = 0.
-	boolean gravityAffected = false
-	boolean hiddenDestroy = false
+public class Projectile extends FxEntity
+	// Angles
+	protected angle xyAngle
+	private vec3 startpos
 	
-	construct(vec3 pos, player owner, real radius)
-		super(pos, owner, radius)
+	private boolean timed = false
+	private boolean ranged = false
+	
+	// Moving Speed
+	private real speed = 0
+	private real acc = 1.0
+	protected real dist = 0
+	private real maxDist = 0
+	protected real lifespan = 0
+	
+	construct( vec3 pos, real radius, player owner, angle xyAngle, string fxpath )
+		super(pos, radius, owner, xyAngle, fxpath)
+		startpos = pos
+		setXYAngle(xyAngle)
+		active = false
+				
+	function setRanged(real maxDistance)
+		this.maxDist = maxDistance*maxDistance
+		ranged = true
 		
-	function setTimed(real duration)
+	function setTimed(real lifespan)
+		this.lifespan = lifespan
 		timed = true
-		time = duration		
+	
+	function setSpeed(real speed)
+		this.speed = speed
+		setVel(vec3(xyAngle.cos()*speed, xyAngle.sin()*speed, 0.))
 		
-	function setXYSpeed(real speed)
-		xyspeed = speed
-		vel = vec3(Cos(xyangle)*speed, Sin(xyangle)*speed, vel.z)
+	function setAcc(real factor)
+		this.acc = factor
+		
+	function getSpeed() returns real
+		return speed
+		
+	function setXYAngle(angle xyA)
+		this.xyAngle = xyA
+		fx.setXYAngle(xyA)
+		
+	function setZAngle(angle zA)
+		fx.setZAngle(zA)
 		
 	override function update()
-		terrainZ = getTerrainZ(pos.x, pos.y)
-		if gravityAffected
-			vel += gravity
+		vel *= acc
 		pos += vel
-		if keepHeight
-			fx.setPos(pos.x, pos.y, pos.z-terrainZ)
-		else
-			fx.setPos(pos)
-		fx.setXYAngle(xyangle*RADTODEG)
+		fixPos()
 		if timed
-			time -= ANIMATION_PERIOD
-			if time < 0
-				terminate()
-				
-				
-	ondestroy
-		if hiddenDestroy
-			fx.hiddenDestroy()
-		else
-			destroy fx
+			lifespan -= ANIMATION_PERIOD
+			if lifespan <= 0
+				done = true
+				return
+		if ranged
+			if startpos.distanceToSq(pos) > maxDist
+				done = true
 		
+public class PhysicsProjectile extends Projectile
+	use PhysicsModule
+
+	construct( vec3 pos, real radius, player owner, angle xyAngle, string fxpath )
+		super(pos, radius, owner, xyAngle, fxpath)
+
+	function setFriction(real friction)
+		this.friction = friction
+		
+	override function update()
+		super.update()
+		physicsUpdate(this)

@@ -1,40 +1,36 @@
 package TimedBar
-	import Entity
-	import CustomBar
-	import public Colors
-	import PresentUnwrap
-	import Child
+import Entity
+import CustomBar
+import public Colors
+import initlater PresentUnwrap
+import initlater Child
+
+public class TimedBar extends Entity
+	CustomBar bar
+	real cvalue = 0
+	real time
+	unit u
+	boolean correct = false
 	
-	public class TimedBar extends Entity
-		CustomBar bar
-		real cvalue = 0
-		real time
-		unit u
-		boolean correct = false
-		construct( vec3 pos, string char, int chars, real value, real time, colorA bg, colorA fg, unit u )
-			super(pos, DUMMY_PLAYER, 0.)
-			this.u = u
-			PauseUnit(u, true)
-			this.time = time
-			bar = new CustomBar(pos,char, chars, 5)
-			bar.setValue(value)
-			bar.setBackground(bg)
-			bar.setForeground(fg)
-			
-		override function update()
-			cvalue += ANIMATION_PERIOD
-			bar.setValue(cvalue/time*100)
-			if cvalue >= time
-				correct = true
-				done = true
-				
-		ondestroy
-			checkUnwrap(u)
-			PauseUnit(u, false)
-			(u.getUserData() castTo Child).wrapBar = null
-			destroy bar
-			
+	construct( vec3 pos, string char, int chars, real value, real time, colorA bg, colorA fg, unit u )
+		super(pos, 0., DUMMY_PLAYER)
+		this.u = u
+		PauseUnit(u, true)
+		this.time = time
+		bar = new CustomBar(pos,char, chars, 5)
+		bar.setValue(value)
+		bar.setBackground(bg)
+		bar.setForeground(fg)
 		
+	override function update()
+		cvalue += ANIMATION_PERIOD
+		bar.setValue(cvalue/time*100)
+		if cvalue >= time
+			correct = true
+			done = true
 			
-			
-endpackage
+	ondestroy
+		checkUnwrap(u)
+		PauseUnit(u, false)
+		(u.getUserData() castTo Child).wrapBar = null
+		destroy bar

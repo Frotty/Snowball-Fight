@@ -31,17 +31,17 @@ function sellPresent()
 	let u = GetTriggerUnit()
 	let p = GetOwningPlayer(u)
 	for int i = 0 to 5
-			var uit = UnitItemInSlot(u, i)
-			if GetItemTypeId(uit) == PRESENT_ID
-				(uit.getUserData() castTo ItemObject).terminate()
-				SetPlayerState(p, PLAYER_STATE_RESOURCE_GOLD, GetPlayerState(p, PLAYER_STATE_RESOURCE_GOLD)+100)
-				createTTEx(vec3(u.getX(),u.getY(),20.), vec2(0,0.05), "|cffffcc00+100|r", 10,  2., colorA(255,255,255,0), p )
-				DisplayTimedTextToForce(GetPlayersAll(), 12., colorcode[p.getId()] + p.getName() + "|r has returned a Present gaining 2 Points for his team!")	
-				if p.getId() <= 5
-					redscore += 2
-				else
-					greenscore += 2
-				checkEnd()
+		var uit = UnitItemInSlot(u, i)
+		if GetItemTypeId(uit) == PRESENT_ID
+			(uit.getUserData() castTo ItemObject).terminate()
+			p.addGold(100)
+			createTTEx(vec3(u.getX(),u.getY(),20.), vec2(0,0.05), "|cffffcc00+100|r", 10,  2., colorA(255,255,255,0), p )
+			DisplayTimedTextToForce(GetPlayersAll(), 12., p.getNameColored() + "|r has returned a Present gaining |cffFFCC00+3|r Points for his team!")	
+			if p.getId() <= 5
+				redscore += 3
+			else
+				greenscore += 3
+			checkEnd()
 
 
 function startBar()
@@ -49,10 +49,6 @@ function startBar()
 	var id = GetSpellAbilityId()
 	if id == UNWRAP_ID
 		(u.getUserData() castTo Child).wrapBar = new TimedBar(vec3(u.getX()-120.,u.getY(),-16), "|", 120, 0, 7.5, colorA(255,255,255,255), colorA(230,181,16,255), u )
-
-	
-
-	
 
 
 trigger t

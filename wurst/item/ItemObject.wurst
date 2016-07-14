@@ -1,19 +1,57 @@
 package ItemObject
 import Entity
+import public initlater Child
 
-public class ItemObject extends Entity
+public abstract class ItemObject extends Entity
 	item actorItem
 
-	construct( item i )
-		super( vec3(i.getX(),i.getY(),0.), DUMMY_PLAYER, 0. )
-		actorItem = i
-		SetItemUserData(actorItem, this castTo int)
-		active = false
-
-	override function update()
+	construct( vec2 pos, int id, player owner )
+		super( pos.toVec3(), owner )
+		actorItem = createItem(id, pos)
+		actorItem.setUserData(this castTo int)
 		
 	ondestroy
 		actorItem.remove()
 		
+	abstract function onPickup(Child e)
+	
+	abstract function onDrop(Child e)
+	
+	abstract function onUse(Child e)
+	
+	static function onItemUse()
+		let itm = GetManipulatedItem()
+		let hero = GetManipulatingUnit()
+		
+		let idata = itm.getEntity()
+		let edata = hero.getEntity()
+		if idata instanceof ItemObject and not idata.done
+			if edata instanceof Child and not edata.done
+				(idata castTo ItemObject).onUse(edata castTo Child)
+				
+	static function onItemPickup()
+		let itm = GetManipulatedItem()
+		let hero = GetManipulatingUnit()
+		
+		let idata = itm.getEntity()
+		let edata = hero.getEntity()
+		if idata instanceof ItemObject and not idata.done
+			if edata instanceof Child and not edata.done
+				(idata castTo ItemObject).onPickup(edata castTo Child)
+				
+	static function onItemDrop()
+		let itm = GetManipulatedItem()
+		let hero = GetManipulatingUnit()
+		
+		let idata = itm.getEntity()
+		let edata = hero.getEntity()
+		if idata instanceof ItemObject and not idata.done
+			if edata instanceof Child and not edata.done
+				(idata castTo ItemObject).onDrop(edata castTo Child)
+				
 
-
+public function initItem()
+	EventListener.add(EVENT_PLAYER_UNIT_PICKUP_ITEM, () -> ItemObject.onItemPickup())
+	EventListener.add(EVENT_PLAYER_UNIT_DROP_ITEM, () -> ItemObject.onItemDrop())
+	EventListener.add(EVENT_PLAYER_UNIT_USE_ITEM, () -> ItemObject.onItemUse())
+	

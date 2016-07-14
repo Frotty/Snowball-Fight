@@ -21,8 +21,8 @@ public function createDialog()
 	DialogSetMessage(gamemode, "Gamemodes")
 	modebutton[0] = DialogAddButton(gamemode, "Short (30 Points)", 111)
 	modebutton[1] = DialogAddButton(gamemode, "Normal (50 Points)", 113)
-	modebutton[2] = DialogAddButton(gamemode, "Lang (80 Points)", 112)
-	DialogDisplay(players.get(0).p, gamemode,true)
+	modebutton[2] = DialogAddButton(gamemode, "Long (80 Points)", 112)
+	DialogDisplay(allPlayers.get(0).p, gamemode,true)
 	trigger t = CreateTrigger()
 	TriggerRegisterDialogEvent(t, gamemode)
 	TriggerAddAction(t,function getGameMode)
@@ -30,14 +30,14 @@ public function createDialog()
 function getGameMode()
 	button b = GetClickedButton()
 	if b == modebutton[0]
-		maxkills = 40
-		DisplayTimedTextToForce(GetPlayersAll(), 12.,"|cffFFAD29» " + colorcode[GetTriggerPlayer().getId()] + GetTriggerPlayer().getName() + "|r hat ein kurzes Spiel ausgewählt!")
+		maxkills = 30
+		DisplayTimedTextToForce(GetPlayersAll(), 12.,"|cffFFAD29» " + GetTriggerPlayer().getNameColored() + "|r selected a short game!")
 	if b == modebutton[1]
-		maxkills = 60
-		DisplayTimedTextToForce(GetPlayersAll(), 12.,"|cffFFAD29» " + colorcode[GetTriggerPlayer().getId()] + GetTriggerPlayer().getName() + "|r hat ein normales Spiel ausgewählt!")
+		maxkills = 50
+		DisplayTimedTextToForce(GetPlayersAll(), 12.,"|cffFFAD29» " + GetTriggerPlayer().getNameColored() + "|r selected a normal game!")
 	if b == modebutton[2]
 		maxkills = 80
-		DisplayTimedTextToForce(GetPlayersAll(), 12.,"|cffFFAD29» " + colorcode[GetTriggerPlayer().getId()] + GetTriggerPlayer().getName() + "|r hat ein langes Spiel ausgewählt!")
+		DisplayTimedTextToForce(GetPlayersAll(), 12.,"|cffFFAD29» " + GetTriggerPlayer().getNameColored() + "|r selected a long game!")
 		
 	playerboard.show() 
 

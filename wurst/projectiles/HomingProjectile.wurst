@@ -1,41 +1,47 @@
 package HomingProjectile
-import public Projectile
-import Fx
-import Terrain
+import public Entity
+import Projectile
 
 public enum HOMING
+	none // wut
 	attract // Direct homing
 	angular // Chaning angle
 	forced // pushed homing (warlock-like)
+	circle // Circular motion around the target with set distance
 
-public class HomingProjectile extends Projectile
-	Entity target
-	real speed = 12.
-	real homingSpeed = 0.15
-	real zangle
-	HOMING homingType = HOMING.attract
-	
+public abstract class HomingProjectile extends Projectile
+	HOMING htype = HOMING.none
+	Entity target = null
+	real homingSpeed = 0.
+	real radii = 0.
 
 	
-	construct(vec3 pos, player owner, real radius, real angle, string fxpath)
-		super(pos, owner, radius)
-		fx = new Fx(pos, angle*RADTODEG, fxpath)
-		xyangle = angle
+	construct(vec3 pos, real radius, player owner, angle xyAngle, string fxpath)
+		super(pos, radius, owner, xyAngle, fxpath)
 		
-	function setHomingTarget(Entity e)
+	function setTarget(Entity e, HOMING htype, real homingspeed)
 		target = e
-
-		
+		this.htype = htype
+		homingSpeed = homingspeed
+		radii = radius*radius + e.radius*e.radius
+				
 	override function update()
-		let dist = distanceBetweenCoords(pos.x, pos.y, target.pos.x, target.pos.y)
-		let anglexy = angleBetweenCoordsR(pos.x, pos.y, target.pos.x, target.pos.y)
-		let anglez = getSlopeAngle(pos.z, target.pos.z, dist )
-		switch homingType
+		let dist = pos.distanceToSq(target.pos)
+		let anglexy = pos.angleTo2d(target.pos)
+		if dist < radii
+			terminate()
+			return
+			
+		switch htype
+			case HOMING.none
+				skip
 			case HOMING.attract
-				vel = (target.pos - this.pos).setLength(speed)
+				vel = (target.pos - this.pos).setLength(homingSpeed)
+			case HOMING.circle
+				skip			
 			case HOMING.angular
-				var df1 = anglexy - xyangle
-				var df2 = (PI2 + anglexy) - xyangle
+				var df1 = (anglexy - xyAngle).radians()
+				var df2 = (PI2 + anglexy.radians()) - xyAngle.radians()
 				var ns = homingSpeed
 		
 				if df1 <= 0
@@ -60,29 +66,19 @@ public class HomingProjectile extends Projectile
 				else
 					if df1 <= ns 
 						ns = df1
-				var d = xyangle
+				var d = xyAngle.radians()
 				d += ns
 				if d >= PI2
 					d -= PI2
 				else if d < 0
 					d += PI2
 		
-				xyangle = d
-		
-				if anglez > zangle
-					if anglez - zangle < homingSpeed
-						zangle += anglez - zangle
-					else
-						zangle += homingSpeed
-				else if zangle > anglez
-					if zangle - anglez < homingSpeed
-						zangle -= zangle - anglez
-					else
-						zangle -= homingSpeed
-				vel = vec3( speed * Cos(xyangle), speed * Sin(xyangle), speed * Sin(zangle)  )
+				
+
+				vel = vec3( getSpeed() * xyAngle.cos(), getSpeed() * xyAngle.sin(), 0. )
 				
 			case HOMING.forced
-				vec3 tmp = vec3(polarProjectionXR(pos.x, speed, anglexy), polarProjectionYR(pos.y, speed, anglexy), polarProjectionZR(pos.z, speed, anglez))
+				vec3 tmp = pos.polarProject(getSpeed(), anglexy, angle(0))
 				
 				tmp -= pos
 				
@@ -90,7 +86,8 @@ public class HomingProjectile extends Projectile
 				
 				pos += vel
 				
-				fx.setPos(pos)
+				fx.setPos(pos.x, pos.y)
 				
 				vel -= (vel*homingSpeed)
+		setXYAngle(anglexy)
 		super.update()

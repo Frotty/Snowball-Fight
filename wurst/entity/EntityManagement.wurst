@@ -1,12 +1,12 @@
 package EntityManagement
 import public Entity
+import TimerUtils
 
 function updateEntities()
 	Entity e = Entity.first
 	while e != null
 		if e.done
 			destroy e
-			debugPrint("destroyed Entity", 0)
 		else 
 			e.update()
 		e = e.next

@@ -1,147 +1,136 @@
 package PlayerData
-	import MultiboardClass
-	import LinkedList
-	import GameConstants
-	import Gamemode
-	
-	public int playercount = 0
-	
-	trigger leaveTrig
-	
-	public LinkedList<PlayerData> players = new LinkedList<PlayerData>()
-	public Board playerboard
-	public PlayerData array pData
+import MultiboardClass
+import LinkedList
+import GameConstants
+import initlater Gamemode
+import ClosureTimers
 
-	public class PlayerData //just the player's (constant) stuff
-		
-		int id
-		int gameId
-		player p
-		string name
-		string mbname //Basically the output name
-		string icon = "ReplaceableTextures\\CommandButtons\\BTNSelectHeroOn.blp"
-		boolean left = false
-		
-		int deaths = 0
-		int kills = 0
-		
-		int killstreak = 0
-		boolean indouble = false
-		boolean intriple = false
-	
-		construct (player p)
-			this.p = p
-			id = GetPlayerId(p)
-			gameId = players.size
-			name = GetPlayerName(p)
-			mbname = name
+trigger leaveTrig
 
-			mbname = colorcode[ id ] + mbname
-			debugPrint("MBNAME: " + mbname, 1)
-			players.add(this)
+public LinkedList<PlayerData> allPlayers = new LinkedList<PlayerData>()
+public Board playerboard
+public PlayerData array pData
+
+public class PlayerData
+	int id
+	int gameId
+	player p
+	string name
+	string mbname //Basically the output name
+	string icon
+	boolean left = false
+	
+	int deaths = 0
+	int kills = 0
+	
+	int killstreak = 0
+	boolean indouble = false
+	boolean intriple = false
+
+	construct (player p)
+		this.p = p
+		id = GetPlayerId(p)
+		gameId = allPlayers.getSize()
+		name = GetPlayerName(p)
+		mbname = name
+
+		mbname = colorcode[ id ] + mbname
+		allPlayers.add(this)
+		if id > 5
+			icon = "ReplaceableTextures\\CommandButtons\\BTNVillagerKid.blp"
+		else
+			icon  = "ReplaceableTextures\\CommandButtons\\BTNRaider.blp"
+		
 			
+	function setMBRow(int r)
+		playerboard.setNewItem(r,0,mbname,icon)
+		playerboard.setNewItem(r,1,kills.toString(),null)
+		playerboard.setNewItem(r,2,deaths.toString(),null)
+		if id < 6
+			playerboard.setNewItem(r,3,"|cffff6347Rotes Team",null)
+		else
+			playerboard.setNewItem(r,3,"|cff3cb371Grünes Team",null)
+
+	
+	function setMbIcon(int typ)
+		playerboard.updateIcon(gameId+1, 0, mbPic[typ])
+		
+	ondestroy
+		DisplayTimedTextToPlayer( GetLocalPlayer(), 0, 0, 20., colorcode[p.getId()] + p.getName() + "|r |cffFFCC33has left the game!") 
+		PlaySoundBJ( gg_snd_QuestFailed )
+		playerboard.removeRow(gameId+1)
+		if gameId < allPlayers.getSize()
+			for p2 in allPlayers
+				if p2.gameId > gameId
+					p2.gameId--
+		allPlayers.remove(this)
+
+
+function initMB()
+	playerboard = new Board(allPlayers.getSize()+1,4)
+	
+	for i = 0 to allPlayers.getSize()
+		playerboard.board.getItem(i,0)..setStyle(true,true)..setWidth(0.1)
+		playerboard.board.getItem(i,1)..setStyle(true,false)..setWidth(0.015)
+		playerboard.board.getItem(i,2)..setStyle(true,false)..setWidth(0.015)
+		playerboard.board.getItem(i,3)..setStyle(true,false)..setWidth(0.05)
+
+	for pd in allPlayers
+		pd.setMBRow(pd.gameId+1)
+
+
+	playerboard.board.getItem(0,0)..setStyle(true,false)..setWidth(0.1)
+	playerboard.setNewItem(0,0,"Player",null)
+	playerboard.board.getItem(0,1)..setStyle(false,true)..setWidth(0.015)
+	playerboard.setNewItem(0,1,null,"ReplaceableTextures\\CommandButtons\\BTNSacrifice.blp")
+	playerboard.board.getItem(0,2)..setStyle(false,true)..setWidth(0.015)
+	playerboard.setNewItem(0,2,null,"ReplaceableTextures\\CommandButtons\\BTNAnkh.blp")
+	playerboard.board.getItem(0,3).setWidth(0.05)
+	playerboard.setNewItem(0,3,"Team",null)
+	playerboard.board.display(true)
+	
+	
+function setTime()
+	seconds++
+	string secs = "|cffffffff"
+	string mins = "|cffffffff"
+	if seconds < 10
+		secs += "0" + seconds.toString()
+	else
+		secs += seconds.toString()
+		
+	if minutes < 10
+		mins += "0" + minutes.toString()
+	else
+		mins += minutes.toString()
+		
+	secs += "|r"
+	mins += "|r"
+	
+	playerboard.board.setTitle( MAP_VER + " [ " + mins + " : " + secs +" ] |cffff6347" +redscore.toString() +"|r - |cff3cb371" + greenscore.toString())
+	
+	if seconds >= 60
+		seconds = 0
+		minutes++
 				
-		function setMBRow(int r)
-			playerboard.setNewItem(r,0,mbname,icon)
-			playerboard.setNewItem(r,1,kills.toString(),null)
-			playerboard.setNewItem(r,2,deaths.toString(),null)
-			if id < 6
-				playerboard.setNewItem(r,3,"|cffff6347Rotes Team",null)
-			else
-				playerboard.setNewItem(r,3,"|cff3cb371Grünes Team",null)
+function playerLeft()
+	var p = GetTriggerPlayer()
+	var pd = pData[p.getId()]
+	allPlayers.remove(pd)
+	destroy pd
 
-		
-		function setMbIcon(int typ)
-			playerboard.updateIcon(gameId+1, 0, mbPic[typ])
-			
-		ondestroy
-			DisplayTimedTextToPlayer( GetLocalPlayer(), 0, 0, 20., colorcode[p.getId()] + p.getName() + "|r |cffFFCC33has left the game!") 
-			PlaySoundBJ( gg_snd_QuestFailed )
-			playerboard.removeRow(gameId+1)
-			if gameId < playercount
-				for p2 in players
-					if p2.gameId > gameId
-						p2.gameId--
-			playercount--
-			
-		
 
 	
-	function initMB()
-		playerboard = new Board(playercount+1,4)
-		
-		for i = 0 to players.size
-			playerboard.board.getItem(i,0).setStyle(true,true).setWidth(0.1)
-			playerboard.board.getItem(i,1).setStyle(true,false).setWidth(0.015)
-			playerboard.board.getItem(i,2).setStyle(true,false).setWidth(0.015)
-			playerboard.board.getItem(i,3).setStyle(true,false).setWidth(0.05)
-
-		for pd in players
-			pd.setMBRow(pd.gameId+1)
-
-
-		playerboard.board.getItem(0,0).setStyle(true,false).setWidth(0.1)
-		playerboard.setNewItem(0,0,"Player",null)
-		playerboard.board.getItem(0,1).setStyle(false,true).setWidth(0.015)
-		playerboard.setNewItem(0,1,null,"ReplaceableTextures\\CommandButtons\\BTNSacrifice.blp")
-		playerboard.board.getItem(0,2).setStyle(false,true).setWidth(0.015)
-		playerboard.setNewItem(0,2,null,"ReplaceableTextures\\CommandButtons\\BTNAnkh.blp")
-		playerboard.board.getItem(0,3).setWidth(0.05)
-		playerboard.setNewItem(0,3,"Team",null)
-		playerboard.board.display(true)
-		
-		
-	function setTime()
-		seconds++
-		string secs = "|cffffffff"
-		string mins = "|cffffffff"
-		if seconds < 10
-			secs += "0" + seconds.toString()
-		else
-			secs += seconds.toString()
-			
-		if minutes < 10
-			mins += "0" + minutes.toString()
-		else
-			mins += minutes.toString()
-			
-		secs += "|r"
-		mins += "|r"
-		
-		playerboard.board.setTitle( MAP_VER + " [ " + mins + " : " + secs +" ] |cffff6347" +redscore.toString() +"|r - |cff3cb371" + greenscore.toString())
-		
-		
-		
-		if seconds >= 60
-			seconds = 0
-			minutes++
-				 
-	function playerLeft()
-		var p = GetTriggerPlayer()
-		var pd = pData[p.getId()]
-		players.remove(pd)
-		destroy pd
-
-
-		
-	init
-		leaveTrig = CreateTrigger()
-		leaveTrig.addAction(function playerLeft)
-		int r = 0
-		for i = 0 to 11
-			debugPrint(i.toString(), 1)
-			if GetPlayerSlotState(Player(i)) == PLAYER_SLOT_STATE_PLAYING and GetPlayerController(Player(i)) == MAP_CONTROL_USER
-				pData[i] = new PlayerData(Player(i))
-				leaveTrig.registerPlayerEvent(Player(i), EVENT_PLAYER_LEAVE)
-				r++
-		playercount = r
-		TimerStart(CreateTimer(), 1., false,function initMB)
-		TimerStart(CreateTimer(), 1., true, function setTime)
-	   
-	int minutes = 0
-	int seconds = 0
+init
+	leaveTrig = CreateTrigger()
+	leaveTrig.addAction(function playerLeft)
+	for i = 0 to 11
+		if players[i].getSlotState() == PLAYER_SLOT_STATE_PLAYING and players[i].getController() == MAP_CONTROL_USER
+			pData[i] = new PlayerData(Player(i))
+			leaveTrig.registerPlayerEvent(Player(i), EVENT_PLAYER_LEAVE)
+	doAfter(.5, () -> initMB())
+	TimerStart(CreateTimer(), 1., true, function setTime)
 	
+int minutes = 0
+int seconds = 0
 
-		
-		
-endpackage 

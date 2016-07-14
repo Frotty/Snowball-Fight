@@ -10,7 +10,6 @@ int array maxstack
 constant int PRESENT_ID = 'I002'
 
 public function onPickup()
-	debugPrint("PICKUP", 1)
 	let u = GetManipulatingUnit()
 	let itm = GetManipulatedItem()
 	let itid = GetItemTypeId(itm)
@@ -31,29 +30,25 @@ public function onPickup()
 			DisplayTimedTextToForce(GetPlayersAll(), 12., colorcode[u.getOwner().getId()] + u.getOwner().getName() + "|r has acquired a present!")	
 		return
 	item foundItem = null
-	int itemid
+	int itemid = -1
 	for i = 0 to 4
 		if GetItemTypeId(itm) == items[i]
 			itemid = i
 			break
-	debugPrint("PICKUP1", 1)
-	int charges = 1
-	for i = 0 to 5
-		var uit = UnitItemInSlot(u, i)
-		if GetItemTypeId(uit) == GetItemTypeId(itm) and uit != itm
-			debugPrint("PICKUP FOUND", 1)
-			charges = (GetItemCharges(uit) + GetItemCharges(itm))
-			debugPrint(charges.toString() + " " + maxstack[itemid].toString(), 1)
-			if GetItemCharges(uit) + GetItemCharges(itm) <= maxstack[itemid]
-				debugPrint("PICKUP FOUND YES", 1)
-				foundItem = uit
-				RemoveItem(itm)
-				break
-	if foundItem != null
-		debugPrint("PICKUP FOUND SET " + (charges).toString(), 1)
-		SetItemCharges(foundItem, charges)
-	else
-		u.addAbility(spells[itemid])
+	if itemid > -1
+		int charges = 1
+		for i = 0 to 5
+			var uit = UnitItemInSlot(u, i)
+			if GetItemTypeId(uit) == GetItemTypeId(itm) and uit != itm
+				charges = (GetItemCharges(uit) + GetItemCharges(itm))
+				if GetItemCharges(uit) + GetItemCharges(itm) <= maxstack[itemid]
+					foundItem = uit
+					RemoveItem(itm)
+					break
+		if foundItem != null
+			SetItemCharges(foundItem, charges)
+		else
+			u.addAbility(spells[itemid])
 
 
 public function removeallspell(unit u)

@@ -1,0 +1,151 @@
+package WurstExportedObjects_w3d
+import ObjEditingNatives
+
+//modifiedTable: 
+
+@compiletime function create_w3d_D000()
+	let u = createObjectDefinition("w3d", 'D000', 'IRrs')
+	u.setLvlDataString("dptx", 0, 0, "none")
+	u.setLvlDataUnreal("dmis", 0, 0, 1.0)
+	u.setLvlDataUnreal("dmas", 0, 0, 2.0)
+	u.setLvlDataString("dnam", 0, 0, "Snowy Rock Big")
+	u.setLvlDataUnreal("dmar", 0, 0, 0.5)
+	u.setLvlDataUnreal("dmap", 0, 0, 0.5)
+
+
+@compiletime function create_w3d_D001()
+	let u = createObjectDefinition("w3d", 'D001', 'IRrk')
+	u.setLvlDataString("dnam", 0, 0, "Rocks P")
+	u.setLvlDataUnreal("dmis", 0, 0, 1.0)
+	u.setLvlDataUnreal("dmas", 0, 0, 1.6)
+	u.setLvlDataString("dptx", 0, 0, "none")
+
+
+@compiletime function create_w3d_D002()
+	let u = createObjectDefinition("w3d", 'D002', 'IRrk')
+	u.setLvlDataString("dnam", 0, 0, "Christmas Tree")
+	u.setLvlDataUnreal("dmis", 0, 0, 5.0)
+	u.setLvlDataUnreal("dmas", 0, 0, 10.0)
+	u.setLvlDataInt("dvar", 0, 0, 1)
+	u.setLvlDataString("dfil", 0, 0, "war3mapImported\\xmastree.mdl")
+	u.setLvlDataString("dtil", 0, 0, "I,*")
+	u.setLvlDataString("dptx", 0, 0, "none")
+
+
+@compiletime function create_w3d_D003()
+	let u = createObjectDefinition("w3d", 'D003', 'IRrk')
+	u.setLvlDataString("dnam", 0, 0, "Globe")
+	u.setLvlDataUnreal("dmis", 0, 0, 1.0)
+	u.setLvlDataUnreal("dmas", 0, 0, 10.0)
+	u.setLvlDataString("dptx", 0, 0, "none")
+	u.setLvlDataInt("dvar", 0, 0, 1)
+	u.setLvlDataString("dfil", 0, 0, "war3mapImported\\Snowglobe.mdl")
+	u.setLvlDataString("dtil", 0, 0, "I,*")
+
+
+@compiletime function create_w3d_D004()
+	let u = createObjectDefinition("w3d", 'D004', 'IRrk')
+	u.setLvlDataString("dnam", 0, 0, "Bells")
+	u.setLvlDataUnreal("dmis", 0, 0, 0.5)
+	u.setLvlDataUnreal("dmas", 0, 0, 5.0)
+	u.setLvlDataString("dptx", 0, 0, "none")
+	u.setLvlDataInt("dvar", 0, 0, 1)
+	u.setLvlDataString("dfil", 0, 0, "war3mapImported\\Bells.mdl")
+	u.setLvlDataString("dtil", 0, 0, "I,*")
+
+
+@compiletime function create_w3d_D005()
+	let u = createObjectDefinition("w3d", 'D005', 'IRrk')
+	u.setLvlDataString("dnam", 0, 0, "CandyStick")
+	u.setLvlDataUnreal("dmis", 0, 0, 1.0)
+	u.setLvlDataUnreal("dmas", 0, 0, 10.0)
+	u.setLvlDataString("dptx", 0, 0, "none")
+	u.setLvlDataInt("dvar", 0, 0, 1)
+	u.setLvlDataString("dfil", 0, 0, "war3mapImported\\XmasCandyStick.mdl")
+	u.setLvlDataString("dtil", 0, 0, "I,*")
+	u.setLvlDataUnreal("dmap", 0, 0, -4.5)
+
+
+@compiletime function create_w3d_D006()
+	let u = createObjectDefinition("w3d", 'D006', 'IRrk')
+	u.setLvlDataString("dnam", 0, 0, "FrozenFountain")
+	u.setLvlDataUnreal("dmis", 0, 0, 1.0)
+	u.setLvlDataUnreal("dmas", 0, 0, 5.0)
+	u.setLvlDataString("dptx", 0, 0, "none")
+	u.setLvlDataInt("dvar", 0, 0, 1)
+	u.setLvlDataString("dfil", 0, 0, "war3mapImported\\FrozenFountain.mdl")
+	u.setLvlDataString("dtil", 0, 0, "I,*")
+
+
+@compiletime function create_w3d_D007()
+	let u = createObjectDefinition("w3d", 'D007', 'IRrk')
+	u.setLvlDataString("dnam", 0, 0, "Snowpine")
+	u.setLvlDataUnreal("dmis", 0, 0, 0.5)
+	u.setLvlDataUnreal("dmas", 0, 0, 1.25)
+	u.setLvlDataInt("dvar", 0, 0, 1)
+	u.setLvlDataString("dfil", 0, 0, "war3mapImported\\SnowPine.mdl")
+	u.setLvlDataString("dtil", 0, 0, "I,*")
+
+
+@compiletime function create_w3d_D008()
+	let u = createObjectDefinition("w3d", 'D008', 'IRrk')
+	u.setLvlDataString("dnam", 0, 0, "Snowman")
+	u.setLvlDataUnreal("dmis", 0, 0, 1.0)
+	u.setLvlDataUnreal("dmas", 0, 0, 10.0)
+	u.setLvlDataString("dptx", 0, 0, "none")
+	u.setLvlDataInt("dvar", 0, 0, 1)
+	u.setLvlDataString("dfil", 0, 0, "Doodads\\Icecrown\\Props\\SnowMan\\SnowMan.mdl")
+	u.setLvlDataString("dtil", 0, 0, "I,*")
+
+
+@compiletime function create_w3d_D009()
+	let u = createObjectDefinition("w3d", 'D009', 'IRrk')
+	u.setLvlDataString("dnam", 0, 0, "Fence")
+	u.setLvlDataUnreal("dmis", 0, 0, 1.0)
+	u.setLvlDataUnreal("dmas", 0, 0, 2.0)
+	u.setLvlDataString("dptx", 0, 0, "PathTextures\\Fence135.tga")
+	u.setLvlDataInt("dvar", 0, 0, 1)
+	u.setLvlDataString("dfil", 0, 0, "Doodads\\Village\\Props\\Village_FenceshortAngled\\Village_FenceshortAngled.mdl")
+	u.setLvlDataString("dtil", 0, 0, "I,*")
+
+
+@compiletime function create_w3d_D00A()
+	let u = createObjectDefinition("w3d", 'D00A', 'IRrk')
+	u.setLvlDataString("dnam", 0, 0, "Igloo")
+	u.setLvlDataUnreal("dmis", 0, 0, 1.0)
+	u.setLvlDataUnreal("dmas", 0, 0, 2.0)
+	u.setLvlDataInt("dvar", 0, 0, 1)
+	u.setLvlDataString("dfil", 0, 0, "Doodads\\Icecrown\\Structures\\Igloo\\Igloo.mdl")
+	u.setLvlDataString("dtil", 0, 0, "I,*")
+	u.setLvlDataString("dptx", 0, 0, "none")
+
+
+@compiletime function create_w3d_D00B()
+	let u = createObjectDefinition("w3d", 'D00B', 'NRic')
+	u.setLvlDataString("dnam", 0, 0, "IceClaw")
+	u.setLvlDataUnreal("dmar", 0, 0, 0.5)
+	u.setLvlDataUnreal("dmap", 0, 0, 0.5)
+	u.setLvlDataString("dptx", 0, 0, "none")
+	u.setLvlDataUnreal("dmas", 0, 0, 3.0)
+	u.setLvlDataUnreal("dmis", 0, 0, 2.0)
+
+
+@compiletime function create_w3d_D00C()
+	let u = createObjectDefinition("w3d", 'D00C', 'COla')
+	u.setLvlDataString("dnam", 0, 0, "Log")
+	u.setLvlDataString("dtil", 0, 0, "C,*")
+	u.setLvlDataString("dptx", 0, 0, "none")
+
+
+@compiletime function create_w3d_D00D()
+	let u = createObjectDefinition("w3d", 'D00D', 'CPms')
+	u.setLvlDataString("dnam", 0, 0, "Shrooms")
+	u.setLvlDataString("dtil", 0, 0, "C,*")
+
+
+@compiletime function create_w3d_D00E()
+	let u = createObjectDefinition("w3d", 'D00E', 'GPsh')
+	u.setLvlDataString("dnam", 0, 0, "Shroom")
+	u.setLvlDataString("dtil", 0, 0, "G,*")
+
+

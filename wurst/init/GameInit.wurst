@@ -1,29 +1,31 @@
 package GameInit
 import Child
-import Flag
 import EntityManagement
-import Presents
 import Gamemode
 import PlayerData
-import SoundHelper
+import SoundUtils
 import PresentUnwrap
+import ClosureTimers
 
-Sound s
-
+SoundDefinition s
 function startGame()
-	for p in players
+	for p in allPlayers
 		if p.id > 5 
 			SelectUnitForPlayerSingle((new Child(vec3(SX2 + 64 * p.id, SY2, 200.), p.p, 'H007')).actor, p.p)
 		else
 			SelectUnitForPlayerSingle((new Child(vec3(SX1 + 64 * p.id, SY1, 200.), p.p, 'H001')).actor, p.p)
 
+	if allPlayers.getSize() == 1
+		new Child(vec3(SX1 + 64 * 6, SY1, 200.), players[8], 'H007')
+		new Child(vec3(SX1 + 64 * 8, SY1, 200.), players[9], 'H007')
+		new Child(vec3(SX1 + 64 * 10, SY1, 200.), players[10], 'H007')
+		players[0].addGold(9999)
+
 	SetTimeOfDay(12.)
-	/*redflag = new Flag(vec3(-3500,1200,0.), CreateUnit(Player(0),'hpea', -3500, 1200, 0.))
-	redflag.redTeam = true*/
-	getTimer().start(.5,function createDialog)
+	doAfter(.5, () -> createDialog())
 	startEntityLoop()
 	initPresentCircles()
 
 init
-	getTimer().start(0.1, function startGame)
+	doAfter(0.1, () -> startGame())
 	

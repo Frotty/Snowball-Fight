@@ -2,40 +2,32 @@ package Snowball
 import Projectile
 import Fx
 import Child
-import SoundHelper
-import SoundQueue
+import SoundUtils
 import IceWall
 
 constant real SPEED = 14
 
-public class Snowball extends Projectile
+public class Snowball extends PhysicsProjectile
 
-	construct(vec3 pos, player owner, real angle)
-		super(pos, owner, 32.)
-		fx = new Fx(pos, angle*RADTODEG, "war3mapImported\\snowball.mdx")
-		fx.setOwner(owner, true)
+	construct(vec3 pos, player owner, angle xyAngle)
+		super(pos, 32., owner, xyAngle, "war3mapImported\\snowball.mdx")
 		setTimed(4.)
-		xyangle = angle
-		setXYSpeed(SPEED)
+		setFriction(0.95)
+		setSpeed(SPEED)
 		throwSound.playOnPoint(pos)
 		
 	override function update()
 		super.update()
-		if pos.z + radius < terrainZ
+		if pos.z + radius < terrainZ or vel.lengthSquared() < 4
 			terrainHitSound.playOnPoint(pos)
 			terminate()
-		else if pos.z - radius > terrainZ
-			pos.z -= (pos.z-radius) - terrainZ
 			
 				
 		Entity e = Entity.first
 		while e != null
 			if e != this and owner != e.owner and IsPlayerEnemy( e.owner, owner )
-				//debugPrint(pos.distToVecSquared(e.pos).toString(),1)
-				if pos.distToVecSquared(e.pos) < (e.radius+radius).squared()
-					debugPrint("inRange",1)
+				if pos.distanceToSq(e.pos) < (e.radius+radius).squared()
 					onHit(e)
-					debugPrint("hit",1)
 					
 			e = e.next
 			
@@ -44,19 +36,19 @@ public class Snowball extends Projectile
 		terminate()
 		if e instanceof Child
 			var c = e castTo Child
-			fx.dummy.damageTarget(c.actor, 55.)
+			fx.getDummy().damageTarget(c.actor, 55.)
 			childHitSound.playOnPoint(pos)
 
 	ondestroy
 		AddSpecialEffect("Abilities\\Spells\\Undead\\FrostArmor\\FrostArmorDamage.mdl", pos.x, pos.y).destr()
 	
-public Sound throwSound
-public Sound terrainHitSound
-public Sound childHitSound
+public SoundDefinition throwSound
+public SoundDefinition terrainHitSound
+public SoundDefinition childHitSound
 
 	
 init
-	throwSound = new Sound("Abilities\\Spells\\Other\\FrostBolt\\FrostBoltLaunch1.wav", 1100, false, true, true, 10, 10, "CombatSoundsEAX")
-	terrainHitSound = new Sound("Abilities\\Spells\\Other\\FrostBolt\\FrostBoltHit1.wav", 1347, false, true, true, 10, 10, "CombatSoundsEAX")
-	childHitSound = new Sound("Abilities\\Spells\\Other\\FrostArrows\\FrostArrowHit1.wav", 1115, false, true, true, 10, 10, "CombatSoundsEAX")
+	throwSound = new SoundDefinition("Abilities\\Spells\\Other\\FrostBolt\\FrostBoltLaunch1.wav", 1100, false)
+	terrainHitSound = new SoundDefinition("Abilities\\Spells\\Other\\FrostBolt\\FrostBoltHit1.wav", 1347, false)
+	childHitSound = new SoundDefinition("Abilities\\Spells\\Other\\FrostArrows\\FrostArrowHit1.wav", 1115, false)
 		

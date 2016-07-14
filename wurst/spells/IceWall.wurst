@@ -1,8 +1,8 @@
 package IceWall
 import Projectile
 import Fx
-import Child
-import LinkedList
+import initlater Child
+import TerrainUtils
 
 constant real SPEED = 18.
 constant real FACTOR = 2.
@@ -12,59 +12,49 @@ public class IceMissile extends Projectile
 	vec3 target
 
 	construct(vec3 pos, player owner, vec3 target)
-		super(pos, owner, 32.)
+		super(pos, 32., owner, pos.angleTo2d(target), "Abilities\\Weapons\\WingedSerpentMissile\\WingedSerpentMissile.mdl")
 		this.target = target
-		let angle = angleBetweenCoordsR(pos.x, pos.y, target.x, target.y)
-		fx = new Fx(pos, angle*RADTODEG, "Abilities\\Weapons\\WingedSerpentMissile\\WingedSerpentMissile.mdl")
-		fx.setOwner(owner, false)
 		setTimed(4.)
-		xyangle = angle
-		setXYSpeed(SPEED)
+		setSpeed(SPEED)
 		//throwSound.playOnPoint(pos)
 		
 	override function update()
 		super.update()
-		if pos.toVec2().distToVecSquared(target.toVec2()) < 48*48
+		if pos.toVec2().distanceToSq(target.toVec2()) < 64*64
 			terminate()
 			
 		Entity e = Entity.first
 		while e != null
 			if e != this and owner != e.owner and IsPlayerEnemy( e.owner, owner )
-				if pos.distToVecSquared(e.pos) < (e.radius+radius).squared()
-					debugPrint("inRange",1)
+				if pos.distanceToSq(e.pos) < (e.radius+radius).squared()
 					onHit(e)
-					debugPrint("hit",1)
 			e = e.next
 			
 			
 	function onHit(Entity e)
 		terminate()
 		if e instanceof Child
-			let angle = angleBetweenCoordsR(pos.x, pos.y, e.pos.x, e.pos.y)
-			e.addVel(vec3(Cos(angle) * FACTOR, Sin(angle) * FACTOR, 1.))
+			let angle = pos.angleTo2d(e.pos)
+			e.addVel(angle.toVec(FACTOR).withZ(1.))
 
 			
 	ondestroy
-		if not pos.z < terrainZ
-			new Iceblock(vec3(pos.x, pos.y, 0), owner,.5 )
-			new Iceblock(vec3(polarProjectionXR(pos.x, 48.,xyangle-1.8), polarProjectionYR(pos.y, 48.,xyangle-1.8), 0), owner,.4 )
-			new Iceblock(vec3(polarProjectionXR(pos.x, 48.,xyangle+1.8), polarProjectionYR(pos.y, 48.,xyangle+1.8), 0), owner,.4 )
+		for i = -2 to 2
+			new Iceblock(pos.toVec2().polarOffset(xyAngle + (22. * i).asAngleDegrees(), 128).toVec3(), owner, .25 )
 
-public class Iceblock extends Entity
+public class Iceblock extends FxEntity
 	real scale
-	Fx block
 	unit collision
 	real timeout = 25.
 
 	construct(vec3 pos, player owner, real scale)
-		super(pos, owner, scale*24)
-		debugPrint("Created",1)
-		collision =CreateUnit(owner, COLLOSION, pos.x,pos.y,0)
-		collision.setXY(pos.x,pos.y)
-		block = new Fx(pos, GetRandomReal(0,360), "Doodads\\Icecrown\\Rocks\\Icecrown_Crystal\\Icecrown_Crystal"+ GetRandomInt(0,8).toString() +".mdl")
-		block.setOwner(owner, false)
+		super(pos, 24,owner,GetRandomReal(0,360).asAngleDegrees(),  "Doodads\\Icecrown\\Rocks\\Icecrown_Crystal\\Icecrown_Crystal"+ GetRandomInt(0,8).toString() +".mdl")
+		this.pos.z = getTerrainZ(pos.toVec2())
 		this.scale = scale
-		block.setScale(scale)
+		collision = createUnit(owner, COLLOSION, pos, angle(0))
+		fx.setScale(scale)
+		fx.setZ(0)
+		silent = true
 		
 	override function update()
 		super.update()
@@ -75,20 +65,19 @@ public class Iceblock extends Entity
 			return
 		while e != null
 			if e instanceof Projectile 
-				if pos.distToVecSquared(e.pos) < (e.radius+radius).squared()
+				if pos.distanceToSq(e.pos) < (e.radius+radius).squared()
 					e.terminate()
 					onHit()
 			e = e.next
 					
 	function onHit()
-		scale -= .12
-		debugPrint("scale: " + scale.toString(),1)
-		block.setScale(scale)
-		radius = scale*16
-		if scale < .2
+		scale -= 0.05
+		fx.setScale(scale)
+		radius -= 6
+		if scale <= 0.1
 			terminate()
 
 	ondestroy
 		collision.remove()
-		block.hiddenDestroy()
+		addEffect("Abilities\\Spells\\Items\\AIma\\AImaTarget.mdl", pos).destr()
 		

@@ -1,0 +1,16 @@
+package WurstExportedObjects_w3h
+import ObjEditingNatives
+
+//modifiedTable: 
+
+@compiletime function create_w3h_B000()
+	let u = createObjectDefinition("w3h", 'B000', 'BOae')
+	u.setString("fnam", "Present weight")
+	u.setString("fube", "The big present slows you down with it's weight.")
+	u.setString("ftip", "Present")
+	u.setString("ftat", "")
+	u.setString("fta0", "")
+	u.setInt("fspd", 0)
+	u.setString("fart", "ReplaceableTextures\\CommandButtons\\BTNBox.blp")
+
+

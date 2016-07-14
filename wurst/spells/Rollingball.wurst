@@ -1,52 +1,41 @@
 package Rollingball
 import Projectile
 import Fx
-import Child
-import Terrain
-import SoundHelper
+import initlater Child
+import TerrainUtils
+import SoundUtils
 
 constant real STARTMOMENTUM = 1
-constant real MOMENTUMGAIN = .15
 constant real MOMENTUMMAX = 20
 constant real SIZEGAIN = .075
-constant real MAXSIZE = 22.5
+constant real MAXSIZE = 24.5
 
 public class Rollingball extends Projectile
 	real momentum
 	real size = 2
 	real startz
 
-	construct(vec3 pos, player owner, real angle)
-		super(pos, owner, 32.)
-		startz = pos.z
-		fx = new Fx(pos, angle*RADTODEG, "war3mapImported\\rollingball.mdx")
-		fx.setOwner(owner, true)
-		xyangle = angle
-		setXYSpeed(STARTMOMENTUM)
+	construct(vec3 pos, player owner, angle angle)
+		super(pos, 32., owner, angle, "war3mapImported\\rollingball.mdx")
+		startz = pos.z + 16
+		setSpeed(STARTMOMENTUM)
 		momentum = STARTMOMENTUM
-		startRoll.playOnPoint(pos)
-		hiddenDestroy = true
-
+		startRoll.play()
 		
 	override function update()
-		if momentum < MOMENTUMMAX
-			momentum += MOMENTUMGAIN
-			setXYSpeed(momentum)
-		if size < MAXSIZE
-			size += SIZEGAIN
-			fx.setScale(size)
-			radius = size*8
-			pos.z = startz+radius-16.
 		super.update()
-		var x = polarProjectionXR(pos.x,radius -2., xyangle+90*DEGTORAD )
-		var y = polarProjectionYR(pos.y,radius -2., xyangle+90*DEGTORAD )
-		//AddSpecialEffect("Abilities\\Weapons\\SpiritOfVengeanceMissile\\SpiritOfVengeanceMissile.mdl", x, y)
-		let tz1 = getTerrainZ(x,y)
-		x = polarProjectionXR(pos.x,radius -2., xyangle-90*DEGTORAD )
-		y = polarProjectionYR(pos.y,radius -2., xyangle-90*DEGTORAD )
-		//AddSpecialEffect("Abilities\\Weapons\\SpiritOfVengeanceMissile\\SpiritOfVengeanceMissile.mdl", x, y)
-		let tz2 = getTerrainZ(x,y)
-		if radius > 32.
+		if momentum < MOMENTUMMAX
+			momentum = momentum.lerp(MOMENTUMMAX, 0.005)
+			setSpeed(momentum)
+		if this.size < MAXSIZE
+			this.size += SIZEGAIN
+			fx.setScale(this.size)
+			radius = this.size*8
+			pos.z = startz+radius-16.
+		let tz1 = getTerrainZ(pos.polarProject(radius -2., xyAngle + (90.).asAngleRadians(), angle(0)).toVec2())
+		let tz2 = getTerrainZ(pos.polarProject(radius -2., xyAngle + (-90.).asAngleRadians(), angle(0)).toVec2())
+		fx.getDummy().setTimeScale(momentum/MOMENTUMMAX)
+		if radius > 128
 			if pos.z < terrainZ or pos.z < tz1 or pos.z < tz2
 				terminate()
 			else if terrainZ < startz
@@ -55,11 +44,8 @@ public class Rollingball extends Projectile
 		Entity e = Entity.first
 		while e != null
 			if e != this and owner != e.owner and IsPlayerEnemy( e.owner, owner )
-				debugPrint(pos.distToVecSquared(e.pos).toString(),1)
-				if pos.distToVecSquared(e.pos) < (e.radius+radius).squared()
-					debugPrint("inRange",1)
+				if pos.distanceToSq(e.pos) < (e.radius+radius).squared()
 					onHit(e)
-					debugPrint("hit",1)
 					
 			e = e.next
 			
@@ -68,20 +54,20 @@ public class Rollingball extends Projectile
 		if e instanceof Child
 			var c = e castTo Child
 			terminate()
-			fx.dummy.damageTarget(c.actor, momentum*4)
+			fx.getDummy().damageTarget(c.actor, this.size*8)
 		else if e instanceof Projectile
 			e.terminate()
 	
 	ondestroy
 		AddSpecialEffect("war3mapImported\\rollingExplosion.mdx", pos.x, pos.y)
-		hitTarget.playOnPoint(pos)
+		hitTarget.play()
 		
-Sound startRoll
-Sound hitTarget
+SoundDefinition startRoll
+SoundDefinition hitTarget
 
 init
-	startRoll = new Sound("Abilities\\Spells\\Orc\\EarthQuake\\EarthquakeRock.wav", 2972, false, true, true, 10, 10, "CombatSoundsEAX")
-	hitTarget = new Sound("Abilities\\Spells\\Human\\FlakCannons\\FlakCannon.wav", 1419, false, true, true, 10, 10, "CombatSoundsEAX")
+	startRoll = new SoundDefinition("Abilities\\Spells\\Orc\\EarthQuake\\EarthquakeRock.wav", 2972, false)
+	hitTarget = new SoundDefinition("Abilities\\Spells\\Human\\FlakCannons\\FlakCannon.wav", 1419, false)
 	
 
 				
