@@ -3,35 +3,25 @@ import Projectile
 import Fx
 import Child
 import SoundUtils
-import IceWall
+import Assets
 
-constant real SPEED = 14
+constant real SPEED = 15.5
+
+public constant throwSound = new SoundDefinition("Abilities\\Spells\\Other\\FrostBolt\\FrostBoltLaunch1.wav", false, false)
+public constant terrainHitSound = new SoundDefinition("Abilities\\Spells\\Other\\FrostBolt\\FrostBoltHit1.wav", false, false)
+public constant childHitSound = new SoundDefinition("Abilities\\Spells\\Other\\FrostArrows\\FrostArrowHit1.wav", false, false)
+
 
 public class Snowball extends PhysicsProjectile
 
-	construct(vec3 pos, player owner, angle xyAngle)
+	construct(vec3 pos, player owner, angle xyAngle, vec3 target)
 		super(pos, 32., owner, xyAngle, "war3mapImported\\snowball.mdx")
-		setTimed(4.)
-		setFriction(0.95)
-		setSpeed(SPEED)
+		setTimed(2.)
+		setFriction(0.925)
+		restitution = 0.15
+		setTarget(target, SPEED)
 		throwSound.playOnPoint(pos)
 		
-	override function update()
-		super.update()
-		if pos.z + radius < terrainZ or vel.lengthSquared() < 4
-			terrainHitSound.playOnPoint(pos)
-			terminate()
-			
-				
-		Entity e = Entity.first
-		while e != null
-			if e != this and owner != e.owner and IsPlayerEnemy( e.owner, owner )
-				if pos.distanceToSq(e.pos) < (e.radius+radius).squared()
-					onHit(e)
-					
-			e = e.next
-			
-			
 	function onHit(Entity e)
 		terminate()
 		if e instanceof Child
@@ -40,15 +30,6 @@ public class Snowball extends PhysicsProjectile
 			childHitSound.playOnPoint(pos)
 
 	ondestroy
-		AddSpecialEffect("Abilities\\Spells\\Undead\\FrostArmor\\FrostArmorDamage.mdl", pos.x, pos.y).destr()
+		AddSpecialEffect(Abilities.frostArmorDamage, pos.x, pos.y).destr()
 	
-public SoundDefinition throwSound
-public SoundDefinition terrainHitSound
-public SoundDefinition childHitSound
-
-	
-init
-	throwSound = new SoundDefinition("Abilities\\Spells\\Other\\FrostBolt\\FrostBoltLaunch1.wav", 1100, false)
-	terrainHitSound = new SoundDefinition("Abilities\\Spells\\Other\\FrostBolt\\FrostBoltHit1.wav", 1347, false)
-	childHitSound = new SoundDefinition("Abilities\\Spells\\Other\\FrostArrows\\FrostArrowHit1.wav", 1115, false)
 		

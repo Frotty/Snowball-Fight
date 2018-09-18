@@ -5,8 +5,8 @@ import public initlater Child
 public abstract class ItemObject extends Entity
 	item actorItem
 
-	construct( vec2 pos, int id, player owner )
-		super( pos.toVec3(), owner )
+	construct(vec2 pos, int id, player owner)
+		super(owner, pos.toVec3())
 		actorItem = createItem(id, pos)
 		actorItem.setUserData(this castTo int)
 		

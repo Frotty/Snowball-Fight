@@ -5,7 +5,7 @@ import SoundUtils
 
 constant int PRESENT_ID = 'I002'
 
-let presentSpawn = new SoundDefinition("war3mapImported\\bells.mp3", 2072, false )
+let presentSpawn = new SoundDefinition("war3mapImported\\bells.mp3", false, false)
 let treeCenter = vec2(0., 4096.)
 
 public class Present extends ItemObject

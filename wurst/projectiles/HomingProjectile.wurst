@@ -14,7 +14,6 @@ public abstract class HomingProjectile extends Projectile
 	Entity target = null
 	real homingSpeed = 0.
 	real radii = 0.
-
 	
 	construct(vec3 pos, real radius, player owner, angle xyAngle, string fxpath)
 		super(pos, radius, owner, xyAngle, fxpath)
@@ -40,42 +39,40 @@ public abstract class HomingProjectile extends Projectile
 			case HOMING.circle
 				skip			
 			case HOMING.angular
-				var df1 = (anglexy - xyAngle).radians()
-				var df2 = (PI2 + anglexy.radians()) - xyAngle.radians()
-				var ns = homingSpeed
+				// var df1 = (anglexy - xyAngle).radians()
+				// var df2 = (PI2 + anglexy.radians()) - xyAngle.radians()
+				// var ns = homingSpeed
 		
-				if df1 <= 0
-					if df2 <= 0 
-						if df2 >= df1 
-							df1 = df2
-					else
-						if -df1 >= df2
-							df1 = df2
-				else
-					if df2 <= 0 
-						if -df2 <= df1
-							df1 = df2
-					else
-						if df2 <= df1 
-							df1 = df2
-				if df1 <= 0 
-					if -df1 >= ns 
-						ns = -ns
-					else
-						ns = df1
-				else
-					if df1 <= ns 
-						ns = df1
-				var d = xyAngle.radians()
-				d += ns
-				if d >= PI2
-					d -= PI2
-				else if d < 0
-					d += PI2
-		
-				
+				// if df1 <= 0
+				// 	if df2 <= 0 
+				// 		if df2 >= df1 
+				// 			df1 = df2
+				// 	else
+				// 		if -df1 >= df2
+				// 			df1 = df2
+				// else
+				// 	if df2 <= 0 
+				// 		if -df2 <= df1
+				// 			df1 = df2
+				// 	else
+				// 		if df2 <= df1 
+				// 			df1 = df2
+				// if df1 <= 0 
+				// 	if -df1 >= ns 
+				// 		ns = -ns
+				// 	else
+				// 		ns = df1
+				// else
+				// 	if df1 <= ns 
+				// 		ns = df1
+				// var d = xyAngle.radians()
+				// d += ns
+				// if d >= PI2
+				// 	d -= PI2
+				// else if d < 0
+				// 	d += PI2
 
-				vel = vec3( getSpeed() * xyAngle.cos(), getSpeed() * xyAngle.sin(), 0. )
+				// vel = vec3( getSpeed() * xyAngle.cos(), getSpeed() * xyAngle.sin(), 0. )
 				
 			case HOMING.forced
 				vec3 tmp = pos.polarProject(getSpeed(), anglexy, angle(0))
@@ -86,7 +83,7 @@ public abstract class HomingProjectile extends Projectile
 				
 				pos += vel
 				
-				fx.setPos(pos.x, pos.y)
+				fx.setXY(pos.toVec2())
 				
 				vel -= (vel*homingSpeed)
 		setXYAngle(anglexy)

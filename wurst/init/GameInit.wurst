@@ -15,7 +15,7 @@ function startGame()
 		else
 			SelectUnitForPlayerSingle((new Child(vec3(SX1 + 64 * p.id, SY1, 200.), p.p, 'H001')).actor, p.p)
 
-	if allPlayers.getSize() == 1
+	if allPlayers.size() == 1
 		new Child(vec3(SX1 + 64 * 6, SY1, 200.), players[8], 'H007')
 		new Child(vec3(SX1 + 64 * 8, SY1, 200.), players[9], 'H007')
 		new Child(vec3(SX1 + 64 * 10, SY1, 200.), players[10], 'H007')

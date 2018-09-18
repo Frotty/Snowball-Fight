@@ -1,0 +1,9 @@
+---
+projectName: "InWarcraft Snowball Fight"
+dependencies:
+- "https://github.com/wurstscript/wurstStdlib2"
+- "https://github.com/frotty/Frentity"
+buildMapData:
+  name: "Snowball fight 1.20a"
+  fileName: "Snowball fight 1.20a"
+  author: "Frotty & kari0003"

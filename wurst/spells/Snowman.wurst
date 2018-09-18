@@ -1,30 +1,31 @@
 package Snowman
 import HomingProjectile
-import Entity
-import Fx
 import Child
 import SoundUtils
+import FxEntity
 
 constant real SPEED = 8.
 constant real MELT = 192
 
+constant throwSound = new SoundDefinition("Abilities\\Spells\\Other\\FrostBolt\\FrostBoltLaunch1.wav", false, false)
+
 public class SnowmanMissile extends HomingProjectile
 
 	construct(vec3 pos, player owner, vec2 target)
-		super(pos, 16., owner, pos.angleTo2d(target), "Abilities\\Weapons\\FrostWyrmMissile\\FrostWyrmMissile.mdl")
+		super(pos, 24., owner, pos.angleTo2d(target), "Abilities\\Weapons\\FrostWyrmMissile\\FrostWyrmMissile.mdl")
 		fx.setScale(.7)
 		setTimed(6.)
 		setSpeed(SPEED)
 		throwSound.playOnPoint(pos)
-		findTarget()
+		findTarget(target)
 
-	function findTarget()
-		if target == null
+	function findTarget(vec2 target)
+		while this.target == null
 			var closestDist = 2147483640.
 			Child closestChild = null
 			for c in getEnemyChildren(owner)
 				if c.owner.isEnemyOf(owner)
-					let dist = pos.distanceToSq(c.pos)
+					let dist = target.distanceToSq(c.pos.toVec2())
 					if dist < closestDist
 						closestDist = dist
 						closestChild = c
@@ -34,7 +35,7 @@ public class SnowmanMissile extends HomingProjectile
 		super.update()
 		for child in getEnemyChildren(owner)
 			if owner.isEnemyOf(child.owner)
-				if pos.distanceToSq(child.getPos()) < (child.radius+radius).squared()
+				if pos.toVec2().distanceToSq(child.getPos().toVec2()) < (child.radius+radius).squared()
 					onHit(child)
 					break
 			
@@ -52,7 +53,7 @@ public class SnowmanDummy extends FxEntity
 	Child target
 	
 	construct(vec3 pos, player owner, Child target )
-		super(pos, 0., owner, target.actor.getFacingAngle(), "Doodads\\Icecrown\\Props\\SnowMan\\SnowMan.mdl")
+		super(owner, pos, 0., target.actor.getFacingAngle(), "Doodads\\Icecrown\\Props\\SnowMan\\SnowMan.mdl")
 		fx.setScale(1.4)
 		addEffect("Abilities\\Spells\\Human\\Polymorph\\PolyMorphTarget.mdl", pos).destr()
 		this.target = target
@@ -70,11 +71,12 @@ public class SnowmanDummy extends FxEntity
 			if target.vel.z > 0.
 				target.vel.z = 0.
 			fx.getDummy().damageTarget(target.actor, .1)
-			fx..setColor(colorA(255,255,255,melttime.toInt()+28))
 			if melttime < 0
 				terminate()
 		else
 			terminate()
+
+		fx..setColor(colorA(255,255,255,melttime.toInt()+28))
 
 	ondestroy
 		PauseUnit(target.actor, false)
@@ -82,8 +84,5 @@ public class SnowmanDummy extends FxEntity
 		target.snowman = null
 		SetUnitTimeScale(target.actor, 1.)
 	
-SoundDefinition throwSound
 
-init
-	throwSound = new SoundDefinition("Abilities\\Spells\\Other\\FrostBolt\\FrostBoltLaunch1.wav", 1100, false)
 		

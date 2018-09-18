@@ -1,19 +1,16 @@
 package Child
-import TerrainUtils
-import Entity
 import initlater Snowball
 import Snowbomb
 import Rollingball
 import KillStreaks
 import initlater Snowman
 import Iceshard
-import LinkedList
 import ItemHandling
 import TimedBar
-import MapBounds
-import PhysicsModule
-import TimerUtils
+import PhysicsEntity
 import IceWall
+import ClosureTimers
+import AbilityIds
 import Assets
 
 public LinkedList<Child> humChildren = new LinkedList<Child>()
@@ -37,13 +34,13 @@ public class Child extends UnitEntity
 	SnowmanDummy snowman
 	
 	construct( vec3 pos, player owner, int id)
-		super(pos, 50., CreateUnit(owner, id, pos.x, pos.y, 0))
+		super(createUnit(owner, id, pos, 0 .fromDeg()), pos, 50.)
 		if owner.getId() > 5
 			orcChildren.add(this)
 		else
 			humChildren.add(this)
 		restitution = .25
-		friction = 0.80
+		surfaceFriction = 0.80
 		EventListener.add(actor, EVENT_PLAYER_UNIT_SPELL_EFFECT, () -> onCast())
 		EventListener.add(actor, EVENT_PLAYER_UNIT_DEATH, () -> onDeath())
 
@@ -62,11 +59,11 @@ public class Child extends UnitEntity
 	function onCast()
 		var id = GetSpellAbilityId()
 		var target = vec2(GetSpellTargetX(), GetSpellTargetY()).withTerrainZ()
-		let castPos = pos.add(0,0,78)
+		let castPos = getPos().add(0,0,78)
 		let angle = pos.angleTo2d(target)
 		switch id
 			case 'A000'
-				new Snowball(castPos, owner, angle )
+				new Snowball(castPos, owner, angle, target)
 			case 'A001'
 				new Snowbomb(castPos, owner, target)
 				removeItemAndCheck('I006', 'A001')
@@ -104,6 +101,12 @@ public class Child extends UnitEntity
 		else
 			ReviveHero(c.actor, SX1 + 64 * c.owner.getId(), SY1, false)
 			c.setPos(vec3(SX1 + 64 * c.owner.getId(), SY1, 530.))
+
+		c.actor.addAbility(AbilityIds.invulnerable)
+		let eff = c.actor.addEffect(Abilities.divineShieldTarget, "chest")
+		doAfter(5.) ->
+			c.actor.removeAbility(AbilityIds.invulnerable)
+			eff.destr()
 		c.setVel(vec3(0,0,0))
 		c.actor.setVertexColor(255,255,255,255)
 		SetUnitPropWindow(c.actor,60)
@@ -114,39 +117,38 @@ public class Child extends UnitEntity
 			SelectUnit(c.actor, true)
 
 	override function update()
-		super.update()
 		physicsUpdate(this)
+		super.update()
 		if not pos.toVec2().inBounds()
 			pos = vec3(0,3600,200)
 			vel = vec3(0,0,0)
 			actor.setPos(pos.toVec2())
-		pos += vel
-		if fixPos
-			actor.setPos(pos.toVec2())
-			fixPos = false
-		else
-			setXY(pos)
 
 	override function onEscapeGround()
-		actor.setPropWindow(0)
+		actor.setPropWindow(0 .fromDeg())
 
 	override function onGroundHit()
-		actor.setPropWindow(60)
+		actor.setPropWindow(60 .fromDeg())
 		
-	override function onGround()
+	override function onGround(Entity e)
+		if e.flying
+			e.flying = false
+			onGroundHit()
+		// e.scaleVel(surfaceFriction)
 		if vel.lengthSquared() > 6.
-			if not isTerrainWalkable(pos.x, pos.y)
-				vel += getBounceVec(vel.toVec2(),getPathingNormal(pos.toVec2())).withZ(0)
+			let nextPos = pos + vel
+			if not nextPos.toVec2().isTerrainWalkable()
+				vel += getBounceVec(vel.toVec2(), getPathingNormal(nextPos.toVec2())).withZ(0)
 				fixPos = true
 		
 public function getPathingNormal(vec2 pos) returns vec2
-	int numberOfTests = 12
-	real radius = 64
+	int numberOfTests = 8
+	let radius = 64.
 	vec2 addedVecs = vec2(0, 0)
 	for int i = 1 to numberOfTests
 		vec2 direction = vec2(0,0).polarOffset((i*2*bj_PI/numberOfTests).asAngleRadians(), radius)
 		vec2 testPoint = pos + direction
-		if isTerrainWalkable(testPoint.x, testPoint.y)
+		if testPoint.isTerrainWalkable()
 			addedVecs += direction
 	return addedVecs.setLength(1.) * (-1.)
 	
@@ -155,8 +157,19 @@ public function getBounceVec(vec2 vel2, vec2 nor2) returns vec2
 		vec3 nor3 = nor2.toVec3()
 		vec3 pv3 = vel3.project(nor3)
 		vec2 pv2 = pv3.toVec2()
-		pv2 *= (-1.4)
+		pv2 *= (-1.9)
 		return pv2
 
 		
+boolean first = true
+init
+	EventListener.add(EVENT_PLAYER_END_CINEMATIC) ->
+		if first
+			for i = 0 to 20
+				let child = new Child(vec3(-800, 3500, 20), Player(0), 'hfoo')
+				child.setVel(vec3(-10. -i, -10. + i, 2))
+				doAfter(15) ->
+					child.terminate()
+			// first = false
+		else
 		

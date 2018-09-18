@@ -4,12 +4,16 @@ import LinkedList
 import GameConstants
 import initlater Gamemode
 import ClosureTimers
+import Assets
 
 trigger leaveTrig
 
-public LinkedList<PlayerData> allPlayers = new LinkedList<PlayerData>()
+public constant allPlayers = new LinkedList<PlayerData>()
 public Board playerboard
 public PlayerData array pData
+
+int minutes = 0
+int seconds = 0
 
 public class PlayerData
 	int id
@@ -30,16 +34,16 @@ public class PlayerData
 	construct (player p)
 		this.p = p
 		id = GetPlayerId(p)
-		gameId = allPlayers.getSize()
-		name = GetPlayerName(p)
-		mbname = name
+		gameId = allPlayers.size()
+		name = p.getName()
+		mbname = p.getNameColored()
 
-		mbname = colorcode[ id ] + mbname
 		allPlayers.add(this)
+
 		if id > 5
-			icon = "ReplaceableTextures\\CommandButtons\\BTNVillagerKid.blp"
+			icon = Icons.bTNRaider
 		else
-			icon  = "ReplaceableTextures\\CommandButtons\\BTNRaider.blp"
+			icon = Icons.bTNVillagerKid
 		
 			
 	function setMBRow(int r)
@@ -52,24 +56,20 @@ public class PlayerData
 			playerboard.setNewItem(r,3,"|cff3cb371Grünes Team",null)
 
 	
-	function setMbIcon(int typ)
-		playerboard.updateIcon(gameId+1, 0, mbPic[typ])
-		
 	ondestroy
-		DisplayTimedTextToPlayer( GetLocalPlayer(), 0, 0, 20., colorcode[p.getId()] + p.getName() + "|r |cffFFCC33has left the game!") 
-		PlaySoundBJ( gg_snd_QuestFailed )
-		playerboard.removeRow(gameId+1)
-		if gameId < allPlayers.getSize()
+		DisplayTimedTextToPlayer( GetLocalPlayer(), 0, 0, 20., p.getNameColored() + " |cffFFCC33has left the game!") 
+		PlaySoundBJ(gg_snd_QuestFailed)
+		playerboard.removeRow(gameId + 1)
+		if gameId < allPlayers.size()
 			for p2 in allPlayers
 				if p2.gameId > gameId
 					p2.gameId--
 		allPlayers.remove(this)
 
-
 function initMB()
-	playerboard = new Board(allPlayers.getSize()+1,4)
+	playerboard = new Board(allPlayers.size()+1,4)
 	
-	for i = 0 to allPlayers.getSize()
+	for i = 0 to allPlayers.size()
 		playerboard.board.getItem(i,0)..setStyle(true,true)..setWidth(0.1)
 		playerboard.board.getItem(i,1)..setStyle(true,false)..setWidth(0.015)
 		playerboard.board.getItem(i,2)..setStyle(true,false)..setWidth(0.015)
@@ -114,13 +114,9 @@ function setTime()
 		minutes++
 				
 function playerLeft()
-	var p = GetTriggerPlayer()
-	var pd = pData[p.getId()]
-	allPlayers.remove(pd)
-	destroy pd
+	destroy pData[GetTriggerPlayer().getId()]
 
 
-	
 init
 	leaveTrig = CreateTrigger()
 	leaveTrig.addAction(function playerLeft)
@@ -131,6 +127,3 @@ init
 	doAfter(.5, () -> initMB())
 	TimerStart(CreateTimer(), 1., true, function setTime)
 	
-int minutes = 0
-int seconds = 0
-

@@ -1,12 +1,7 @@
 package PresentUnwrap
-import Colors
-import Texttag
 import Gamemode
-import GameConstants
-import CustomBar
 import Entity
 import TimedBar
-import Child
 import ItemObject
 
 constant int PRESENT_ID = 'I002'
@@ -19,7 +14,7 @@ public function checkUnwrap(unit u)
 		var uit = UnitItemInSlot(u, i)
 		if GetItemTypeId(uit) == PRESENT_ID
 			RemoveItem(uit)
-			u.addItem(PRESENTS[GetRandomInt(0,4)])
+			u.addItemById(PRESENTS[GetRandomInt(0,4)])
 			break
 
 function isChild() returns boolean

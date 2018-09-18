@@ -2,3 +2,5 @@
 *.w3m
 
 wurst.dependencies
+/_build
+/.vscode

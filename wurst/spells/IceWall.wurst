@@ -1,8 +1,7 @@
 package IceWall
 import Projectile
-import Fx
 import initlater Child
-import TerrainUtils
+import FxEntity
 
 constant real SPEED = 18.
 constant real FACTOR = 2.
@@ -23,12 +22,12 @@ public class IceMissile extends Projectile
 		if pos.toVec2().distanceToSq(target.toVec2()) < 64*64
 			terminate()
 			
-		Entity e = Entity.first
-		while e != null
-			if e != this and owner != e.owner and IsPlayerEnemy( e.owner, owner )
-				if pos.distanceToSq(e.pos) < (e.radius+radius).squared()
-					onHit(e)
-			e = e.next
+		// Entity e = Entity.first
+		// while e != null
+		// 	if e != this and owner != e.owner and IsPlayerEnemy( e.owner, owner )
+		// 		if pos.distanceToSq(e.pos) < (e.radius+radius).squared()
+		// 			onHit(e)
+		// 	e = e.next
 			
 			
 	function onHit(Entity e)
@@ -48,8 +47,8 @@ public class Iceblock extends FxEntity
 	real timeout = 25.
 
 	construct(vec3 pos, player owner, real scale)
-		super(pos, 24,owner,GetRandomReal(0,360).asAngleDegrees(),  "Doodads\\Icecrown\\Rocks\\Icecrown_Crystal\\Icecrown_Crystal"+ GetRandomInt(0,8).toString() +".mdl")
-		this.pos.z = getTerrainZ(pos.toVec2())
+		super(owner, pos, 24, GetRandomReal(0,360).asAngleDegrees(),  "Doodads\\Icecrown\\Rocks\\Icecrown_Crystal\\Icecrown_Crystal" + GetRandomInt(0,8).toString() + ".mdl")
+		this.pos.z = pos.getTerrainZ()
 		this.scale = scale
 		collision = createUnit(owner, COLLOSION, pos, angle(0))
 		fx.setScale(scale)
@@ -58,17 +57,19 @@ public class Iceblock extends FxEntity
 		
 	override function update()
 		super.update()
-		Entity e = Entity.first
+		
 		timeout -= ANIMATION_PERIOD
 		if timeout <= 0.
 			terminate()
 			return
-		while e != null
-			if e instanceof Projectile 
-				if pos.distanceToSq(e.pos) < (e.radius+radius).squared()
-					e.terminate()
-					onHit()
-			e = e.next
+
+		// Entity e = Entity.first
+		// while e != null
+		// 	if e instanceof Projectile 
+		// 		if pos.distanceToSq(e.pos) < (e.radius+radius).squared()
+		// 			e.terminate()
+		// 			onHit()
+		// 	e = e.next
 					
 	function onHit()
 		scale -= 0.05

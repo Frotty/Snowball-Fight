@@ -1,7 +1,6 @@
 package ItemHandling
-import GameConstants
 import ItemObject
-import Texttag
+import ClosureEvents
 
 int array items
 int array spells
@@ -23,11 +22,11 @@ public function onPickup()
 			UnitDropItemSlot(u, itm, slot)
 			let data = itm.getUserData() castTo ItemObject
 			data.actorItem.remove()
-			data.actorItem = CreateItem(PRESENT_ID, data.pos.x, data.pos.y)
+			data.actorItem = createItem(PRESENT_ID, data.getPos())
 			data.actorItem.setUserData(data castTo int)
 			createTTEx(vec3(u.getX(),u.getY(),20.), vec2(0,0.05), "|cffcccc00You can only carry one!|r", 10,  2., colorA(255,255,255,0), u.getOwner() )
 		else
-			DisplayTimedTextToForce(GetPlayersAll(), 12., colorcode[u.getOwner().getId()] + u.getOwner().getName() + "|r has acquired a present!")	
+			DisplayTimedTextToForce(GetPlayersAll(), 12., u.getOwner().getNameColored() + " has acquired a present!")	
 		return
 	item foundItem = null
 	int itemid = -1
@@ -58,10 +57,8 @@ public function removeallspell(unit u)
 
 
 init
-	trigger t = CreateTrigger()
-	trigger t2 = CreateTrigger()
-	t2.registerAnyUnitEvent(EVENT_PLAYER_UNIT_PICKUP_ITEM)
-	t2.addAction(function onPickup)
+	EventListener.add(EVENT_PLAYER_UNIT_PICKUP_ITEM) ->
+		onPickup()
 	// Icewall
 	items[0] = 'I003'
 	spells[0] = 'A004'

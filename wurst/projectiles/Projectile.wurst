@@ -1,7 +1,7 @@
 package Projectile
 import public Entity
-import Angle
-import PhysicsModule
+import PhysicsEntity
+import FxEntity
 
 public class Projectile extends FxEntity
 	// Angles
@@ -18,14 +18,14 @@ public class Projectile extends FxEntity
 	private real maxDist = 0
 	protected real lifespan = 0
 	
-	construct( vec3 pos, real radius, player owner, angle xyAngle, string fxpath )
-		super(pos, radius, owner, xyAngle, fxpath)
+	construct(vec3 pos, real radius, player owner, angle xyAngle, string fxpath)
+		super(owner, pos, radius, xyAngle, fxpath)
+		sleeps = false
 		startpos = pos
 		setXYAngle(xyAngle)
-		active = false
 				
 	function setRanged(real maxDistance)
-		this.maxDist = maxDistance*maxDistance
+		this.maxDist = maxDistance * maxDistance
 		ranged = true
 		
 	function setTimed(real lifespan)
@@ -34,7 +34,7 @@ public class Projectile extends FxEntity
 	
 	function setSpeed(real speed)
 		this.speed = speed
-		setVel(vec3(xyAngle.cos()*speed, xyAngle.sin()*speed, 0.))
+		setVel(vec3(xyAngle.cos() * speed, xyAngle.sin() * speed, 0.))
 		
 	function setAcc(real factor)
 		this.acc = factor
@@ -52,25 +52,24 @@ public class Projectile extends FxEntity
 	override function update()
 		vel *= acc
 		pos += vel
-		fixPos()
+		fx.setXYZ(pos)
 		if timed
 			lifespan -= ANIMATION_PERIOD
 			if lifespan <= 0
-				done = true
-				return
+				terminate()
 		if ranged
 			if startpos.distanceToSq(pos) > maxDist
-				done = true
+				terminate()
 		
 public class PhysicsProjectile extends Projectile
 	use PhysicsModule
 
-	construct( vec3 pos, real radius, player owner, angle xyAngle, string fxpath )
+	construct(vec3 pos, real radius, player owner, angle xyAngle, string fxpath)
 		super(pos, radius, owner, xyAngle, fxpath)
 
 	function setFriction(real friction)
-		this.friction = friction
+		this.surfaceFriction = friction
 		
 	override function update()
-		super.update()
 		physicsUpdate(this)
+		super.update()

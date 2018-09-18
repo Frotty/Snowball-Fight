@@ -13,7 +13,7 @@ public class TimedBar extends Entity
 	boolean correct = false
 	
 	construct( vec3 pos, string char, int chars, real value, real time, colorA bg, colorA fg, unit u )
-		super(pos, 0., DUMMY_PLAYER)
+		super(DUMMY_PLAYER, pos, 0.)
 		this.u = u
 		PauseUnit(u, true)
 		this.time = time

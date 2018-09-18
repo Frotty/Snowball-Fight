@@ -2,13 +2,14 @@ package Iceshard
 import Projectile
 import Fx
 import initlater Child
+import Assets
 
 constant real SPEED = 24
 
 public class Iceshard extends PhysicsProjectile
 
 	construct(vec3 pos, player owner, angle angle)
-		super(pos, 32., owner, angle, "Abilities\\Weapons\\LichMissile\\LichMissile.mdl")
+		super(pos, 32., owner, angle, Abilities.lichMissile)
 		fx.setOwner(owner, false)
 		setTimed(4.)
 		setSpeed(SPEED)
@@ -18,15 +19,11 @@ public class Iceshard extends PhysicsProjectile
 		if pos.z < terrainZ
 			terminate()
 				
-		Entity e = Entity.first
-		while e != null
+		for e in Entity
 			if e != this and owner != e.owner and IsPlayerEnemy( e.owner, owner )
 				//debugPrint(pos.distToVecSquared(e.pos).toString(),1)
 				if pos.distanceToSq(e.pos) < (e.radius+radius).squared()
 					onHit(e)
-					
-			e = e.next
-			
 			
 	function onHit(Entity e)
 		terminate()
@@ -35,7 +32,7 @@ public class Iceshard extends PhysicsProjectile
 			fx.getDummy().damageTarget(c.actor, 65.)
 			
 	ondestroy
-		AddSpecialEffect("Abilities\\Spells\\Undead\\FrostArmor\\FrostArmorDamage.mdl", pos.x, pos.y).destr()
+		AddSpecialEffect(Abilities.frostArmorDamage, pos.x, pos.y).destr()
 	
 
 
