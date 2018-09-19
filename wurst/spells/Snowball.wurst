@@ -4,6 +4,7 @@ import Fx
 import Child
 import SoundUtils
 import Assets
+import Collision
 
 constant real SPEED = 15.5
 
@@ -17,19 +18,23 @@ public class Snowball extends PhysicsProjectile
 	construct(vec3 pos, player owner, angle xyAngle, vec3 target)
 		super(pos, 32., owner, xyAngle, "war3mapImported\\snowball.mdx")
 		setTimed(2.)
-		setFriction(0.925)
-		restitution = 0.15
+		setFriction(0.905)
+		restitution = 0.05
 		setTarget(target, SPEED)
 		throwSound.playOnPoint(pos)
+		registerCollidable(this, (other) -> onHit(other))
+		registerCollider(this, SHAPE_SPHERE, (other) -> onHit(other))
 		
 	function onHit(Entity e)
-		terminate()
-		if e instanceof Child
+		if e instanceof Child and e.owner.isEnemyOf(owner)
 			var c = e castTo Child
 			fx.getDummy().damageTarget(c.actor, 55.)
 			childHitSound.playOnPoint(pos)
-
+			terminate()
+	
 	ondestroy
 		AddSpecialEffect(Abilities.frostArmorDamage, pos.x, pos.y).destr()
+		removeCollidable(this)
+		removeCollider(this)
 	
 		

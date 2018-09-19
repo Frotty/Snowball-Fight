@@ -50,8 +50,8 @@ trigger t
 unit scircle
 unit ncircle
 public function initPresentCircles()
-	scircle = CreateUnit(Player(15),CIRCLE_ID, -256, 1350,0.)
-	ncircle = CreateUnit(Player(15),CIRCLE_ID, 0, 6540,0.)
+	scircle = CreateUnit(players[PLAYER_NEUTRAL_PASSIVE], CIRCLE_ID, -256, 1350, 0.)..setVertexColor(COLOR_GOLD)
+	ncircle = CreateUnit(players[PLAYER_NEUTRAL_PASSIVE], CIRCLE_ID, 0, 6540, 0.)..setVertexColor(COLOR_GOLD)
 	t = CreateTrigger()
 	t.registerUnitInRange(scircle, 100,Condition(function isChild))
 	t.addAction(function sellPresent)

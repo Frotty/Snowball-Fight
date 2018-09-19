@@ -9,4 +9,4 @@ public SoundDefinition array announcers = [ new SoundDefinition("war3mapImported
 											new SoundDefinition("war3mapImported\\veryMerryChristmas.mp3", false, false)]
 
 
-public constant MAP_VER = "|cffE66321in|cffADADADWarcraft |cffF7F7F7Snowball Fight|r"
+public constant MAP_VER = "|cffADADADSnowball Fight|r"

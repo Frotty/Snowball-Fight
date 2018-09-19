@@ -10,8 +10,8 @@ import TimedBar
 import PhysicsEntity
 import IceWall
 import ClosureTimers
-import AbilityIds
 import Assets
+import Collision
 
 public LinkedList<Child> humChildren = new LinkedList<Child>()
 public LinkedList<Child> orcChildren = new LinkedList<Child>()
@@ -43,6 +43,8 @@ public class Child extends UnitEntity
 		surfaceFriction = 0.80
 		EventListener.add(actor, EVENT_PLAYER_UNIT_SPELL_EFFECT, () -> onCast())
 		EventListener.add(actor, EVENT_PLAYER_UNIT_DEATH, () -> onDeath())
+		addSpawnShield()
+		registerCollidable(this, (e) -> skip)
 
 	function removeItemAndCheck(int itemid, int spellid)
 		for int i = 0 to 5
@@ -102,11 +104,7 @@ public class Child extends UnitEntity
 			ReviveHero(c.actor, SX1 + 64 * c.owner.getId(), SY1, false)
 			c.setPos(vec3(SX1 + 64 * c.owner.getId(), SY1, 530.))
 
-		c.actor.addAbility(AbilityIds.invulnerable)
-		let eff = c.actor.addEffect(Abilities.divineShieldTarget, "chest")
-		doAfter(5.) ->
-			c.actor.removeAbility(AbilityIds.invulnerable)
-			eff.destr()
+		c.addSpawnShield()
 		c.setVel(vec3(0,0,0))
 		c.actor.setVertexColor(255,255,255,255)
 		SetUnitPropWindow(c.actor,60)
@@ -130,17 +128,16 @@ public class Child extends UnitEntity
 	override function onGroundHit()
 		actor.setPropWindow(60 .fromDeg())
 		
-	override function onGround(Entity e)
-		if e.flying
-			e.flying = false
-			onGroundHit()
-		// e.scaleVel(surfaceFriction)
-		if vel.lengthSquared() > 6.
-			let nextPos = pos + vel
-			if not nextPos.toVec2().isTerrainWalkable()
-				vel += getBounceVec(vel.toVec2(), getPathingNormal(nextPos.toVec2())).withZ(0)
-				fixPos = true
-		
+	function addSpawnShield()
+		actor.addAbility(AbilityIds.invulnerable)
+		let eff = actor.addEffect(Abilities.divineShieldTarget, "chest")
+		doAfter(5.) ->
+			actor.removeAbility(AbilityIds.invulnerable)
+			eff.destr()
+
+	ondestroy
+		removeCollidable(this)
+
 public function getPathingNormal(vec2 pos) returns vec2
 	int numberOfTests = 8
 	let radius = 64.

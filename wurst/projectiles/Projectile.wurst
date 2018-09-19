@@ -50,9 +50,8 @@ public class Projectile extends FxEntity
 		fx.setZAngle(zA)
 		
 	override function update()
+		super.update()
 		vel *= acc
-		pos += vel
-		fx.setXYZ(pos)
 		if timed
 			lifespan -= ANIMATION_PERIOD
 			if lifespan <= 0
