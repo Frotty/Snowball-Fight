@@ -3,8 +3,9 @@ import HomingProjectile
 import Child
 import SoundUtils
 import FxEntity
+import Collision
 
-constant real SPEED = 8.
+constant real SPEED = 9.
 constant real MELT = 192
 
 constant throwSound = new SoundDefinition("Abilities\\Spells\\Other\\FrostBolt\\FrostBoltLaunch1.wav", false, false)
@@ -18,6 +19,7 @@ public class SnowmanMissile extends HomingProjectile
 		setSpeed(SPEED)
 		throwSound.playOnPoint(pos)
 		findTarget(target)
+		registerCollider(this, SHAPE_SPHERE, (e) -> onHit(e))
 
 	function findTarget(vec2 target)
 		while this.target == null
@@ -30,28 +32,25 @@ public class SnowmanMissile extends HomingProjectile
 						closestDist = dist
 						closestChild = c
 			setTarget(closestChild, HOMING.angular, 0.03)
-		
-	override function update()
-		super.update()
-		for child in getEnemyChildren(owner)
-			if owner.isEnemyOf(child.owner)
-				if pos.toVec2().distanceToSq(child.getPos().toVec2()) < (child.radius+radius).squared()
-					onHit(child)
-					break
-			
-			
-	function onHit(Child child)
-		if child.snowman == null
-			new SnowmanDummy(child.getPos().add(0,0,-child.terrainZ), owner, child)
-		else
-			child.snowman.melttime = MELT
-		terminate()
 
-		
+
+	function onHit(Entity e)
+		if e != null and not e.done and e instanceof Child and e.owner.isEnemyOf(owner)
+			let child = e castTo Child
+			if child.snowman == null
+				new SnowmanDummy(child.getPos().add(0,0,-child.terrainZ), owner, child)
+			else
+				child.snowman.melttime = MELT
+			terminate()
+
+	ondestroy
+		removeCollider(this)
+
+
 public class SnowmanDummy extends FxEntity
 	real melttime = MELT
 	Child target
-	
+
 	construct(vec3 pos, player owner, Child target )
 		super(owner, pos, 0., target.actor.getFacingAngle(), "Doodads\\Icecrown\\Props\\SnowMan\\SnowMan.mdl")
 		fx.setScale(1.4)
@@ -62,9 +61,10 @@ public class SnowmanDummy extends FxEntity
 		target.actor.setVertexColor(155,155,255,255)
 		SetUnitTimeScale(target.actor, 0)
 		silent = true
-		
+
 	override function update()
 		melttime--
+		fx..setColor(colorA(255,255,255,melttime.toInt()+28))
 
 		if target.actor.getHP() > .405
 			pos = target.pos
@@ -76,13 +76,12 @@ public class SnowmanDummy extends FxEntity
 		else
 			terminate()
 
-		fx..setColor(colorA(255,255,255,melttime.toInt()+28))
 
 	ondestroy
 		PauseUnit(target.actor, false)
 		target.actor.setVertexColor(255,255,255,255)
 		target.snowman = null
 		SetUnitTimeScale(target.actor, 1.)
-	
 
-		
+
+

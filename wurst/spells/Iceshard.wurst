@@ -3,6 +3,7 @@ import Projectile
 import Fx
 import initlater Child
 import Assets
+import Collision
 
 constant real SPEED = 24
 
@@ -13,28 +14,24 @@ public class Iceshard extends PhysicsProjectile
 		fx.setOwner(owner, false)
 		setTimed(4.)
 		setSpeed(SPEED)
-		
-	override function update()
-		super.update()
-		if pos.z < terrainZ
-			terminate()
-				
-		for e in Entity
-			if e != this and owner != e.owner and IsPlayerEnemy( e.owner, owner )
-				//debugPrint(pos.distToVecSquared(e.pos).toString(),1)
-				if pos.distanceToSq(e.pos) < (e.radius+radius).squared()
-					onHit(e)
-			
+		surfaceFriction = 0.99
+
+		registerCollidable(this, (other) -> onHit(other))
+		registerCollider(this, SHAPE_SPHERE, (other) -> onHit(other))
+
 	function onHit(Entity e)
-		terminate()
-		if e instanceof Child
-			var c = e castTo Child
-			fx.getDummy().damageTarget(c.actor, 65.)
-			
+		if e.owner.isEnemyOf(owner)
+			if e instanceof Child
+				var c = e castTo Child
+				fx.getDummy().damageTarget(c.actor, 65.)
+			terminate()
+
 	ondestroy
 		AddSpecialEffect(Abilities.frostArmorDamage, pos.x, pos.y).destr()
-	
+		removeCollidable(this)
+		removeCollider(this)
 
 
-	
-		
+
+
+

@@ -23,10 +23,10 @@ public class PlayerData
 	string mbname //Basically the output name
 	string icon
 	boolean left = false
-	
+
 	int deaths = 0
 	int kills = 0
-	
+
 	int killstreak = 0
 	boolean indouble = false
 	boolean intriple = false
@@ -35,25 +35,25 @@ public class PlayerData
 		this.p = p
 		id = GetPlayerId(p)
 		gameId = allPlayers.size()
-		name = p.getName()
+		name = p.getNameColored()
 		mbname = p.getNameColored()
 
 		allPlayers.add(this)
 
-		if id > 5
+		if id > 4
 			icon = Icons.bTNRaider
 		else
 			icon = Icons.bTNVillagerKid
-		
-			
+
+
 	function setMBRow(int r)
 		playerboard.setNewItem(r,0,mbname,icon)
 		playerboard.setNewItem(r,1,kills.toString(),null)
 		playerboard.setNewItem(r,2,deaths.toString(),null)
 
-	
+
 	ondestroy
-		DisplayTimedTextToPlayer( GetLocalPlayer(), 0, 0, 20., p.getNameColored() + " |cffFFCC33has left the game!") 
+		DisplayTimedTextToPlayer( GetLocalPlayer(), 0, 0, 20., p.getNameColored() + " |cffFFCC33has left the game!")
 		PlaySoundBJ(gg_snd_QuestFailed)
 		playerboard.removeRow(gameId + 1)
 		if gameId < allPlayers.size()
@@ -64,7 +64,7 @@ public class PlayerData
 
 function initMB()
 	playerboard = new Board(allPlayers.size()+1,3)
-	
+
 	for i = 0 to allPlayers.size()
 		playerboard.board.getItem(i,0)..setStyle(true,true)..setWidth(0.1)
 		playerboard.board.getItem(i,1)..setStyle(true,false)..setWidth(0.015)
@@ -81,16 +81,16 @@ function initMB()
 	playerboard.board.getItem(0,2)..setStyle(false,true)..setWidth(0.015)
 	playerboard.setNewItem(0,2,null,"ReplaceableTextures\\CommandButtons\\BTNAnkh.blp")
 	playerboard.board.display(true)
-	
+
 function setTime()
 	seconds++
-		
+
 	playerboard.board.setTitle("|cffffffff[|r|cffff6347" + redscore.toString() + "|r - |cff3cb371" + greenscore.toString() + "|r|cffffffff]|r " + MAP_VER)
-	
+
 	if seconds >= 60
 		seconds = 0
 		minutes++
-				
+
 function playerLeft()
 	destroy pData[GetTriggerPlayer().getId()]
 
@@ -104,4 +104,4 @@ init
 			leaveTrig.registerPlayerEvent(Player(i), EVENT_PLAYER_LEAVE)
 	doAfter(.5, () -> initMB())
 	TimerStart(CreateTimer(), 1., true, function setTime)
-	
+

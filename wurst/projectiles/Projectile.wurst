@@ -7,48 +7,48 @@ public class Projectile extends FxEntity
 	// Angles
 	protected angle xyAngle
 	private vec3 startpos
-	
+
 	private boolean timed = false
 	private boolean ranged = false
-	
+
 	// Moving Speed
 	private real speed = 0
 	private real acc = 1.0
 	protected real dist = 0
 	private real maxDist = 0
 	protected real lifespan = 0
-	
+
 	construct(vec3 pos, real radius, player owner, angle xyAngle, string fxpath)
 		super(owner, pos, radius, xyAngle, fxpath)
 		sleeps = false
 		startpos = pos
 		setXYAngle(xyAngle)
-				
+
 	function setRanged(real maxDistance)
 		this.maxDist = maxDistance * maxDistance
 		ranged = true
-		
+
 	function setTimed(real lifespan)
 		this.lifespan = lifespan
 		timed = true
-	
+
 	function setSpeed(real speed)
 		this.speed = speed
 		setVel(vec3(xyAngle.cos() * speed, xyAngle.sin() * speed, 0.))
-		
+
 	function setAcc(real factor)
 		this.acc = factor
-		
+
 	function getSpeed() returns real
 		return speed
-		
+
 	function setXYAngle(angle xyA)
 		this.xyAngle = xyA
 		fx.setXYAngle(xyA)
-		
+
 	function setZAngle(angle zA)
 		fx.setZAngle(zA)
-		
+
 	override function update()
 		super.update()
 		vel *= acc
@@ -59,7 +59,7 @@ public class Projectile extends FxEntity
 		if ranged
 			if startpos.distanceToSq(pos) > maxDist
 				terminate()
-		
+
 public class PhysicsProjectile extends Projectile
 	use PhysicsModule
 
@@ -68,7 +68,7 @@ public class PhysicsProjectile extends Projectile
 
 	function setFriction(real friction)
 		this.surfaceFriction = friction
-		
+
 	override function update()
-		physicsUpdate(this)
 		super.update()
+		physicsUpdate(this)

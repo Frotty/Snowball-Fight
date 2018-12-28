@@ -13,16 +13,14 @@ import ClosureTimers
 import Assets
 import Collision
 
-public LinkedList<Child> humChildren = new LinkedList<Child>()
-public LinkedList<Child> orcChildren = new LinkedList<Child>()
+public constant humChildren = new LinkedList<Child>()
+public constant orcChildren = new LinkedList<Child>()
 
-public constant real SX1 = -2400.
-public constant real SY1 = 4100
-public constant real SX2 = 2220
-public constant real SY2 = 4100
+public constant LEFT_SPAWN = vec2(-2400, 4100)
+public constant RIGHT_SPAWN = vec2(2020, 4100)
 
 public function getEnemyChildren(player owner) returns LinkedList<Child>
-	if owner.getId() > 5
+	if owner.getId() > 4
 		return humChildren
 	return orcChildren
 
@@ -32,10 +30,10 @@ public class Child extends UnitEntity
 	boolean fixPos = false
 	TimedBar wrapBar
 	SnowmanDummy snowman
-	
-	construct( vec3 pos, player owner, int id)
+
+	construct(vec3 pos, player owner, int id)
 		super(createUnit(owner, id, pos, 0 .fromDeg()), pos, 50.)
-		if owner.getId() > 5
+		if owner.getId() > 4
 			orcChildren.add(this)
 		else
 			humChildren.add(this)
@@ -81,38 +79,30 @@ public class Child extends UnitEntity
 			case 'A008'
 				new Iceshard(pos.add(0,0,24), owner, angle )
 				removeItemAndCheck('I00E', 'A008')
-		
+
 	function onDeath()
 		var p = GetKillingUnit().getOwner()
 		var p2 = GetDyingUnit().getOwner()
-		var chld = GetDyingUnit().getUserData()castTo Child
-		if chld.wrapBar != null
-			chld.wrapBar.terminate()
+		if wrapBar != null
+			wrapBar.terminate()
 		adjustKills(p, p2)
-		timer t = getTimer()
-		t..setData(GetDyingUnit().getUserData())..start(7., function Child.revive)
-		removeallspell(chld.actor)
-				
-	static function revive()
-		var t = GetExpiredTimer()
-		Child c = t.getData() castTo Child
-		
-		if c.owner.getId() > 5
-			ReviveHero(c.actor, SX2 + 64 * c.owner.getId(), SY2, false)
-			c.setPos(vec3(SX2 + 64 * c.owner.getId(), SY2, 530.))
-		else
-			ReviveHero(c.actor, SX1 + 64 * c.owner.getId(), SY1, false)
-			c.setPos(vec3(SX1 + 64 * c.owner.getId(), SY1, 530.))
+		removeallspell(actor)
 
-		c.addSpawnShield()
-		c.setVel(vec3(0,0,0))
-		c.actor.setVertexColor(255,255,255,255)
-		SetUnitPropWindow(c.actor,60)
-		t.release()	
-		if GetLocalPlayer() == c.owner
-			PanCameraToTimed(c.actor.getX(), c.actor.getY(), 1.)
-			ClearSelection()
-			SelectUnit(c.actor, true)
+		doAfter(7.) ->
+			if owner.getId() > 4
+				actor.revive(RIGHT_SPAWN, false)
+				setPos(RIGHT_SPAWN.withTerrainZ() + vec3(48. * owner.getId() - 6, 0, 530.))
+			else
+				actor.revive(LEFT_SPAWN, false)
+				setPos(LEFT_SPAWN.withTerrainZ() + vec3(48. * owner.getId(), 0, 530.))
+
+			addSpawnShield()
+			setVel(vec3(0,0,0))
+			actor..setVertexColor(255,255,255,255)
+			..setPropWindow(60 .fromDeg())
+			owner..clearSelection()
+			..panCamToTimed(actor, 1.)
+			..select(actor)
 
 	override function update()
 		physicsUpdate(this)
@@ -122,12 +112,15 @@ public class Child extends UnitEntity
 			vel = vec3(0,0,0)
 			actor.setPos(pos.toVec2())
 
+
 	override function onEscapeGround()
+		print("leave")
 		actor.setPropWindow(0 .fromDeg())
 
 	override function onGroundHit()
+		print("hit")
 		actor.setPropWindow(60 .fromDeg())
-		
+
 	function addSpawnShield()
 		actor.addAbility(AbilityIds.invulnerable)
 		let eff = actor.addEffect(Abilities.divineShieldTarget, "chest")
@@ -148,7 +141,7 @@ public function getPathingNormal(vec2 pos) returns vec2
 		if testPoint.isTerrainWalkable()
 			addedVecs += direction
 	return addedVecs.setLength(1.) * (-1.)
-	
+
 public function getBounceVec(vec2 vel2, vec2 nor2) returns vec2
 		vec3 vel3 = vel2.toVec3()
 		vec3 nor3 = nor2.toVec3()
@@ -157,16 +150,15 @@ public function getBounceVec(vec2 vel2, vec2 nor2) returns vec2
 		pv2 *= (-1.9)
 		return pv2
 
-		
-boolean first = true
-init
-	EventListener.add(EVENT_PLAYER_END_CINEMATIC) ->
-		if first
-			for i = 0 to 20
-				let child = new Child(vec3(-800, 3500, 20), Player(0), 'hfoo')
-				child.setVel(vec3(-10. -i, -10. + i, 2))
-				doAfter(15) ->
-					child.terminate()
-			// first = false
-		else
-		
+
+// boolean first = true
+// init
+// 	EventListener.add(EVENT_PLAYER_END_CINEMATIC) ->
+// 		if first
+// 			for i = 0 to 20
+// 				let child = new Child(vec3(-800, 3500, 20), Player(0), 'hfoo')
+// 				child.setVel(vec3(-10. -i, -10. + i, 2))
+// 				doAfter(15) ->
+// 					child.terminate()
+// 			// first = false
+// 		else

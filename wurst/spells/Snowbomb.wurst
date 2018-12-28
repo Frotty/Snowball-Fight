@@ -17,9 +17,8 @@ public class Snowbomb extends PhysicsProjectile
 			setTarget(ntarget, SPEED)
 		else
 			setTarget(target, SPEED)
-		
+
 	override function onGroundHit()
-		Log.info("onGroundHit")
 		AddSpecialEffect("war3mapImported\\IceSparks.mdx", pos.x, pos.y).destr()
 		for c in getEnemyChildren(owner)
 			if pos.distanceToSq(c.pos) < AOE
@@ -27,7 +26,7 @@ public class Snowbomb extends PhysicsProjectile
 				let factor = (300 - pos.distanceTo(c.pos)) / 200.
 				c.addVel(angle.toVec(factor * FACTOR).withZ(12*factor))
 				fx.getDummy().damageTarget(c.actor, 75*factor)
-		
+
 		terminate()
-					
-		
+
+
