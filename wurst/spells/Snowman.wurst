@@ -4,18 +4,22 @@ import Child
 import SoundUtils
 import FxEntity
 import Collision
+import Assets
+import AbilityTooltipGenerator
 
 constant real SPEED = 9.
-constant real MELT = 192
+constant real MELT = 172
+
+public constant SNOWMAN_SPELL_ID = compiletime(ABIL_ID_GEN.next())
 
 constant throwSound = new SoundDefinition("Abilities\\Spells\\Other\\FrostBolt\\FrostBoltLaunch1.wav", false, false)
 
 public class SnowmanMissile extends HomingProjectile
 
 	construct(vec3 pos, player owner, vec2 target)
-		super(pos, 24., owner, pos.angleTo2d(target), "Abilities\\Weapons\\FrostWyrmMissile\\FrostWyrmMissile.mdl")
+		super(pos, 32., owner, pos.angleTo2d(target), Abilities.frostWyrmMissile)
 		fx.setScale(.7)
-		setTimed(6.)
+		setTimed(6.5)
 		setSpeed(SPEED)
 		throwSound.playOnPoint(pos)
 		findTarget(target)
@@ -31,11 +35,15 @@ public class SnowmanMissile extends HomingProjectile
 					if dist < closestDist
 						closestDist = dist
 						closestChild = c
-			setTarget(closestChild, HOMING.angular, 0.03)
+			setTarget(closestChild, HOMING.angular, 0.05)
 
+	override function onHit()
+		onHit(target)
 
 	function onHit(Entity e)
+		print("hit: " + e.owner.getNameColored())
 		if e != null and not e.done and e instanceof Child and e.owner.isEnemyOf(owner)
+			print("hit2")
 			let child = e castTo Child
 			if child.snowman == null
 				new SnowmanDummy(child.getPos().add(0,0,-child.terrainZ), owner, child)
@@ -67,7 +75,7 @@ public class SnowmanDummy extends FxEntity
 		fx..setColor(colorA(255,255,255,melttime.toInt()+28))
 
 		if target.actor.getHP() > .405
-			pos = target.pos
+			setPos(target.pos)
 			if target.vel.z > 0.
 				target.vel.z = 0.
 			fx.getDummy().damageTarget(target.actor, .1)
@@ -78,10 +86,22 @@ public class SnowmanDummy extends FxEntity
 
 
 	ondestroy
-		PauseUnit(target.actor, false)
-		target.actor.setVertexColor(255,255,255,255)
+		target.actor.unpause()
+		target.actor.setVertexColor(COLOR_WHITE)
 		target.snowman = null
-		SetUnitTimeScale(target.actor, 1.)
+		target.actor.setTimeScale(1.)
 
 
+@compiletime function getObjs()
+	let tgen = new AbilityTooltipGenerator("Santa magic inside.")
+	new ChannelAbilityPreset(SNOWMAN_SPELL_ID, 4, true, tgen)
+	..presetTargetTypes(Targettype.POINT)
+	..presetButtonPosNormal(3, 1)
+	..tooltipStartListen()
+	..presetHotkey("F")
+	..setName("Snowman missile")
+	..presetIcon("BTNFrostSpell")
+	..presetCooldown(lvl -> 12.5 - (lvl * 0.5))
+	..presetManaCost(lvl -> 6 - (lvl))
 
+	..tooltipStopListen()

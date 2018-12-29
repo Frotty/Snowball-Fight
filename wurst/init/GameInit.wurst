@@ -11,21 +11,27 @@ import Collision
 SoundDefinition s
 function startGame()
 	for p in allPlayers
+		p.p.addGold(50)
 		if p.id > 4
-			SelectUnitForPlayerSingle((new Child(RIGHT_SPAWN.withTerrainZ() + vec3(48. * p.id, 0, 200.), p.p, 'H007')).actor, p.p)
+			SelectUnitForPlayerSingle((new Child(RIGHT_SPAWN.withTerrainZ() + vec3(48. * p.id, 0, 200.), p.p, ORC_CHILD_ID)).actor, p.p)
 		else
-			SelectUnitForPlayerSingle((new Child(LEFT_SPAWN.withTerrainZ() + vec3(48. * p.id, 0, 200), p.p, 'H001')).actor, p.p)
+			SelectUnitForPlayerSingle((new Child(LEFT_SPAWN.withTerrainZ() + vec3(48. * p.id, 0, 200), p.p, HUMAN_CHILD_ID)).actor, p.p)
 
 	if allPlayers.size() == 1
-		new Child(vec3(LEFT_SPAWN.x + 48 * 6, LEFT_SPAWN.y, 400.), players[8], 'H007')
-		new Child(vec3(LEFT_SPAWN.x + 48 * 8, LEFT_SPAWN.y, 400.), players[9], 'H007')
-		new Child(vec3(LEFT_SPAWN.x + 48 * 10, LEFT_SPAWN.y, 400.), players[10], 'H007')
+		new Child(vec3(LEFT_SPAWN.x + 48 * 6, LEFT_SPAWN.y, 400.), players[8], ORC_CHILD_ID)
+		new Child(vec3(LEFT_SPAWN.x + 48 * 8, LEFT_SPAWN.y, 400.), players[9], ORC_CHILD_ID)
+		new Child(vec3(LEFT_SPAWN.x + 48 * 10, LEFT_SPAWN.y, 400.), players[10], ORC_CHILD_ID)
 		players[0].addGold(9999)
 
 	SetTimeOfDay(12.)
 	doAfter(.5, () -> createDialog())
 	doAfter(ANIMATION_PERIOD * 10.5) ->
-		CreateTimer().startPeriodic(ANIMATION_PERIOD, () -> globalWorld.update(ANIMATION_PERIOD))
+		CreateTimer().startPeriodic(ANIMATION_PERIOD * 4., () -> globalWorld.update(ANIMATION_PERIOD))
+
+	doPeriodically(1.) cb ->
+		for pd in allPlayers
+			pd.p.addGold(1)
+
 	startEntityLoop()
 	initPresentCircles()
 

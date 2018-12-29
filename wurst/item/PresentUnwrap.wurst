@@ -3,6 +3,7 @@ import Gamemode
 import Entity
 import TimedBar
 import ItemObject
+import ClosureTimers
 
 constant int PRESENT_ID = 'I002'
 constant int UNWRAP_ID = 'A007'
@@ -13,8 +14,8 @@ public function checkUnwrap(unit u)
 	for int i = 0 to 5
 		var uit = UnitItemInSlot(u, i)
 		if GetItemTypeId(uit) == PRESENT_ID
-			RemoveItem(uit)
-			u.addItemById(PRESENTS[GetRandomInt(0,4)])
+			uit.remove()
+			u.addItemById(PRESENTS[GetRandomInt(0, 4)])
 			break
 
 function isChild() returns boolean
@@ -28,10 +29,10 @@ function sellPresent()
 	for int i = 0 to 5
 		var uit = UnitItemInSlot(u, i)
 		if GetItemTypeId(uit) == PRESENT_ID
-			(uit.getUserData() castTo ItemObject).terminate()
+			uit.getEntity().terminate()
 			p.addGold(100)
-			createTTEx(vec3(u.getX(),u.getY(),20.), vec2(0,0.05), "|cffffcc00+100|r", 10,  2., colorA(255,255,255,0), p )
-			DisplayTimedTextToForce(GetPlayersAll(), 12., p.getNameColored() + "|r has returned a Present gaining |cffFFCC00+3|r Points for his team!")	
+			createTTEx(vec3(u.getX(), u.getY(), 20.), vec2(0, 0.05), "|cffffcc00+100|r", 10,  2., colorA(255,255,255,0), p)
+			DisplayTimedTextToForce(GetPlayersAll(), 12., p.getNameColored() + "|r has returned a Present gaining |cffFFCC00+3|r Points for his team!")
 			if p.getId() <= 5
 				redscore += 3
 			else
@@ -43,8 +44,8 @@ function startBar()
 	var u = GetSpellAbilityUnit()
 	var id = GetSpellAbilityId()
 	if id == UNWRAP_ID
-		(u.getUserData() castTo Child).wrapBar = new TimedBar(vec3(u.getX()-120.,u.getY(),-16), "|", 120, 0, 7.5, colorA(255,255,255,255), colorA(230,181,16,255), u )
-
+		let child = (u.getEntity() castTo Child)
+		child.wrapBar = new TimedBar(vec3(u.getX()-60.,u.getY(),-16), "|", 120, 0, 7.5, COLOR_WHITE, COLOR_GOLD, u)
 
 trigger t
 unit scircle
@@ -58,7 +59,7 @@ public function initPresentCircles()
 	t = CreateTrigger()
 	t.registerUnitInRange(ncircle, 100,Condition(function isChild))
 	t.addAction(function sellPresent)
-	
+
 init
 	t = CreateTrigger()
 	t.registerAnyUnitEvent(EVENT_PLAYER_UNIT_SPELL_CHANNEL)

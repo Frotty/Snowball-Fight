@@ -54,7 +54,6 @@ public class PlayerData
 
 	ondestroy
 		DisplayTimedTextToPlayer( GetLocalPlayer(), 0, 0, 20., p.getNameColored() + " |cffFFCC33has left the game!")
-		PlaySoundBJ(gg_snd_QuestFailed)
 		playerboard.removeRow(gameId + 1)
 		if gameId < allPlayers.size()
 			for p2 in allPlayers
@@ -85,7 +84,7 @@ function initMB()
 function setTime()
 	seconds++
 
-	playerboard.board.setTitle("|cffffffff[|r|cffff6347" + redscore.toString() + "|r - |cff3cb371" + greenscore.toString() + "|r|cffffffff]|r " + MAP_VER)
+	playerboard.board.setTitle("|cffffffff[|r|cff3cb371" + greenscore.toString() + "|r - |cffff6347" + redscore.toString() + "|r|cffffffff]|r " + MAP_VER)
 
 	if seconds >= 60
 		seconds = 0

@@ -1,9 +1,9 @@
 package Child
 import initlater Snowball
+import initlater Snowman
 import Snowbomb
 import Rollingball
 import KillStreaks
-import initlater Snowman
 import Iceshard
 import ItemHandling
 import TimedBar
@@ -12,12 +12,19 @@ import IceWall
 import ClosureTimers
 import Assets
 import Collision
+import ChannelAbilityPreset
+import Tiles
 
 public constant humChildren = new LinkedList<Child>()
 public constant orcChildren = new LinkedList<Child>()
 
 public constant LEFT_SPAWN = vec2(-2400, 4100)
 public constant RIGHT_SPAWN = vec2(2020, 4100)
+
+public constant JUMP_ID = compiletime(ABIL_ID_GEN.next())
+
+public constant HUMAN_CHILD_ID = compiletime(HERO_ID_GEN.next())
+public constant ORC_CHILD_ID = compiletime(HERO_ID_GEN.next())
 
 public function getEnemyChildren(player owner) returns LinkedList<Child>
 	if owner.getId() > 4
@@ -27,22 +34,28 @@ public function getEnemyChildren(player owner) returns LinkedList<Child>
 public class Child extends UnitEntity
 	use PhysicsModule
 	trigger t
-	boolean fixPos = false
+	var fixPos = false
 	TimedBar wrapBar
-	SnowmanDummy snowman
+	SnowmanDummy snowman = null
+	var sliding = false
+	var slidespeed = 0.
+	var slidevec = ZERO2
 
 	construct(vec3 pos, player owner, int id)
-		super(createUnit(owner, id, pos, 0 .fromDeg()), pos, 50.)
+		super(createUnit(owner, id, pos, 0 .fromDeg()), pos, 54.)
+		sleeps = false
 		if owner.getId() > 4
 			orcChildren.add(this)
 		else
 			humChildren.add(this)
 		restitution = .25
 		surfaceFriction = 0.80
+		actor.addAbility(JUMP_ID)
 		EventListener.add(actor, EVENT_PLAYER_UNIT_SPELL_EFFECT, () -> onCast())
 		EventListener.add(actor, EVENT_PLAYER_UNIT_DEATH, () -> onDeath())
 		addSpawnShield()
 		registerCollidable(this, (e) -> skip)
+		actor..selectSkill(SNOWBALL_SPELL_ID)..setSkillPoints(2)
 
 	function removeItemAndCheck(int itemid, int spellid)
 		for int i = 0 to 5
@@ -58,27 +71,31 @@ public class Child extends UnitEntity
 
 	function onCast()
 		var id = GetSpellAbilityId()
-		var target = vec2(GetSpellTargetX(), GetSpellTargetY()).withTerrainZ()
-		let castPos = getPos().add(0,0,78)
+		var target = getSpellTargetPos().withTerrainZ()
+		let castPos = getPos().add(0,0,58)
 		let angle = pos.angleTo2d(target)
+
+		if castPos.distanceTo(target) < 128
+			target = castPos + angle.toVec(128)
+
 		switch id
-			case 'A000'
+			case SNOWBALL_SPELL_ID
 				new Snowball(castPos, owner, angle, target)
-			case 'A001'
+			case SNOWBOMB_SPELL_ID
 				new Snowbomb(castPos, owner, target)
-				removeItemAndCheck('I006', 'A001')
-			case 'A002'
+			case ROLLINGBALL_SPELL_ID
 				new Rollingball(pos.polarProject(16, angle, (90).asAngleDegrees()).add(0,0,16), owner, angle )
-				removeItemAndCheck('I004', 'A002')
-			case 'A003'
-				new SnowmanMissile(pos.add(0,0,16), owner, target.toVec2())
-				removeItemAndCheck('I005', 'A003')
+			case SNOWMAN_SPELL_ID
+				new SnowmanMissile(castPos, owner, target.toVec2())
 			case 'A004'
-				new IceMissile(pos.add(0,0,32), owner, target)
-				removeItemAndCheck('I003', 'A004')
-			case 'A008'
-				new Iceshard(pos.add(0,0,24), owner, angle )
-				removeItemAndCheck('I00E', 'A008')
+				new IceMissile(castPos, owner, target)
+			case ICESHARD_SPELL_ID
+				new Iceshard(castPos, owner, angle )
+			case JUMP_ID
+				if not flying and not actor.hasItemById('I002')
+					actor.setAnimation("walk")
+					addVel(angle.toVec(6.75).withZ(7.))
+					flashEffect(Abilities.tornado_Target, pos)
 
 	function onDeath()
 		var p = GetKillingUnit().getOwner()
@@ -88,7 +105,7 @@ public class Child extends UnitEntity
 		adjustKills(p, p2)
 		removeallspell(actor)
 
-		doAfter(7.) ->
+		doAfter(5.5) ->
 			if owner.getId() > 4
 				actor.revive(RIGHT_SPAWN, false)
 				setPos(RIGHT_SPAWN.withTerrainZ() + vec3(48. * owner.getId() - 6, 0, 530.))
@@ -106,19 +123,27 @@ public class Child extends UnitEntity
 
 	override function update()
 		physicsUpdate(this)
+		if getPos().toVec2().getTile().getType() == Tiles.northrend_Ice
+			slidespeed = slidespeed.lerp(2., 0.05)
+		else
+			slidespeed = slidespeed.lerp(0., 0.15)
+
+		let newvec = actor.getFacingAngle().toVec(slidespeed)
+		addVel((slidevec + newvec).toVec3() * 0.5)
+		slidevec = newvec
+
 		super.update()
-		if not pos.toVec2().inBounds()
+
+		if not gg_rct_arenabounds.contains(pos.toVec2())
 			pos = vec3(0,3600,200)
 			vel = vec3(0,0,0)
 			actor.setPos(pos.toVec2())
 
 
 	override function onEscapeGround()
-		print("leave")
 		actor.setPropWindow(0 .fromDeg())
 
 	override function onGroundHit()
-		print("hit")
 		actor.setPropWindow(60 .fromDeg())
 
 	function addSpawnShield()
@@ -131,34 +156,51 @@ public class Child extends UnitEntity
 	ondestroy
 		removeCollidable(this)
 
-public function getPathingNormal(vec2 pos) returns vec2
-	int numberOfTests = 8
-	let radius = 64.
-	vec2 addedVecs = vec2(0, 0)
-	for int i = 1 to numberOfTests
-		vec2 direction = vec2(0,0).polarOffset((i*2*bj_PI/numberOfTests).asAngleRadians(), radius)
-		vec2 testPoint = pos + direction
-		if testPoint.isTerrainWalkable()
-			addedVecs += direction
-	return addedVecs.setLength(1.) * (-1.)
 
-public function getBounceVec(vec2 vel2, vec2 nor2) returns vec2
-		vec3 vel3 = vel2.toVec3()
-		vec3 nor3 = nor2.toVec3()
-		vec3 pv3 = vel3.project(nor3)
-		vec2 pv2 = pv3.toVec2()
-		pv2 *= (-1.9)
-		return pv2
+@compiletime function genJump()
+	new ChannelAbilityPreset(JUMP_ID, 1, true)
+	..presetDisableOtherAbilities(lvl -> true)
+	..presetTooltipNormal(lvl -> "[|cffFFCC00W|r] |cff7BB5F7Jump")
+	..presetTooltipNormalExtended(lvl -> "Jumps into the target direction. Allows you to jump down, but not up, cliffs.")
+	..setCooldown(1, 2.)
+	..setManaCost(1, 0)
+	..presetCastRange(lvl -> 9999.)
+	..presetHotkey("W")
+	..presetTargetTypes(Targettype.POINT)
+	..presetButtonPosNormal(1, 2)
+	..presetIcon(Icons.bTNBootsOfSpeed)
 
+@compiletime function create_w3u_H007()
+	new HeroDefinition(HUMAN_CHILD_ID, 'nvlk')
+	..setName("Orc Child")
+	..setRace(Race.Orc)
+	..setSpeedBase(275)
+	..setNormalAbilities("AInv")
+	..setHeroAbilities(commaList(SNOWBALL_SPELL_ID, SNOWBOMB_SPELL_ID, SNOWMAN_SPELL_ID, ROLLINGBALL_SPELL_ID, ICESHARD_SPELL_ID))
+	..setHitPointsMaximumBase(150)
+	..setCanFlee(false)
+	..setManaMaximum(20)
+	..setManaRegeneration(0.6)
+	..setManaInitialAmount(8)
+	..setModelFile("war3mapImported\\OrcChild_v3.mdl")
+	..setScalingValue(1.4)
+	..setProperNames("Snagakop,Nazork,Urtynob,Morzod,Shakbad,Ogsog,Snikgrod")
+	..setProperNamesUsed(7)
+	..setCollisionSize(0.0)
 
-// boolean first = true
-// init
-// 	EventListener.add(EVENT_PLAYER_END_CINEMATIC) ->
-// 		if first
-// 			for i = 0 to 20
-// 				let child = new Child(vec3(-800, 3500, 20), Player(0), 'hfoo')
-// 				child.setVel(vec3(-10. -i, -10. + i, 2))
-// 				doAfter(15) ->
-// 					child.terminate()
-// 			// first = false
-// 		else
+@compiletime function create_w3u_H001()
+	new HeroDefinition(ORC_CHILD_ID, 'nvlk')
+	..setName("Human Child")
+	..setRace(Race.Human)
+	..setHeroAbilities(commaList(SNOWBALL_SPELL_ID, SNOWBOMB_SPELL_ID, SNOWMAN_SPELL_ID, ROLLINGBALL_SPELL_ID, ICESHARD_SPELL_ID))
+	..setSpeedBase(275)
+	..setNormalAbilities("AInv")
+	..setHitPointsMaximumBase(150)
+	..setCanFlee(false)
+	..setManaMaximum(20)
+	..setManaRegeneration(0.6)
+	..setManaInitialAmount(8)
+	..setScalingValue(1.4)
+	..setProperNames("Dennis,Joachim,Garret,Jens,Philip,Peter,Florian")
+	..setProperNamesUsed(7)
+	..setCollisionSize(0.0)

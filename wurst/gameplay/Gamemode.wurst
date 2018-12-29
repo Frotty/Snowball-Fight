@@ -1,9 +1,9 @@
 package Gamemode
 import PlayerData
 import GameConstants
-public int maxkills = 10
-dialog gamemode
-button array modebutton
+import DialogBox
+
+public var maxkills = 10
 public int redscore = 0
 public int greenscore = 0
 boolean gameover = false
@@ -14,32 +14,22 @@ public function checkEnd()
 			endgame(0)
 		if greenscore >= maxkills
 			endgame(1)
-	
+
 
 public function createDialog()
-	gamemode = DialogCreate()
-	DialogSetMessage(gamemode, "Gamemodes")
-	modebutton[0] = DialogAddButton(gamemode, "Short (30 Points)", 111)
-	modebutton[1] = DialogAddButton(gamemode, "Normal (50 Points)", 113)
-	modebutton[2] = DialogAddButton(gamemode, "Long (80 Points)", 112)
-	DialogDisplay(allPlayers.get(0).p, gamemode,true)
-	trigger t = CreateTrigger()
-	TriggerRegisterDialogEvent(t, gamemode)
-	TriggerAddAction(t,function getGameMode)
-
-function getGameMode()
-	button b = GetClickedButton()
-	if b == modebutton[0]
+	playerboard.show()
+	let dbox = new DialogBox("Select game length")
+	let nameColored = allPlayers.peek().p.getNameColored()
+	dbox.addButton("Short (30 Points)") ->
 		maxkills = 30
-		DisplayTimedTextToForce(GetPlayersAll(), 12.,"|cffFFAD29» " + GetTriggerPlayer().getNameColored() + "|r selected a short game!")
-	if b == modebutton[1]
+		DisplayTimedTextToForce(GetPlayersAll(), 12.,"|cffFFAD29» " + nameColored + "|r selected a short game (30)!")
+	dbox.addButton("Normal (50 Points)") ->
 		maxkills = 50
-		DisplayTimedTextToForce(GetPlayersAll(), 12.,"|cffFFAD29» " + GetTriggerPlayer().getNameColored() + "|r selected a normal game!")
-	if b == modebutton[2]
+		DisplayTimedTextToForce(GetPlayersAll(), 12.,"|cffFFAD29» " + nameColored + "|r selected a normal game (50)!")
+	dbox.addButton("Long (80 Points)") ->
 		maxkills = 80
-		DisplayTimedTextToForce(GetPlayersAll(), 12.,"|cffFFAD29» " + GetTriggerPlayer().getNameColored() + "|r selected a long game!")
-		
-	playerboard.show() 
+		DisplayTimedTextToForce(GetPlayersAll(), 12.,"|cffFFAD29» " + nameColored + "|r selected a long game (80)!")
+	dbox.display(allPlayers.peek().p, true)
 
 function endgame(int winningteam)
 	announcers[5].play()
@@ -49,4 +39,4 @@ function endgame(int winningteam)
 		DisplayTimedTextToForce(GetPlayersAll(), 12., "Red Team has won the game!")
 	gameover = true
 	PauseGame(true)
-	
+

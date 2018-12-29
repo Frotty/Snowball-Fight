@@ -2,6 +2,11 @@ package IceWall
 import Projectile
 import initlater Child
 import FxEntity
+import Collision
+import initlater Snowball
+import AbilityTooltipGenerator
+
+public constant ICEWALL_SPELL_ID = compiletime(ABIL_ID_GEN.next())
 
 constant real SPEED = 18.
 constant real FACTOR = 2.
@@ -15,28 +20,19 @@ public class IceMissile extends Projectile
 		this.target = target
 		setTimed(4.)
 		setSpeed(SPEED)
-		//throwSound.playOnPoint(pos)
-		
+
 	override function update()
 		super.update()
 		if pos.toVec2().distanceToSq(target.toVec2()) < 64*64
 			terminate()
-			
-		// Entity e = Entity.first
-		// while e != null
-		// 	if e != this and owner != e.owner and IsPlayerEnemy( e.owner, owner )
-		// 		if pos.distanceToSq(e.pos) < (e.radius+radius).squared()
-		// 			onHit(e)
-		// 	e = e.next
-			
-			
+
 	function onHit(Entity e)
 		terminate()
 		if e instanceof Child
 			let angle = pos.angleTo2d(e.pos)
 			e.addVel(angle.toVec(FACTOR).withZ(1.))
 
-			
+
 	ondestroy
 		for i = -2 to 2
 			new Iceblock(pos.toVec2().polarOffset(xyAngle + (22. * i).asAngleDegrees(), 128).toVec3(), owner, .25 )
@@ -54,24 +50,19 @@ public class Iceblock extends FxEntity
 		fx.setScale(scale)
 		fx.setZ(0)
 		silent = true
-		
+		registerCollidable(this, other -> onHit(other))
+
 	override function update()
 		super.update()
-		
+
 		timeout -= ANIMATION_PERIOD
 		if timeout <= 0.
 			terminate()
 			return
 
-		// Entity e = Entity.first
-		// while e != null
-		// 	if e instanceof Projectile 
-		// 		if pos.distanceToSq(e.pos) < (e.radius+radius).squared()
-		// 			e.terminate()
-		// 			onHit()
-		// 	e = e.next
-					
-	function onHit()
+	function onHit(Entity other)
+		if other instanceof Snowball
+			other.terminate()
 		scale -= 0.05
 		fx.setScale(scale)
 		radius -= 6
@@ -81,4 +72,19 @@ public class Iceblock extends FxEntity
 	ondestroy
 		collision.remove()
 		addEffect("Abilities\\Spells\\Items\\AIma\\AImaTarget.mdl", pos).destr()
-		
+		removeCollidable(this)
+
+@compiletime function getObjs()
+	let tgen = new AbilityTooltipGenerator("Protect key positions with strategic ice walls.")
+	new ChannelAbilityPreset(ICEWALL_SPELL_ID, 4, true, tgen)
+	..presetButtonPosNormal(3, 2)
+	..presetTargetTypes(Targettype.POINT)
+	..tooltipStartListen()
+	..presetHotkey("R")
+	..setName("Ice wall")
+	..presetIcon("BTNIceField")
+	..presetCooldown(lvl -> 1.75 - (lvl / 4))
+	..presetManaCost(lvl -> 4 - (lvl / 3).toInt())
+	..presetCastRange(lvl -> 400.)
+
+	..tooltipStopListen()

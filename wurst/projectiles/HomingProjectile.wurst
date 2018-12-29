@@ -24,68 +24,71 @@ public abstract class HomingProjectile extends Projectile
 		homingSpeed = homingspeed
 		radii = radius * radius + e.radius * e.radius
 
+	function onHit()
+
 	override function update()
+		super.update()
+
 		let dist = pos.distanceToSq(target.pos)
 		let anglexy = pos.angleTo2d(target.pos)
 		if dist < radii
-			terminate()
-			return
+			onHit()
 
-		super.update()
-		switch htype
-			case HOMING.none
-				skip
-			case HOMING.attract
-				vel = (target.pos - this.pos).setLength(homingSpeed)
-			case HOMING.circle
-				skip
-			case HOMING.angular
-				var df1 = (anglexy - xyAngle).radians()
-				var df2 = (PI2 + anglexy.radians()) - xyAngle.radians()
-				var ns = homingSpeed
+		if not done
+			switch htype
+				case HOMING.none
+					skip
+				case HOMING.attract
+					vel = (target.pos - this.pos).setLength(homingSpeed)
+				case HOMING.circle
+					skip
+				case HOMING.angular
+					var df1 = (anglexy - xyAngle).radians()
+					var df2 = (PI2 + anglexy.radians()) - xyAngle.radians()
+					var ns = homingSpeed
 
-				if df1 <= 0
-					if df2 <= 0
-						if df2 >= df1
-							df1 = df2
+					if df1 <= 0
+						if df2 <= 0
+							if df2 >= df1
+								df1 = df2
+						else
+							if -df1 >= df2
+								df1 = df2
 					else
-						if -df1 >= df2
-							df1 = df2
-				else
-					if df2 <= 0
-						if -df2 <= df1
-							df1 = df2
+						if df2 <= 0
+							if -df2 <= df1
+								df1 = df2
+						else
+							if df2 <= df1
+								df1 = df2
+					if df1 <= 0
+						if -df1 >= ns
+							ns = -ns
+						else
+							ns = df1
 					else
-						if df2 <= df1
-							df1 = df2
-				if df1 <= 0
-					if -df1 >= ns
-						ns = -ns
-					else
-						ns = df1
-				else
-					if df1 <= ns
-						ns = df1
-				var d = xyAngle.radians()
-				d += ns
-				if d >= PI2
-					d -= PI2
-				else if d < 0
-					d += PI2
+						if df1 <= ns
+							ns = df1
+					var d = xyAngle.radians()
+					d += ns
+					if d >= PI2
+						d -= PI2
+					else if d < 0
+						d += PI2
 
-				xyAngle.radians = d
-				vel = xyAngle.toVec(getSpeed()).toVec3()
-				setXYAngle(xyAngle)
-			case HOMING.forced
-				vec3 tmp = pos.polarProject(getSpeed(), anglexy, angle(0))
+					xyAngle.radians = d
+					vel = xyAngle.toVec(getSpeed()).toVec3()
+					setXYAngle(xyAngle)
+				case HOMING.forced
+					vec3 tmp = pos.polarProject(getSpeed(), anglexy, angle(0))
 
-				tmp -= pos
+					tmp -= pos
 
-				vel += tmp
+					vel += tmp
 
-				pos += vel
+					pos += vel
 
-				fx.setXY(pos.toVec2())
+					fx.setXY(pos.toVec2())
 
-				vel -= (vel*homingSpeed)
+					vel -= (vel*homingSpeed)
 

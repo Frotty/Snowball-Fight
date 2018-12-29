@@ -5,7 +5,7 @@ import SoundUtils
 
 constant int PRESENT_ID = 'I002'
 
-let presentSpawn = new SoundDefinition("war3mapImported\\bells.mp3", false, false)
+let presentSpawn = new SoundDefinition("war3mapImported\\bells.mp3", false)
 let treeCenter = vec2(0., 4096.)
 
 public class Present extends ItemObject
@@ -16,16 +16,16 @@ public class Present extends ItemObject
 	override function update()
 
 	override function onPickup(Child e)
-	
+
 	override function onDrop(Child e)
-	
+
 	override function onUse(Child e)
 
 public function spawnPresent()
-	let randomPos = treeCenter.polarOffset(GetRandomReal(0,360).asAngleDegrees(), GetRandomReal(400,800))
+	let randomPos = treeCenter.polarOffset(GetRandomReal(0,360).asAngleDegrees(), GetRandomReal(400,600))
 	new Present(randomPos)
 	printTimed("|cffFFAD29» |cffFF7329Present spawned in the middle!", 12)
-	
+
 function isPresent() returns boolean
 	return GetItemTypeId(GetFilterItem()) == PRESENT_ID
 
@@ -33,21 +33,21 @@ int presents
 
 function addOne()
 	presents++
-	
+
 public function onPresentTime()
 	printLog(Loglevel.DEBUG, "On Present Time")
 	presents = 0
 	rect r = Rect(-6000,-19000,6000,10000)
-	EnumItemsInRect(r,Condition(function isPresent),function addOne)
+	EnumItemsInRect(r, Condition(function isPresent), function addOne)
 	timer t = getTimer()
 	t.start(0.01,function checkPresents)
-	
+
 function checkPresents()
 	if presents <= 2
 		spawnPresent()
 		presentSpawn.play()
-		
+
 init
 	timer t = getTimer()
-	t.startPeriodic(25.,function onPresentTime)
-	
+	t.startPeriodic(30.,function onPresentTime)
+
