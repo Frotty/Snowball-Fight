@@ -4,9 +4,9 @@ import GameConstants
 import DialogBox
 
 public var maxkills = 10
-public int redscore = 0
-public int greenscore = 0
-boolean gameover = false
+public var redscore = 0
+public var greenscore = 0
+public var gameover = false
 
 public function checkEnd()
 	if not gameover
@@ -14,7 +14,6 @@ public function checkEnd()
 			endgame(0)
 		if greenscore >= maxkills
 			endgame(1)
-
 
 public function createDialog()
 	playerboard.show()

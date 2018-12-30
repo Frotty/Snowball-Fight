@@ -1,6 +1,5 @@
 package ItemHandling
-import ItemObject
-import ClosureEvents
+import Entity
 
 int array items
 int array spells
@@ -17,16 +16,14 @@ public function onPickup()
 			int slot = 0
 			for int i = 0 to 5
 				if UnitItemInSlot(u,i) == itm
-					slot = i 
+					slot = i
 					break
 			UnitDropItemSlot(u, itm, slot)
-			let data = itm.getUserData() castTo ItemObject
-			data.actorItem.remove()
-			data.actorItem = createItem(PRESENT_ID, data.getPos())
-			data.actorItem.setUserData(data castTo int)
+			let data = itm.getEntity() castTo ItemEntity
+			data.setNewActor(createItem(PRESENT_ID, data.getPos()))
 			createTTEx(vec3(u.getX(),u.getY(),20.), vec2(0,0.05), "|cffcccc00You can only carry one!|r", 10,  2., colorA(255,255,255,0), u.getOwner() )
 		else
-			DisplayTimedTextToForce(GetPlayersAll(), 12., u.getOwner().getNameColored() + " has acquired a present!")	
+			DisplayTimedTextToForce(GetPlayersAll(), 12., u.getOwner().getNameColored() + " has acquired a present!")
 		return
 	item foundItem = null
 	int itemid = -1
@@ -79,4 +76,4 @@ init
 	items[4] = 'I00E'
 	spells[4] = 'A008'
 	maxstack[4] = 3
-	
+

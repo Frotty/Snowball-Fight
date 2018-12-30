@@ -7,13 +7,13 @@ import TimerUtils
 public function adjustKills(player killer, player dead)
 	var p1 = pData[killer.getId()]
 	var p2 = pData[dead.getId()]
-	p1.kills ++
-	p2.deaths ++
-	playerboard.updateValue(p1.gameId+1,1,p1.kills.toString())
-	playerboard.updateValue(p2.gameId+1,2,p2.deaths.toString())
-	SetPlayerState(killer, PLAYER_STATE_RESOURCE_GOLD, GetPlayerState(killer, PLAYER_STATE_RESOURCE_GOLD)+10)
-	p1.killstreak ++
-	p2.killstreak = 0				
+	p1.kills++
+	p2.deaths++
+	playerboard.updateValue(p1.gameId + 1, 1, p1.kills.toString())
+	playerboard.updateValue(p2.gameId + 1, 2, p2.deaths.toString())
+	killer.addGold(10)
+	p1.killstreak++
+	p2.killstreak = 0
 	if p1.id <= 5
 		redscore += 1
 	else
@@ -47,8 +47,8 @@ public function adjustKills(player killer, player dead)
 	else
 		DisplayTimedTextToForce(GetPlayersAll(), 12., killer.getNameColored() + " hit " + dead.getNameColored() + "|r in the face with a snowball! (|cffFFCC00+1|r)")
 	checkEnd()
-	
-	
+
+
 function clearKillMultiplier()
 	var p = pData[GetExpiredTimer().getData()]
 	if p.indouble

@@ -56,7 +56,7 @@ public class Projectile extends FxEntity
 			lifespan -= ANIMATION_PERIOD
 			if lifespan <= 0
 				terminate()
-		if ranged
+		if ranged and not done
 			if startpos.distanceToSq(pos) > maxDist
 				terminate()
 
@@ -71,4 +71,5 @@ public class PhysicsProjectile extends Projectile
 
 	override function update()
 		super.update()
-		physicsUpdate(this)
+		if not done
+			physicsUpdate(this)

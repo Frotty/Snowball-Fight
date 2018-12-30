@@ -3,12 +3,10 @@ import Child
 import EntityManagement
 import Gamemode
 import PlayerData
-import SoundUtils
 import PresentUnwrap
 import ClosureTimers
 import Collision
 
-SoundDefinition s
 function startGame()
 	for p in allPlayers
 		p.p.addGold(50)
@@ -26,14 +24,14 @@ function startGame()
 	SetTimeOfDay(12.)
 	doAfter(.5, () -> createDialog())
 	doAfter(ANIMATION_PERIOD * 10.5) ->
-		CreateTimer().startPeriodic(ANIMATION_PERIOD * 4., () -> globalWorld.update(ANIMATION_PERIOD))
+		CreateTimer().startPeriodic(ANIMATION_PERIOD * 2., () -> globalWorld.update(ANIMATION_PERIOD))
 
 	doPeriodically(1.) cb ->
 		for pd in allPlayers
 			pd.p.addGold(1)
 
-	startEntityLoop()
 	initPresentCircles()
+	startEntityLoop()
 
 init
 	doAfter(0.1, () -> startGame())

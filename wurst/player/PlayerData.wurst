@@ -1,12 +1,10 @@
 package PlayerData
 import MultiboardClass
-import LinkedList
 import GameConstants
 import initlater Gamemode
 import ClosureTimers
 import Assets
-
-trigger leaveTrig
+import Players
 
 public constant allPlayers = new LinkedList<PlayerData>()
 public Board playerboard
@@ -90,17 +88,16 @@ function setTime()
 		seconds = 0
 		minutes++
 
-function playerLeft()
-	destroy pData[GetTriggerPlayer().getId()]
-
 
 init
-	leaveTrig = CreateTrigger()
-	leaveTrig.addAction(function playerLeft)
-	for i = 0 to 11
-		if players[i].getSlotState() == PLAYER_SLOT_STATE_PLAYING and players[i].getController() == MAP_CONTROL_USER
-			pData[i] = new PlayerData(Player(i))
-			leaveTrig.registerPlayerEvent(Player(i), EVENT_PLAYER_LEAVE)
+	for p in ALL_PLAYERS
+		if p.getSlotState() == PLAYER_SLOT_STATE_PLAYING and p.getController() == MAP_CONTROL_USER
+			pData[p.getId()] = new PlayerData(p)
+
+	onPlayerLeave() p ->
+		destroy pData[p.getId()]
+		printTimed(p.getNameColored() + " has left the game", 15.)
+
 	doAfter(.5, () -> initMB())
 	TimerStart(CreateTimer(), 1., true, function setTime)
 

@@ -33,13 +33,14 @@ public function getEnemyChildren(player owner) returns LinkedList<Child>
 
 public class Child extends UnitEntity
 	use PhysicsModule
-	trigger t
+
 	var fixPos = false
 	TimedBar wrapBar
 	SnowmanDummy snowman = null
 	var sliding = false
 	var slidespeed = 0.
 	var slidevec = ZERO2
+	var hasPresent = false
 
 	construct(vec3 pos, player owner, int id)
 		super(createUnit(owner, id, pos, 0 .fromDeg()), pos, 54.)
@@ -57,22 +58,11 @@ public class Child extends UnitEntity
 		registerCollidable(this, (e) -> skip)
 		actor..selectSkill(SNOWBALL_SPELL_ID)..setSkillPoints(2)
 
-	function removeItemAndCheck(int itemid, int spellid)
-		for int i = 0 to 5
-			var uit = UnitItemInSlot(actor, i)
-			if GetItemTypeId(uit) == itemid
-				if GetItemCharges(uit) <= 1
-					RemoveItem(uit)
-					if not UnitHasItemOfTypeBJ(actor, itemid)
-						actor.removeAbility(spellid)
-				else
-					SetItemCharges(uit,GetItemCharges(uit) -1)
-				break
 
 	function onCast()
 		var id = GetSpellAbilityId()
 		var target = getSpellTargetPos().withTerrainZ()
-		let castPos = getPos().add(0,0,58)
+		let castPos = getPos().add(0,0,48)
 		let angle = pos.angleTo2d(target)
 
 		if castPos.distanceTo(target) < 128
@@ -84,10 +74,10 @@ public class Child extends UnitEntity
 			case SNOWBOMB_SPELL_ID
 				new Snowbomb(castPos, owner, target)
 			case ROLLINGBALL_SPELL_ID
-				new Rollingball(pos.polarProject(16, angle, (90).asAngleDegrees()).add(0,0,16), owner, angle )
+				new Rollingball(pos.polarProject(16, angle, (90).asAngleDegrees()).add(0,0,16), owner, angle)
 			case SNOWMAN_SPELL_ID
 				new SnowmanMissile(castPos, owner, target.toVec2())
-			case 'A004'
+			case ICEWALL_SPELL_ID
 				new IceMissile(castPos, owner, target)
 			case ICESHARD_SPELL_ID
 				new Iceshard(castPos, owner, angle )
@@ -104,6 +94,7 @@ public class Child extends UnitEntity
 			wrapBar.terminate()
 		adjustKills(p, p2)
 		removeallspell(actor)
+		flashEffect(Objects.humanBloodPeasant, pos)
 
 		doAfter(5.5) ->
 			if owner.getId() > 4
@@ -124,12 +115,12 @@ public class Child extends UnitEntity
 	override function update()
 		physicsUpdate(this)
 		if getPos().toVec2().getTile().getType() == Tiles.northrend_Ice
-			slidespeed = slidespeed.lerp(2., 0.05)
+			slidespeed = slidespeed.lerp(2, 0.025)
 		else
-			slidespeed = slidespeed.lerp(0., 0.15)
-
-		let newvec = actor.getFacingAngle().toVec(slidespeed)
-		addVel((slidevec + newvec).toVec3() * 0.5)
+			slidespeed = slidespeed.lerp(0., 0.125)
+		actor.setMoveSpeed(275 * (1 - (slidespeed / 2)))
+		let newvec = actor.getFacingAngle().toVec(hasPresent ? slidespeed * 0.2 : slidespeed)
+		addVel((slidevec + newvec * 0.5).toVec3())
 		slidevec = newvec
 
 		super.update()
@@ -171,12 +162,12 @@ public class Child extends UnitEntity
 	..presetIcon(Icons.bTNBootsOfSpeed)
 
 @compiletime function create_w3u_H007()
-	new HeroDefinition(HUMAN_CHILD_ID, 'nvlk')
+	new HeroDefinition(ORC_CHILD_ID, 'nvlk')
 	..setName("Orc Child")
 	..setRace(Race.Orc)
 	..setSpeedBase(275)
-	..setNormalAbilities("AInv")
-	..setHeroAbilities(commaList(SNOWBALL_SPELL_ID, SNOWBOMB_SPELL_ID, SNOWMAN_SPELL_ID, ROLLINGBALL_SPELL_ID, ICESHARD_SPELL_ID))
+	..setNormalAbilities(commaList(SNOWBALL_SPELL_ID, 'AInv'))
+	..setHeroAbilities(commaList(SNOWBOMB_SPELL_ID, SNOWMAN_SPELL_ID, ROLLINGBALL_SPELL_ID, ICESHARD_SPELL_ID, ICEWALL_SPELL_ID))
 	..setHitPointsMaximumBase(150)
 	..setCanFlee(false)
 	..setManaMaximum(20)
@@ -187,14 +178,17 @@ public class Child extends UnitEntity
 	..setProperNames("Snagakop,Nazork,Urtynob,Morzod,Shakbad,Ogsog,Snikgrod")
 	..setProperNamesUsed(7)
 	..setCollisionSize(0.0)
+	..setStrengthPerLevel(1)
+	..setAgilityPerLevel(1)
+	..setIntelligencePerLevel(1)
 
 @compiletime function create_w3u_H001()
-	new HeroDefinition(ORC_CHILD_ID, 'nvlk')
+	new HeroDefinition(HUMAN_CHILD_ID, 'nvlk')
 	..setName("Human Child")
 	..setRace(Race.Human)
-	..setHeroAbilities(commaList(SNOWBALL_SPELL_ID, SNOWBOMB_SPELL_ID, SNOWMAN_SPELL_ID, ROLLINGBALL_SPELL_ID, ICESHARD_SPELL_ID))
+	..setNormalAbilities(commaList(SNOWBALL_SPELL_ID, 'AInv'))
+	..setHeroAbilities(commaList(SNOWBOMB_SPELL_ID, SNOWMAN_SPELL_ID, ROLLINGBALL_SPELL_ID, ICESHARD_SPELL_ID, ICEWALL_SPELL_ID))
 	..setSpeedBase(275)
-	..setNormalAbilities("AInv")
 	..setHitPointsMaximumBase(150)
 	..setCanFlee(false)
 	..setManaMaximum(20)
@@ -204,3 +198,6 @@ public class Child extends UnitEntity
 	..setProperNames("Dennis,Joachim,Garret,Jens,Philip,Peter,Florian")
 	..setProperNamesUsed(7)
 	..setCollisionSize(0.0)
+	..setStrengthPerLevel(1)
+	..setAgilityPerLevel(1)
+	..setIntelligencePerLevel(1)

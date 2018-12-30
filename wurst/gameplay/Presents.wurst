@@ -1,29 +1,44 @@
 package Presents
-import ItemObject
-import TimerUtils
 import SoundUtils
+import Entity
+import Child
+import ClosureTimers
 
 constant int PRESENT_ID = 'I002'
 
 let presentSpawn = new SoundDefinition("war3mapImported\\bells.mp3", false)
 let treeCenter = vec2(0., 4096.)
 
-public class Present extends ItemObject
-
+public class Present extends ItemEntity
+	Child c
 	construct(vec2 pos)
-		super(pos, PRESENT_ID, DUMMY_PLAYER)
+		super(createItem(PRESENT_ID, pos))
 
 	override function update()
 
-	override function onPickup(Child e)
+	override function onPickup(Entity e)
+		if e instanceof Child
+			c = e castTo Child
+			(e castTo Child).hasPresent = true
 
-	override function onDrop(Child e)
+	override function onDrop(Entity e)
+		if e instanceof Child
+			(e castTo Child).hasPresent = false
+			c = null
 
-	override function onUse(Child e)
+	override function onUse(Entity e)
+
+	ondestroy
+		c.hasPresent = false
 
 public function spawnPresent()
-	let randomPos = treeCenter.polarOffset(GetRandomReal(0,360).asAngleDegrees(), GetRandomReal(400,600))
+	var randomPos = treeCenter.polarOffset(GetRandomReal(0,360).asAngleDegrees(), GetRandomReal(400,600))
 	new Present(randomPos)
+	if GetRandomInt(0, 4) > 1
+		doAfter(GetRandomReal(10, 20)) ->
+			randomPos = treeCenter.polarOffset(GetRandomReal(0,360).asAngleDegrees(), GetRandomReal(400,600))
+			createItem('texp', randomPos)
+
 	printTimed("|cffFFAD29» |cffFF7329Present spawned in the middle!", 12)
 
 function isPresent() returns boolean

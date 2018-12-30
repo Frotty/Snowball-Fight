@@ -12,15 +12,15 @@ public class TimedBar extends Entity
 	unit u
 	boolean correct = false
 
-	construct( vec3 pos, string char, int chars, real value, real time, colorA bg, colorA fg, unit u )
+	construct(vec3 pos, string char, int chars, real value, real time, colorA bg, colorA fg, unit u)
 		super(DUMMY_PLAYER, pos, 0.)
 		this.u = u
-		PauseUnit(u, true)
+		u.pause()
 		this.time = time
 		bar = new CustomBar(pos,char, chars, 5)
-		bar.setValue(value)
-		bar.setBackground(bg)
-		bar.setForeground(fg)
+		bar..setValue(value)
+		..setBackground(bg)
+		..setForeground(fg)
 
 	override function update()
 		cvalue += ANIMATION_PERIOD
@@ -31,6 +31,6 @@ public class TimedBar extends Entity
 
 	ondestroy
 		checkUnwrap(u)
-		PauseUnit(u, false)
+		u.unpause()
 		(u.getEntity() castTo Child).wrapBar = null
 		destroy bar

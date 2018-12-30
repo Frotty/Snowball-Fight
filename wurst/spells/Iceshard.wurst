@@ -8,16 +8,17 @@ import AbilityTooltipGenerator
 
 public constant ICESHARD_SPELL_ID = compiletime(ABIL_ID_GEN.next())
 
-constant real SPEED = 26.
+constant real SPEED = 26.5
 
 public class Iceshard extends PhysicsProjectile
 
 	construct(vec3 pos, player owner, angle angle)
-		super(pos, 32., owner, angle, Abilities.lichMissile)
-		fx.setOwner(owner, false)
+		super(pos, 28., owner, angle, Abilities.lichMissile)
+		fx..setOwner(owner, false)
+		..setScale(0.75)
 		setTimed(4.)
 		setSpeed(SPEED)
-		surfaceFriction = 0.991
+		surfaceFriction = 0.981
 
 		registerCollidable(this, (other) -> onHit(other))
 		registerCollider(this, SHAPE_SPHERE, (other) -> onHit(other))
@@ -27,7 +28,8 @@ public class Iceshard extends PhysicsProjectile
 		if e.owner.isEnemyOf(owner)
 			if e instanceof Child
 				var c = e castTo Child
-				fx.getDummy().damageTarget(c.actor, 65.)
+				flashEffect(Objects.critterBloodAlbatross, pos)
+				fx.getDummy().damageTarget(c.actor, 25.)
 			terminate()
 
 	ondestroy
@@ -46,7 +48,7 @@ public class Iceshard extends PhysicsProjectile
 	..setName("Ice Shard")
 	..presetIcon("BTNIceShard")
 	..presetCooldown(lvl -> 1.75 - (lvl / 4))
-	..presetManaCost(lvl -> 4 - (lvl / 3).toInt())
+	..presetManaCost(lvl -> 2 - (lvl / 3).toInt())
 
 	..tooltipStopListen()
 

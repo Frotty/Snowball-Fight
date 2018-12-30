@@ -39,12 +39,13 @@ public class Rollingball extends Projectile
 		if this.size < MAXSIZE
 			this.size += SIZEGAIN
 			fx.setScale(this.size)
-			radius = 32 + this.size * 24
-			radius2 = radius * radius
-			pos.z = startz + radius - 48.
+			radius = 32 + this.size * 13
+			radius2 = radius * radius - 48
+		pos.z = pos.getTerrainZ()
 		fx.getDummy().setTimeScale(momentum/MOMENTUMMAX * 0.5)
 
 		super.update()
+		fx.getDummy().setXYZReal(vec3(pos.x, pos.y, pos.z + radius))
 		let terrainZ = pos.getTerrainZ()
 		if terrainZ > startz
 			terminate()
@@ -54,7 +55,7 @@ public class Rollingball extends Projectile
 		if e instanceof Child and e.owner.isEnemyOf(owner)
 			var c = e castTo Child
 			flashEffect(Abilities.frostDamage, pos)
-			fx.getDummy().damageTarget(c.actor, this.size * 2.5)
+			fx.getDummy().damageTarget(c.actor, (this.size - 1.75) * 2.0)
 		else if e instanceof Projectile
 			doAfter(0.01) ->
 				e.terminate()
@@ -68,14 +69,15 @@ public class Rollingball extends Projectile
 @compiletime function getObjs()
 	let tgen = new AbilityTooltipGenerator("Rolling ball that gains size and momentum.")
 	new ChannelAbilityPreset(ROLLINGBALL_SPELL_ID, 4, true, tgen)
-	..presetButtonPosNormal(2, 1)
+	..presetButtonPosNormal(1, 1)
 	..presetTargetTypes(Targettype.POINT)
+	..setRequiredLevel(1)
 	..tooltipStartListen()
 	..presetHotkey("D")
 	..setName("Rolling ball")
 	..presetIcon("BTNSnowBall")
-	..presetCooldown(lvl -> 24. - lvl)
-	..presetManaCost(lvl -> 8 - (lvl / 3).toInt())
+	..presetCooldown(lvl -> 25. - lvl)
+	..presetManaCost(lvl -> 9 - (lvl / 3).toInt())
 	..presetCastRange(lvl -> 400.)
 
 	..tooltipStopListen()

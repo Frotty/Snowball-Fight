@@ -8,7 +8,7 @@ import Assets
 import AbilityTooltipGenerator
 
 constant real SPEED = 9.
-constant real MELT = 172
+constant real MELT = 132
 
 public constant SNOWMAN_SPELL_ID = compiletime(ABIL_ID_GEN.next())
 
@@ -41,9 +41,7 @@ public class SnowmanMissile extends HomingProjectile
 		onHit(target)
 
 	function onHit(Entity e)
-		print("hit: " + e.owner.getNameColored())
 		if e != null and not e.done and e instanceof Child and e.owner.isEnemyOf(owner)
-			print("hit2")
 			let child = e castTo Child
 			if child.snowman == null
 				new SnowmanDummy(child.getPos().add(0,0,-child.terrainZ), owner, child)
@@ -96,7 +94,8 @@ public class SnowmanDummy extends FxEntity
 	let tgen = new AbilityTooltipGenerator("Santa magic inside.")
 	new ChannelAbilityPreset(SNOWMAN_SPELL_ID, 4, true, tgen)
 	..presetTargetTypes(Targettype.POINT)
-	..presetButtonPosNormal(3, 1)
+	..setRequiredLevel(3)
+	..presetButtonPosNormal(2, 1)
 	..tooltipStartListen()
 	..presetHotkey("F")
 	..setName("Snowman missile")

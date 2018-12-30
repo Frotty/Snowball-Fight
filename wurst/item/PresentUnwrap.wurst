@@ -2,26 +2,26 @@ package PresentUnwrap
 import Gamemode
 import Entity
 import TimedBar
-import ItemObject
+import Child
+import GameConstants
 import ClosureTimers
 
-constant int PRESENT_ID = 'I002'
-constant int UNWRAP_ID = 'A007'
-constant int CIRCLE_ID = 'ncop'
+constant PRESENT_ID = 'I002'
+constant UNWRAP_ID = 'A007'
+constant CIRCLE_ID = 'ncop'
+
 int array PRESENTS
 
 public function checkUnwrap(unit u)
 	for int i = 0 to 5
 		var uit = UnitItemInSlot(u, i)
 		if GetItemTypeId(uit) == PRESENT_ID
-			uit.remove()
-			u.addItemById(PRESENTS[GetRandomInt(0, 4)])
+			uit.getEntity().terminate()
+			u.addItemById(PRESENTS[GetRandomInt(1, 4)])
 			break
 
 function isChild() returns boolean
-	if GetUnitTypeId(GetFilterUnit()) == 'H001' or GetUnitTypeId(GetFilterUnit()) == 'H007'
-		return true
-	return false
+	return GetFilterUnit().getEntity() instanceof Child
 
 function sellPresent()
 	let u = GetTriggerUnit()
@@ -32,12 +32,17 @@ function sellPresent()
 			uit.getEntity().terminate()
 			p.addGold(100)
 			createTTEx(vec3(u.getX(), u.getY(), 20.), vec2(0, 0.05), "|cffffcc00+100|r", 10,  2., colorA(255,255,255,0), p)
+			gg_unit_e002_0011..setAnimation("Spell")..queueAnimation("Walk - 2")
+			gg_unit_e002_0012..setAnimation("Spell")..queueAnimation("Walk - 2")
+			announcers[2].play()
 			DisplayTimedTextToForce(GetPlayersAll(), 12., p.getNameColored() + "|r has returned a Present gaining |cffFFCC00+3|r Points for his team!")
 			if p.getId() <= 5
 				redscore += 3
 			else
 				greenscore += 3
-			checkEnd()
+
+			doAfter(2.) ->
+				checkEnd()
 
 
 function startBar()
@@ -46,6 +51,7 @@ function startBar()
 	if id == UNWRAP_ID
 		let child = (u.getEntity() castTo Child)
 		child.wrapBar = new TimedBar(vec3(u.getX()-60.,u.getY(),-16), "|", 120, 0, 7.5, COLOR_WHITE, COLOR_GOLD, u)
+
 
 trigger t
 unit scircle

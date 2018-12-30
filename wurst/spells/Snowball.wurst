@@ -10,6 +10,7 @@ import AbilityTooltipGenerator
 public constant SNOWBALL_SPELL_ID = compiletime(ABIL_ID_GEN.next())
 
 constant SPEED = 19.5
+constant RealLevelClosure RANGE = lvl -> 800. + lvl * 100
 
 public constant throwSound = new SoundDefinition("Abilities\\Spells\\Other\\FrostBolt\\FrostBoltLaunch1.wav", false, false)
 public constant terrainHitSound = new SoundDefinition("Abilities\\Spells\\Other\\FrostBolt\\FrostBoltHit1.wav", false, false)
@@ -20,11 +21,11 @@ public class Snowball extends PhysicsProjectile
 
 	construct(vec3 pos, player owner, angle xyAngle, vec3 target)
 		super(pos, 32., owner, xyAngle, "war3mapImported\\snowball.mdx")
-		gravity *= 0.5
+		gravity *= 0.15
 		setTimed(2.)
 		setFriction(0.905)
 		restitution = 0.05
-		setTarget(target + xyAngle.toVec(4.), SPEED)
+		setTarget(pos + xyAngle.toVec(RANGE.run(1)).withTerrainZ(), SPEED)
 		throwSound.playOnPoint(pos)
 		registerCollidable(this, (other) -> onHit(other))
 		registerCollider(this, SHAPE_SPHERE, (other) -> onHit(other))
@@ -54,6 +55,7 @@ public class Snowball extends PhysicsProjectile
 @compiletime function getObjs()
 	let tgen = new AbilityTooltipGenerator("An ordinary snowball.")
 	new ChannelAbilityPreset(SNOWBALL_SPELL_ID, 4, true, tgen)
+	..setHeroAbility(false)
 	..presetButtonPosNormal(0, 2)
 	..presetTargetTypes(Targettype.POINT)
 	..tooltipStartListen()
@@ -62,7 +64,7 @@ public class Snowball extends PhysicsProjectile
 	..presetIcon("BTNFrostBolt")
 	..presetCooldown(lvl -> 1.75 - (lvl / 4))
 	..presetManaCost(lvl -> 4 - (lvl / 3).toInt())
-	..presetCastRange(lvl -> 1200. + lvl * 100)
+	..presetCastRange(RANGE)
 	..setLevelSkipRequirement(0)
 
 	..tooltipStopListen()
