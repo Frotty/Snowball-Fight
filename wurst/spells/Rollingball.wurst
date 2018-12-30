@@ -29,6 +29,10 @@ public class Rollingball extends Projectile
 		setSpeed(STARTMOMENTUM)
 		momentum = STARTMOMENTUM
 		startRoll.play()
+		if owner.getId() > 4
+			fx.setColor(colorA(55, 125, 55, 255))
+		else
+			fx.setColor(colorA(125, 55, 55, 255))
 		registerCollidable(this, (other) -> onHit(other))
 		registerCollider(this, SHAPE_SPHERE, (other) -> onHit(other))
 

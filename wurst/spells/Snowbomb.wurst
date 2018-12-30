@@ -6,7 +6,7 @@ import AbilityTooltipGenerator
 import Assets
 
 constant SPEED = 13.5
-constant RealLevelClosure AOE = lvl -> (275. + lvl * 32)
+constant RealLevelClosure AOE = lvl -> (225. + lvl * 25)
 constant FACTOR = 6.95
 
 public constant SNOWBOMB_SPELL_ID = compiletime(ABIL_ID_GEN.next())
@@ -14,8 +14,9 @@ public constant SNOWBOMB_SPELL_ID = compiletime(ABIL_ID_GEN.next())
 public class Snowbomb extends PhysicsProjectile
 	var lvl = 1
 
-	construct(vec3 pos, player owner, vec3 target)
+	construct(vec3 pos, player owner, vec3 target, int lvl)
 		super(pos, 16., owner, pos.angleTo2d(target), "war3mapImported\\FrostMissile.mdx")
+		this.lvl = lvl
 		let dist = target.distanceToSq(pos)
 		if dist < 512.
 			var ntarget = target.toVec2().polarOffset(xyAngle, 200.-dist).toVec3()
@@ -29,8 +30,8 @@ public class Snowbomb extends PhysicsProjectile
 			if pos.distanceToSq(c.getPos()) < AOE.run(lvl).squared()
 				let angle = pos.angleTo2d(c.pos)
 				let factor = (300 - pos.distanceTo(c.pos)) / 200.
-				c.addVel(angle.toVec(factor * FACTOR).withZ(14*factor))
-				fx.getDummy().damageTarget(c.actor, 65 * factor)
+				c.addVel(angle.toVec(factor * FACTOR).withZ(14 * factor))
+				fx.getDummy().damageTarget(c.actor, 45 * factor)
 				flashEffect(Objects.critterBloodAlbatross, c.getPos())
 
 		terminate()
@@ -47,7 +48,7 @@ public class Snowbomb extends PhysicsProjectile
 	..presetHotkey("E")
 	..setName("Snowbomb")
 	..presetIcon("BTNCRFrostShock")
-	..presetCooldown(lvl -> 16 - (lvl / 2))
+	..presetCooldown(lvl -> 18. - lvl)
 	..presetManaCost(lvl -> 5)
 	..presetCastRange(lvl -> 700. + 200 * lvl)
 	..presetAreaofEffect(AOE)

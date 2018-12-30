@@ -14,6 +14,7 @@ import Assets
 import Collision
 import ChannelAbilityPreset
 import Tiles
+import PlayerData
 
 public constant humChildren = new LinkedList<Child>()
 public constant orcChildren = new LinkedList<Child>()
@@ -64,20 +65,22 @@ public class Child extends UnitEntity
 		var target = getSpellTargetPos().withTerrainZ()
 		let castPos = getPos().add(0,0,48)
 		let angle = pos.angleTo2d(target)
+		let lvl = actor.getAbilityLevel(GetSpellAbilityId())
 
 		if castPos.distanceTo(target) < 128
 			target = castPos + angle.toVec(128)
 
 		switch id
 			case SNOWBALL_SPELL_ID
-				new Snowball(castPos, owner, angle, target)
+				new Snowball(castPos, owner, angle, target, lvl)
 			case SNOWBOMB_SPELL_ID
-				new Snowbomb(castPos, owner, target)
+				new Snowbomb(castPos, owner, target, lvl)
 			case ROLLINGBALL_SPELL_ID
 				new Rollingball(pos.polarProject(16, angle, (90).asAngleDegrees()).add(0,0,16), owner, angle)
 			case SNOWMAN_SPELL_ID
-				new SnowmanMissile(castPos, owner, target.toVec2())
+				new SnowmanMissile(castPos, owner, target.toVec2(), lvl)
 			case ICEWALL_SPELL_ID
+				print("icewall")
 				new IceMissile(castPos, owner, target)
 			case ICESHARD_SPELL_ID
 				new Iceshard(castPos, owner, angle )
@@ -97,25 +100,26 @@ public class Child extends UnitEntity
 		flashEffect(Objects.humanBloodPeasant, pos)
 
 		doAfter(5.5) ->
-			if owner.getId() > 4
-				actor.revive(RIGHT_SPAWN, false)
-				setPos(RIGHT_SPAWN.withTerrainZ() + vec3(48. * owner.getId() - 6, 0, 530.))
-			else
-				actor.revive(LEFT_SPAWN, false)
-				setPos(LEFT_SPAWN.withTerrainZ() + vec3(48. * owner.getId(), 0, 530.))
+			if pData[owner.getId()] != null
+				if owner.getId() > 4
+					actor.revive(RIGHT_SPAWN, false)
+					setPos(RIGHT_SPAWN.withTerrainZ() + vec3(64. * owner.getId() - 5, 0, 530.))
+				else
+					actor.revive(LEFT_SPAWN, false)
+					setPos(LEFT_SPAWN.withTerrainZ() + vec3(64. * owner.getId(), 0, 530.))
 
-			addSpawnShield()
-			setVel(vec3(0,0,0))
-			actor..setVertexColor(255,255,255,255)
-			..setPropWindow(60 .fromDeg())
-			owner..clearSelection()
-			..panCamToTimed(actor, 1.)
-			..select(actor)
+				addSpawnShield()
+				setVel(vec3(0,0,0))
+				actor..setVertexColor(255,255,255,255)
+				..setPropWindow(60 .fromDeg())
+				owner..clearSelection()
+				..panCamToTimed(actor, 1.)
+				..select(actor)
 
 	override function update()
 		physicsUpdate(this)
 		if getPos().toVec2().getTile().getType() == Tiles.northrend_Ice
-			slidespeed = slidespeed.lerp(2, 0.025)
+			slidespeed = slidespeed.lerp(1.75, 0.025)
 		else
 			slidespeed = slidespeed.lerp(0., 0.125)
 		actor.setMoveSpeed(275 * (1 - (slidespeed / 2)))
@@ -139,7 +143,7 @@ public class Child extends UnitEntity
 
 	function addSpawnShield()
 		actor.addAbility(AbilityIds.invulnerable)
-		let eff = actor.addEffect(Abilities.divineShieldTarget, "chest")
+		let eff = actor.addEffect(Abilities.divineShieldTarget, "origin")
 		doAfter(5.) ->
 			actor.removeAbility(AbilityIds.invulnerable)
 			eff.destr()

@@ -35,7 +35,7 @@ function sellPresent()
 			gg_unit_e002_0011..setAnimation("Spell")..queueAnimation("Walk - 2")
 			gg_unit_e002_0012..setAnimation("Spell")..queueAnimation("Walk - 2")
 			announcers[2].play()
-			DisplayTimedTextToForce(GetPlayersAll(), 12., p.getNameColored() + "|r has returned a Present gaining |cffFFCC00+3|r Points for his team!")
+			DisplayTimedTextToForce(GetPlayersAll(), 12., "|cffFFCC00>>>|r " + p.getNameColored() + "|r has returned a Present gaining |cffFFCC00+3|r Points for his team!")
 			if p.getId() <= 5
 				redscore += 3
 			else

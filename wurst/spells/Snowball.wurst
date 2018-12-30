@@ -10,7 +10,7 @@ import AbilityTooltipGenerator
 public constant SNOWBALL_SPELL_ID = compiletime(ABIL_ID_GEN.next())
 
 constant SPEED = 19.5
-constant RealLevelClosure RANGE = lvl -> 800. + lvl * 100
+constant RealLevelClosure RANGE = lvl -> 900. + lvl * 100
 
 public constant throwSound = new SoundDefinition("Abilities\\Spells\\Other\\FrostBolt\\FrostBoltLaunch1.wav", false, false)
 public constant terrainHitSound = new SoundDefinition("Abilities\\Spells\\Other\\FrostBolt\\FrostBoltHit1.wav", false, false)
@@ -18,14 +18,16 @@ public constant childHitSound = new SoundDefinition("Abilities\\Spells\\Other\\F
 
 
 public class Snowball extends PhysicsProjectile
+	var lvl = 1
 
-	construct(vec3 pos, player owner, angle xyAngle, vec3 target)
+	construct(vec3 pos, player owner, angle xyAngle, vec3 target, int lvl)
 		super(pos, 32., owner, xyAngle, "war3mapImported\\snowball.mdx")
-		gravity *= 0.15
+		this.lvl = lvl
+		gravity *= 0.10
 		setTimed(2.)
 		setFriction(0.905)
 		restitution = 0.05
-		setTarget(pos + xyAngle.toVec(RANGE.run(1)).withTerrainZ(), SPEED)
+		setTarget(pos + xyAngle.toVec(RANGE.run(lvl)).withTerrainZ(), SPEED)
 		throwSound.playOnPoint(pos)
 		registerCollidable(this, (other) -> onHit(other))
 		registerCollider(this, SHAPE_SPHERE, (other) -> onHit(other))
