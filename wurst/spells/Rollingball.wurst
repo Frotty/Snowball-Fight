@@ -13,7 +13,7 @@ public constant ROLLINGBALL_SPELL_ID = compiletime(ABIL_ID_GEN.next())
 constant STARTMOMENTUM = 2.
 constant MOMENTUMMAX = 25.
 constant SIZEGAIN = .075
-constant MAXSIZE = 24.5
+constant MAXSIZE = 23.5
 
 constant startRoll = new SoundDefinition("Abilities\\Spells\\Orc\\EarthQuake\\EarthquakeRock.wav", false, false)
 constant hitTarget = new SoundDefinition("Abilities\\Spells\\Human\\FlakCannons\\FlakCannon.wav", false, false)
@@ -30,9 +30,9 @@ public class Rollingball extends Projectile
 		momentum = STARTMOMENTUM
 		startRoll.play()
 		if owner.getId() > 4
-			fx.setColor(colorA(55, 125, 55, 255))
+			fx.setColor(colorA(55, 155, 55, 255))
 		else
-			fx.setColor(colorA(125, 55, 55, 255))
+			fx.setColor(colorA(155, 25, 25, 255))
 		registerCollidable(this, (other) -> onHit(other))
 		registerCollider(this, SHAPE_SPHERE, (other) -> onHit(other))
 
@@ -59,7 +59,7 @@ public class Rollingball extends Projectile
 		if e instanceof Child and e.owner.isEnemyOf(owner)
 			var c = e castTo Child
 			flashEffect(Abilities.frostDamage, pos)
-			fx.getDummy().damageTarget(c.actor, (this.size - 1.75) * 2.0)
+			fx.getDummy().damageTarget(c.actor, (this.size - 1.75) * 1.95)
 		else if e instanceof Projectile
 			doAfter(0.01) ->
 				e.terminate()
