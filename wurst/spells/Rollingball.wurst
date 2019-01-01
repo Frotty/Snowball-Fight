@@ -62,7 +62,7 @@ public class Rollingball extends Projectile
 			fx.getDummy().damageTarget(c.actor, (this.size - 1.75) * 1.95)
 		else if e instanceof Projectile
 			doAfter(0.01) ->
-				if e != null and not e.done
+				if e != null and not e.done and not e instanceof Child
 					e.terminate()
 
 	ondestroy
