@@ -52,13 +52,14 @@ public class Iceblock extends FxEntity
 		silent = true
 		registerCollidable(this, other -> onHit(other))
 
-	override function update()
-		super.update()
-
-		timeout -= ANIMATION_PERIOD
+	override function slowUpdate()
+		super.slowUpdate()
+		timeout -= 1.
 		if timeout <= 0.
 			terminate()
-			return
+
+	override function update()
+		super.update()
 
 	function onHit(Entity other)
 		if other instanceof Snowball

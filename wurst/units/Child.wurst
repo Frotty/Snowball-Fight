@@ -80,7 +80,6 @@ public class Child extends UnitEntity
 			case SNOWMAN_SPELL_ID
 				new SnowmanMissile(castPos, owner, target.toVec2(), lvl)
 			case ICEWALL_SPELL_ID
-				print("icewall")
 				new IceMissile(castPos, owner, target)
 			case ICESHARD_SPELL_ID
 				new Iceshard(castPos, owner, angle )

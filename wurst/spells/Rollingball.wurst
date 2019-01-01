@@ -30,9 +30,9 @@ public class Rollingball extends Projectile
 		momentum = STARTMOMENTUM
 		startRoll.play()
 		if owner.getId() > 4
-			fx.setColor(colorA(55, 155, 55, 255))
+			fx.setColor(colorA(155, 255, 155, 255))
 		else
-			fx.setColor(colorA(155, 25, 25, 255))
+			fx.setColor(colorA(255, 155, 155, 255))
 		registerCollidable(this, (other) -> onHit(other))
 		registerCollider(this, SHAPE_SPHERE, (other) -> onHit(other))
 
@@ -58,11 +58,12 @@ public class Rollingball extends Projectile
 	function onHit(Entity e)
 		if e instanceof Child and e.owner.isEnemyOf(owner)
 			var c = e castTo Child
-			flashEffect(Abilities.frostDamage, pos)
+			flashEffect(Abilities.bloodImpact, pos)
 			fx.getDummy().damageTarget(c.actor, (this.size - 1.75) * 1.95)
 		else if e instanceof Projectile
 			doAfter(0.01) ->
-				e.terminate()
+				if e != null and not e.done
+					e.terminate()
 
 	ondestroy
 		flashEffect("war3mapImported\\rollingExplosion.mdx", pos)
