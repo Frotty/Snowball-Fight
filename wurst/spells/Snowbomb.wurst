@@ -18,7 +18,7 @@ public class Snowbomb extends PhysicsProjectile
 		super(pos, 16., owner, pos.angleTo2d(target), "war3mapImported\\FrostMissile.mdx")
 		this.lvl = lvl
 		let dist = target.distanceToSq(pos)
-		if dist < 512.
+		if dist < 512. * 512.
 			var ntarget = target.toVec2().polarOffset(xyAngle, 200.-dist).toVec3()
 			setTarget(ntarget, SPEED)
 		else

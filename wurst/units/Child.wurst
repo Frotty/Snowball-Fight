@@ -5,7 +5,6 @@ import Snowbomb
 import Rollingball
 import KillStreaks
 import Iceshard
-import ItemHandling
 import TimedBar
 import PhysicsEntity
 import IceWall
@@ -58,7 +57,8 @@ public class Child extends UnitEntity
 		addSpawnShield()
 		registerCollidable(this, (e) -> skip)
 		actor..selectSkill(SNOWBALL_SPELL_ID)..setSkillPoints(2)
-
+		owner.selectSingle(actor)
+		owner.panCamToTimed(actor, 0.)
 
 	function onCast()
 		var id = GetSpellAbilityId()
@@ -86,7 +86,7 @@ public class Child extends UnitEntity
 			case JUMP_ID
 				if not flying and not actor.hasItemById('I002')
 					actor.setAnimation("walk")
-					addVel(angle.toVec(6.75).withZ(7.))
+					addVel(angle.toVec(7.25).withZ(7.25))
 					flashEffect(Abilities.tornado_Target, pos)
 
 	function onDeath()
@@ -95,7 +95,6 @@ public class Child extends UnitEntity
 		if wrapBar != null
 			wrapBar.terminate()
 		adjustKills(p, p2)
-		removeallspell(actor)
 		flashEffect(Objects.humanBloodPeasant, pos)
 
 		doAfter(5.5) ->

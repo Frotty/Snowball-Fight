@@ -10,7 +10,8 @@ let presentSpawn = new SoundDefinition("war3mapImported\\bells.mp3", false)
 let treeCenter = vec2(0., 4096.)
 
 public class Present extends ItemEntity
-	Child c
+	Child holder
+
 	construct(vec2 pos)
 		super(createItem(PRESENT_ID, pos))
 
@@ -18,18 +19,24 @@ public class Present extends ItemEntity
 
 	override function onPickup(Entity e)
 		if e instanceof Child
-			c = e castTo Child
-			(e castTo Child).hasPresent = true
+			let child = e castTo Child
+			if child.actor.hasItemById(PRESENT_ID)
+				setNewActor(createItem(PRESENT_ID, getPos()))
+				createTTEx(child.actor.getPos3Real(), vec2(0,0.05), "|cffcccc00You can only carry one!|r", 10,  2., colorA(255,255,255,0), child.owner )
+			else
+				printTimed(child.owner.getNameColored() + " has acquired a present!", 12.)
+				holder = child
+				child.hasPresent = true
 
 	override function onDrop(Entity e)
 		if e instanceof Child
 			(e castTo Child).hasPresent = false
-			c = null
+			holder = null
 
 	override function onUse(Entity e)
 
 	ondestroy
-		c.hasPresent = false
+		holder.hasPresent = false
 
 public function spawnPresent()
 	var randomPos = treeCenter.polarOffset(GetRandomReal(0,360).asAngleDegrees(), GetRandomReal(400,600))

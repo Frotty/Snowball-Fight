@@ -8,7 +8,7 @@ import AbilityTooltipGenerator
 
 public constant ICESHARD_SPELL_ID = compiletime(ABIL_ID_GEN.next())
 
-constant real SPEED = 26.5
+constant real SPEED = 26.75
 
 public class Iceshard extends PhysicsProjectile
 
@@ -47,9 +47,8 @@ public class Iceshard extends PhysicsProjectile
 	..presetHotkey("R")
 	..setName("Ice Shard")
 	..presetIcon("BTNIceShard")
-	..presetCooldown(lvl -> 1.75 - (lvl / 4))
+	..presetCooldown(lvl -> 1.50 - (lvl / 4))
 	..presetManaCost(lvl -> 2 - (lvl / 3).toInt())
-
 	..tooltipStopListen()
 
 
