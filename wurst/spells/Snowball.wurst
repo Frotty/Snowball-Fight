@@ -68,6 +68,5 @@ public class Snowball extends PhysicsProjectile
 	..presetManaCost(lvl -> 4 - (lvl / 3).toInt())
 	..presetCastRange(RANGE)
 	..setLevelSkipRequirement(0)
-
 	..tooltipStopListen()
 

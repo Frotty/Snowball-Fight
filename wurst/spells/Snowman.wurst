@@ -8,7 +8,7 @@ import Assets
 import AbilityTooltipGenerator
 
 constant real SPEED = 9.
-constant real MELT = 132
+constant real MELT = 112
 
 public constant SNOWMAN_SPELL_ID = compiletime(ABIL_ID_GEN.next())
 
@@ -78,7 +78,7 @@ public class SnowmanDummy extends FxEntity
 			setPos(target.pos)
 			if target.vel.z > 0.
 				target.vel.z = 0.
-			fx.getDummy().damageTarget(target.actor, .1)
+			fx.getDummy().damageTarget(target.actor, .15)
 			if melttime < 0
 				terminate()
 		else
@@ -102,7 +102,7 @@ public class SnowmanDummy extends FxEntity
 	..presetHotkey("F")
 	..setName("Snowman missile")
 	..presetIcon("BTNFrostSpell")
-	..presetCooldown(lvl -> 13.5 - (lvl * 0.5))
+	..presetCooldown(lvl -> 15.5 - (lvl * 0.5))
 	..presetManaCost(lvl -> 6 + (lvl))
 
 	..tooltipStopListen()

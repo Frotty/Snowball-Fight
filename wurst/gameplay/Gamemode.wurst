@@ -28,7 +28,7 @@ public function createDialog()
 	dbox.addButton("Long (80 Points)") ->
 		maxkills = 80
 		DisplayTimedTextToForce(GetPlayersAll(), 12.,"|cffFFAD29» " + nameColored + "|r selected a long game (80)!")
-	dbox.display(allPlayers.peek().p, true)
+	dbox.display(allPlayers.getFirst().p, true)
 
 function endgame(int winningteam)
 	announcers[5].play()

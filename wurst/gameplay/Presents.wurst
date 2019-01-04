@@ -20,7 +20,7 @@ public class Present extends ItemEntity
 	override function onPickup(Entity e)
 		if e instanceof Child
 			let child = e castTo Child
-			if child.actor.hasItemById(PRESENT_ID)
+			if child.actor.itemCount(PRESENT_ID) > 1
 				setNewActor(createItem(PRESENT_ID, getPos()))
 				createTTEx(child.actor.getPos3Real(), vec2(0,0.05), "|cffcccc00You can only carry one!|r", 10,  2., colorA(255,255,255,0), child.owner )
 			else

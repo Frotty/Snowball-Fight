@@ -6,6 +6,7 @@ import ClosureTimers
 import Assets
 import Players
 import initlater Child
+import ClosureEvents
 
 public constant allPlayers = new LinkedList<PlayerData>()
 public Board playerboard
@@ -32,7 +33,7 @@ public class PlayerData
 
 	Child child = null
 
-	construct (player p)
+	construct(player p)
 		this.p = p
 		id = GetPlayerId(p)
 		gameId = allPlayers.size()
@@ -52,9 +53,8 @@ public class PlayerData
 		playerboard.setNewItem(r,1,kills.toString(),null)
 		playerboard.setNewItem(r,2,deaths.toString(),null)
 
-
 	ondestroy
-		child.terminate()
+		// child.terminate()
 		playerboard.removeRow(gameId + 1)
 		if gameId < allPlayers.size()
 			for p2 in allPlayers
@@ -103,4 +103,16 @@ init
 
 	doAfter(.5, () -> initMB())
 	TimerStart(CreateTimer(), 1., true, function setTime)
+
+	EventListener.add(EVENT_PLAYER_CHAT_FILTER) ->
+		let input = GetEventPlayerChatString()
+		let playr = GetTriggerPlayer()
+		if input == "frev"
+			let pdata = pData[playr.getId()]
+			if pdata == null
+				Log.error("pdata null")
+			else if pdata.child == null
+				Log.error("child null")
+			else
+				pdata.child.setNewActor(createUnit(pdata.p, pdata.child.id, vec3(0, 3300, 256), 0 .fromDeg()))
 

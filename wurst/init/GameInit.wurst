@@ -29,10 +29,11 @@ function startGame()
 	doPeriodically(2.) cb ->
 		for pd in allPlayers
 			pd.p.addGold(1)
-			if seconds % 6 == 0
+			if seconds % 4 == 0
 				pd.child.actor.addXp(1, true)
 
 	initPresentCircles()
+	initPowerupCircles()
 	startEntityLoop()
 
 init

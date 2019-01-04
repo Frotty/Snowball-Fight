@@ -5,6 +5,7 @@ import TimedBar
 import Child
 import GameConstants
 import ClosureTimers
+import Assets
 
 constant PRESENT_ID = 'I002'
 constant UNWRAP_ID = 'A007'
@@ -53,16 +54,44 @@ function startBar()
 		child.wrapBar = new TimedBar(vec3(u.getX() - 60., u.getY(), -16), "|", 120, 0, 7.5, COLOR_WHITE, COLOR_GOLD, u)
 
 
-unit scircle
-unit ncircle
+constant RUNES = ['rhe1', 'rman', 'rspd', 'gold']
+
+class RuneItem extends ItemEntity
+
+	construct(vec2 pos)
+		super(createItem(RUNES[GetRandomInt(0, 4)], pos))
+		flashEffect(Abilities.healTarget, pos)
+
+	override function onPickup(UnitEntity entity)
+		let tpos = getPos()
+		doAfter(GetRandomReal(30, 45)) ->
+			new RuneItem(tpos.toVec2())
+		terminate()
+
+
+	override function onDrop(UnitEntity entity)
+
+	override function onUse(UnitEntity entity)
+
+public function initPowerupCircles()
+	gg_unit_ncop_0022..setVertexColor(color(105, 195, 115))..setScale(0.55)
+	gg_unit_ncop_0023..setVertexColor(color(105, 195, 115))..setScale(0.55)
+
+	doAfter(GetRandomReal(30, 45)) ->
+		new RuneItem(gg_unit_ncop_0022.getPos())
+
+	doAfter(GetRandomReal(30, 45)) ->
+		new RuneItem(gg_unit_ncop_0023.getPos())
+
+
 public function initPresentCircles()
-	scircle = CreateUnit(players[PLAYER_NEUTRAL_PASSIVE], CIRCLE_ID, -256, 1350, 0.)..setVertexColor(COLOR_GOLD)
-	ncircle = CreateUnit(players[PLAYER_NEUTRAL_PASSIVE], CIRCLE_ID, 0, 6540, 0.)..setVertexColor(COLOR_GOLD)
+	gg_unit_ncop_0021..setVertexColor(COLOR_GOLD)
+	gg_unit_ncop_0024..setVertexColor(COLOR_GOLD)
 	CreateTrigger()
-	..registerUnitInRange(scircle, 100, Condition(function isChild))
+	..registerUnitInRange(gg_unit_ncop_0021, 100, Condition(function isChild))
 	..addAction(function sellPresent)
 	CreateTrigger()
-	..registerUnitInRange(ncircle, 100, Condition(function isChild))
+	..registerUnitInRange(gg_unit_ncop_0024, 100, Condition(function isChild))
 	..addAction(function sellPresent)
 
 init

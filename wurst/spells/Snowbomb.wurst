@@ -19,7 +19,7 @@ public class Snowbomb extends PhysicsProjectile
 		this.lvl = lvl
 		let dist = target.distanceToSq(pos)
 		if dist < 512. * 512.
-			var ntarget = target.toVec2().polarOffset(xyAngle, 200.-dist).toVec3()
+			var ntarget = pos.toVec2().polarOffset(xyAngle, 512).withTerrainZ()
 			setTarget(ntarget, SPEED)
 		else
 			setTarget(target, SPEED)

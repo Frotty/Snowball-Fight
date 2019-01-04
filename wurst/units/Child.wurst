@@ -41,9 +41,11 @@ public class Child extends UnitEntity
 	var slidespeed = 0.
 	var slidevec = ZERO2
 	var hasPresent = false
+	int id
 
 	construct(vec3 pos, player owner, int id)
 		super(createUnit(owner, id, pos, 0 .fromDeg()), pos, 54.)
+		this.id = id
 		sleeps = false
 		if owner.getId() > 4
 			orcChildren.add(this)
@@ -125,13 +127,11 @@ public class Child extends UnitEntity
 		addVel((slidevec + newvec * 0.5).toVec3())
 		slidevec = newvec
 
-		super.update()
-
 		if not gg_rct_arenabounds.contains(pos.toVec2())
 			pos = vec3(0,3600,200)
 			vel = vec3(0,0,0)
-			actor.setPos(pos.toVec2())
 
+		super.update()
 
 	override function onEscapeGround()
 		actor.setPropWindow(0 .fromDeg())
@@ -146,7 +146,13 @@ public class Child extends UnitEntity
 			actor.removeAbility(AbilityIds.invulnerable)
 			eff.destr()
 
+	override function terminate()
+		error("fuck no")
+
 	ondestroy
+		error("nah")
+		humChildren.remove(this)
+		orcChildren.remove(this)
 		removeCollidable(this)
 
 
