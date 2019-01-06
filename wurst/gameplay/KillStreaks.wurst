@@ -3,6 +3,7 @@ import PlayerData
 import GameConstants
 import Gamemode
 import TimerUtils
+import ClosureTimers
 
 public function adjustKills(player killer, player dead)
 	var p1 = pData[killer.getId()]
@@ -14,7 +15,7 @@ public function adjustKills(player killer, player dead)
 	killer.addGold(10)
 	p1.killstreak++
 	p2.killstreak = 0
-	if p1.id <= 5
+	if p1.id <= 4
 		redscore += 1
 	else
 		greenscore += 1
@@ -46,7 +47,9 @@ public function adjustKills(player killer, player dead)
 		DisplayTimedTextToForce(GetPlayersAll(), 12., killer.getNameColored() + " hit " + dead.getNameColored() + "|r in the face with a snowball!" + announce + " (|cffFFCC00+1|r)")
 	else
 		DisplayTimedTextToForce(GetPlayersAll(), 12., killer.getNameColored() + " hit " + dead.getNameColored() + "|r in the face with a snowball! (|cffFFCC00+1|r)")
-	checkEnd()
+
+	doAfter(2.5) ->
+		checkEnd()
 
 
 function clearKillMultiplier()

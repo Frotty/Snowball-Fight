@@ -23,18 +23,38 @@ public class Snowball extends PhysicsProjectile
 	construct(vec3 pos, player owner, angle xyAngle, vec3 target, int lvl)
 		super(pos, 32., owner, xyAngle, "war3mapImported\\snowball.mdx")
 		this.lvl = lvl
-		gravity *= 0.10
-		setTimed(2.)
+		let tdif = (pos.getTerrainZ() - target.z).abs() * 0.0075
+		gravity *= tdif
+		setTimed(2.5)
 		setFriction(0.905)
 		restitution = 0.05
-		setTarget(pos + xyAngle.toVec(RANGE.run(lvl)).withTerrainZ(), SPEED)
+		if pos.getTerrainZ() > target.z + 8.
+			gravity *= 1.5
+			setTarget(target.toVec2().withTerrainZ(16.), SPEED)
+		else
+			findTarget(target.toVec2().withTerrainZ(16.), xyAngle)
 		throwSound.playOnPoint(pos)
 		registerCollidable(this, (other) -> onHit(other))
 		registerCollider(this, SHAPE_SPHERE, (other) -> onHit(other))
 
+	function findTarget(vec3 target, angle xyAngle)
+		let maxdist = RANGE.run(lvl)
+		let dist = pos.distanceTo(target)
+		var tdist = 0.
+
+		while dist + tdist < maxdist
+			tdist += 32.
+			if target.toVec2().polarOffset(xyAngle, tdist).getTerrainZ() > target.z + 2.
+				tdist -= 32.
+				break
+
+		gravity *= 0.5
+		setTarget(target.toVec2().polarOffset(xyAngle, tdist).withTerrainZ(16.), SPEED)
+
+
 	function onHit(Entity e)
 		if e.owner.isEnemyOf(owner)
-			if e instanceof Child
+			if e instanceof Child and (e castTo Child).actor.isAlive()
 				let child = e castTo Child
 				fx.getDummy().damageTarget(child.actor, 55.)
 				flashEffect(Abilities.frostArmorDamage, pos)
@@ -44,10 +64,10 @@ public class Snowball extends PhysicsProjectile
 
 	override function onGroundHit()
 		for child in getEnemyChildren(owner)
-			if (child.getPos()  + vec3(0, 0, radius / 2)).distanceToSq(getPos() + vec3(0, 0, radius / 2)) < radius2 + child.radius2
+			if child != null and not child.done and (child.getPos()  + vec3(0, 0, radius / 2)).distanceToSq(getPos() + vec3(0, 0, radius / 2)) < radius2 + child.radius2
 				onHit(child)
 		if not done
-			flashEffect(Abilities.frostDamage, pos)
+			flashEffect(Abilities.zigguratFrostMissile, pos)
 			terminate()
 
 	ondestroy

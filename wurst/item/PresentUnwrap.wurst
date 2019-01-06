@@ -37,12 +37,15 @@ function sellPresent()
 			gg_unit_e002_0012..setAnimation("Spell")..queueAnimation("Walk - 2")
 			announcers[2].play()
 			DisplayTimedTextToForce(GetPlayersAll(), 12., "|cffFFCC00>>>|r " + p.getNameColored() + "|r has returned a Present gaining |cffFFCC00+3|r Points for his team!")
-			if p.getId() <= 5
+			if p.getId() <= 4
 				redscore += 3
 			else
 				greenscore += 3
 
-			doAfter(2.) ->
+			for child in getEnemyChildren(p)
+				child.actor.addXp(25, true)
+
+			doAfter(2.5) ->
 				checkEnd()
 
 

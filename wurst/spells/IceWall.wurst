@@ -28,7 +28,7 @@ public class IceMissile extends Projectile
 
 	function onHit(Entity e)
 		terminate()
-		if e instanceof Child
+		if e instanceof Child and (e castTo Child).actor.isAlive()
 			let angle = pos.angleTo2d(e.pos)
 			e.addVel(angle.toVec(FACTOR).withZ(1.))
 
@@ -84,7 +84,7 @@ public class Iceblock extends FxEntity
 	..presetHotkey("T")
 	..setName("Ice wall")
 	..presetIcon("BTNIceField")
-	..presetCooldown(lvl -> 18.75 - (lvl / 4))
-	..presetManaCost(lvl -> 6 - (lvl / 3).toInt())
-	..presetCastRange(lvl -> 800.)
+	..presetCooldown(lvl -> 14.75 - (lvl / 4))
+	..presetManaCost(lvl -> 4 - (lvl / 3).toInt())
+	..presetCastRange(lvl -> 900.)
 	..tooltipStopListen()

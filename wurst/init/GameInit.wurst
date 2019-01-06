@@ -30,7 +30,7 @@ function startGame()
 		for pd in allPlayers
 			pd.p.addGold(1)
 			if seconds % 4 == 0
-				pd.child.actor.addXp(1, true)
+				pd.child.actor.addXp(2, true)
 
 	initPresentCircles()
 	initPowerupCircles()

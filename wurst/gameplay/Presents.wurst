@@ -39,11 +39,15 @@ public class Present extends ItemEntity
 		holder.hasPresent = false
 
 public function spawnPresent()
-	var randomPos = treeCenter.polarOffset(GetRandomReal(0,360).asAngleDegrees(), GetRandomReal(400,600))
+	var randomPos = treeCenter.polarOffset(GetRandomReal(1,360).asAngleDegrees(), GetRandomReal(300,700))
 	new Present(randomPos)
 	if GetRandomInt(0, 4) > 1
 		doAfter(GetRandomReal(10, 20)) ->
-			randomPos = treeCenter.polarOffset(GetRandomReal(0,360).asAngleDegrees(), GetRandomReal(400,600))
+			randomPos = treeCenter.polarOffset(GetRandomReal(1,360).asAngleDegrees(), GetRandomReal(300,700))
+			createItem('texp', randomPos)
+	if GetRandomInt(0, 4) > 3
+		doAfter(GetRandomReal(20, 30)) ->
+			randomPos = treeCenter.polarOffset(GetRandomReal(1,360).asAngleDegrees(), GetRandomReal(300,700))
 			createItem('texp', randomPos)
 
 	printTimed("|cffFFAD29» |cffFF7329Present spawned in the middle!", 12)

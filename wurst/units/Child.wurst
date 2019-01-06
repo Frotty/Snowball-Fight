@@ -69,8 +69,8 @@ public class Child extends UnitEntity
 		let angle = pos.angleTo2d(target)
 		let lvl = actor.getAbilityLevel(GetSpellAbilityId())
 
-		if castPos.distanceTo(target) < 128
-			target = castPos + angle.toVec(128)
+		if castPos.distanceTo(target) < 78.
+			target = (castPos + angle.toVec(128)).toVec2().withTerrainZ()
 
 		switch id
 			case SNOWBALL_SPELL_ID
@@ -86,10 +86,10 @@ public class Child extends UnitEntity
 			case ICESHARD_SPELL_ID
 				new Iceshard(castPos, owner, angle )
 			case JUMP_ID
-				if not flying and not actor.hasItemById('I002')
+				if not flying and not sliding and not actor.hasItemById('I002')
 					actor.setAnimation("walk")
-					addVel(angle.toVec(7.25).withZ(7.25))
-					flashEffect(Abilities.tornado_Target, pos)
+					addVel(angle.toVec(8.55).withZ(7))
+					flashEffect(Abilities.batTrollMissile, pos)
 
 	function onDeath()
 		var p = GetKillingUnit().getOwner()
@@ -128,8 +128,8 @@ public class Child extends UnitEntity
 		slidevec = newvec
 
 		if not gg_rct_arenabounds.contains(pos.toVec2())
-			pos = vec3(0,3600,200)
-			vel = vec3(0,0,0)
+			setPos(vec3(0,3600,200))
+			setVel(vec3(0,0,0))
 
 		super.update()
 
@@ -146,11 +146,7 @@ public class Child extends UnitEntity
 			actor.removeAbility(AbilityIds.invulnerable)
 			eff.destr()
 
-	override function terminate()
-		error("fuck no")
-
 	ondestroy
-		error("nah")
 		humChildren.remove(this)
 		orcChildren.remove(this)
 		removeCollidable(this)

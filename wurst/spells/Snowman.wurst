@@ -18,9 +18,9 @@ public class SnowmanMissile extends HomingProjectile
 	var level = 1
 
 	construct(vec3 pos, player owner, vec2 target, int level)
-		super(pos, 32., owner, pos.angleTo2d(target), Abilities.frostWyrmMissile)
+		super(pos, 32., owner, pos.angleTo2d(target), Abilities.zigguratFrostMissile)
 		this.level = level
-		fx.setScale(.5)
+		fx.setScale(.75)
 		setTimed(6.5)
 		setSpeed(SPEED)
 		throwSound.playOnPoint(pos)
@@ -72,7 +72,7 @@ public class SnowmanDummy extends FxEntity
 
 	override function update()
 		melttime--
-		fx..setColor(colorA(255,255,255,melttime.toInt()+28))
+		fx..setColor(colorA(255, 255, 255, (melttime * 1.5).toInt() + 28))
 
 		if target.actor.getHP() > .405
 			setPos(target.pos)
@@ -102,7 +102,7 @@ public class SnowmanDummy extends FxEntity
 	..presetHotkey("F")
 	..setName("Snowman missile")
 	..presetIcon("BTNFrostSpell")
-	..presetCooldown(lvl -> 15.5 - (lvl * 0.5))
+	..presetCooldown(lvl -> 18.5 - (lvl * 0.5))
 	..presetManaCost(lvl -> 6 + (lvl))
 
 	..tooltipStopListen()

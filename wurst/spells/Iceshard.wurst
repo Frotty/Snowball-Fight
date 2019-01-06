@@ -11,29 +11,36 @@ public constant ICESHARD_SPELL_ID = compiletime(ABIL_ID_GEN.next())
 constant real SPEED = 26.75
 
 public class Iceshard extends PhysicsProjectile
+	var initialZ = 0.
 
 	construct(vec3 pos, player owner, angle angle)
 		super(pos, 28., owner, angle, Abilities.lichMissile)
 		fx..setOwner(owner, false)
 		..setScale(0.75)
-		setTimed(4.)
+		setTimed(1.8)
 		setSpeed(SPEED)
-		surfaceFriction = 0.981
-
+		surfaceFriction = 0.961
+		initialZ = pos.getTerrainZ() + 10.
 		registerCollidable(this, (other) -> onHit(other))
 		registerCollider(this, SHAPE_SPHERE, (other) -> onHit(other))
+
+	override function update()
+		super.update()
+		if pos.getTerrainZ() > initialZ
+			flashEffect(Abilities.lichMissile, pos)
+			terminate()
 
 
 	function onHit(Entity e)
 		if e.owner.isEnemyOf(owner)
-			if e instanceof Child
+			if e instanceof Child and (e castTo Child).actor.isAlive()
 				var c = e castTo Child
 				flashEffect(Objects.critterBloodAlbatross, pos)
-				fx.getDummy().damageTarget(c.actor, 25.)
+				fx.getDummy().damageTarget(c.actor, 30.)
 			terminate()
 
 	ondestroy
-		AddSpecialEffect(Abilities.frostArmorDamage, pos.x, pos.y).destr()
+		flashEffect(Abilities.frostArmorDamage, pos)
 		removeCollidable(this)
 		removeCollider(this)
 
@@ -50,5 +57,3 @@ public class Iceshard extends PhysicsProjectile
 	..presetCooldown(lvl -> 1.50 - (lvl / 4))
 	..presetManaCost(lvl -> 2 - (lvl / 3).toInt())
 	..tooltipStopListen()
-
-
