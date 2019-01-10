@@ -92,7 +92,7 @@ public class Child extends UnitEntity
 			case JUMP_ID
 				if not flying and not actor.hasItemById('I002')
 					actor.setAnimation("walk")
-					addVel(angle.toVec(sliding ? 3.55 : 8.55).withZ(7))
+					addVel(angle.toVec(sliding ? 2.55 : 8.85).withZ(7))
 					flashEffect(Abilities.batTrollMissile, pos)
 
 	function onDeath()
@@ -126,14 +126,18 @@ public class Child extends UnitEntity
 			slidespeed = slidespeed.lerp(1.75, 0.025)
 			sliding = true
 		else
-			slidespeed = slidespeed.lerp(0., 0.125)
+			slidespeed = slidespeed.lerp(0.0001, 0.125)
 			sliding = false
 		actor.setMoveSpeed(275 * (1 - (slidespeed / 2)))
 		let newvec = actor.getFacingAngle().toVec(hasPresent ? slidespeed * 0.2 : slidespeed)
 		addVel((slidevec + newvec * 0.5).toVec3())
 		slidevec = newvec
 
+		if not gg_rct_arenabounds.contains(pos.toVec2())
+			setPos(vec3(0,3600,200))
+			setVel(vec3(0,0,0))
 		super.update()
+
 		// tte.ftext.tt.setText(pos.toString() + "\n" + vel.toString(), 8)
 		// tte.setPos(pos)
 

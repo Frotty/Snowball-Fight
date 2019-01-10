@@ -28,7 +28,7 @@ public class Snowbomb extends PhysicsProjectile
 		for c in getEnemyChildren(owner)
 			if pos.distanceToSq(c.getPos()) < AOE.run(lvl).squared()
 				let angle = pos.angleTo2d(c.pos)
-				let factor = (300 - pos.distanceTo(c.pos)) / 200.
+				let factor = (AOE.run(lvl) - pos.distanceTo(c.pos)) / 200.
 				c.addVel(angle.toVec(factor * FACTOR).withZ(14 * factor))
 				fx.getDummy().damageTarget(c.actor, 45 * factor)
 				flashEffect(Objects.nPCbloodVillagerWoman, c.actor, "origin")

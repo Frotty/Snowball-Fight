@@ -33,14 +33,14 @@ public class IceMissile extends Projectile
 	function onHit(Entity e)
 		terminate()
 		if e instanceof Child and (e castTo Child).actor.isAlive()
-			let angle = pos.angleTo2d(e.pos)
+			let angle = pos.angleTo2d(e.getPos())
 			e.addVel(angle.toVec(FACTOR).withZ(1.))
 
 
 	ondestroy
 		let modifier = min(3, 1 + level)
 		for i = -modifier to modifier
-			new Iceblock(pos.toVec2().polarOffset(xyAngle + (22. * i).asAngleDegrees(), 128).toVec3(), owner, GetRandomReal(3, 3.2))
+			new Iceblock(pos.toVec2().polarOffset(xyAngle + (23. * i).asAngleDegrees(), 128).toVec3(), owner, GetRandomReal(3, 3.2))
 
 public class Iceblock extends FxEntity
 	real scale
