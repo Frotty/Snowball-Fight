@@ -12,9 +12,11 @@ constant real SPEED = 26.75
 
 public class Iceshard extends PhysicsProjectile
 	var initialZ = 0.
+	var lvl = 1
 
-	construct(vec3 pos, player owner, angle angle)
+	construct(vec3 pos, player owner, angle angle, int lvl)
 		super(pos, 28., owner, angle, Abilities.lichMissile)
+		this.lvl = lvl
 		fx..setOwner(owner, false)
 		..setScale(0.75)
 		setTimed(1.8)
@@ -35,8 +37,9 @@ public class Iceshard extends PhysicsProjectile
 		if e.owner.isEnemyOf(owner)
 			if e instanceof Child and (e castTo Child).actor.isAlive()
 				var c = e castTo Child
-				flashEffect(Objects.critterBloodAlbatross, pos)
-				fx.getDummy().damageTarget(c.actor, 30.)
+				flashEffect(Objects.critterBloodAlbatross, e.getPos())
+				flashEffect(Objects.critterBloodAlbatross, e.pos + vec3(0, 0, 12))
+				fx.getDummy().damageTarget(c.actor, 25 + lvl * 5.)
 			terminate()
 
 	ondestroy
@@ -54,6 +57,6 @@ public class Iceshard extends PhysicsProjectile
 	..presetHotkey("R")
 	..setName("Ice Shard")
 	..presetIcon("BTNIceShard")
-	..presetCooldown(lvl -> 1.50 - (lvl / 4))
-	..presetManaCost(lvl -> 2 - (lvl / 3).toInt())
+	..presetCooldown(lvl -> 1.75 - (lvl / 4))
+	..presetManaCost(lvl -> 3 - (lvl / 3).toInt())
 	..tooltipStopListen()

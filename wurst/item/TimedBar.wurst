@@ -7,13 +7,15 @@ import initlater Child
 
 public class TimedBar extends Entity
 	CustomBar bar
+	Child child
 	real cvalue = 0
 	real time
 	unit u
 	boolean correct = false
 
-	construct(vec3 pos, string char, int chars, real value, real time, colorA bg, colorA fg, unit u)
-		super(DUMMY_PLAYER, pos, 0.)
+	construct(Child child, string char, int chars, real value, real time, colorA bg, colorA fg, unit u)
+		super(DUMMY_PLAYER, child.getPos() + vec3(-60., 0, -16), 0.)
+		this.child = child
 		this.u = u
 		u.pause()
 		this.time = time
@@ -23,6 +25,7 @@ public class TimedBar extends Entity
 		..setForeground(fg)
 
 	override function update()
+		setPos(child.getPos() + vec3(-60., 0, -16))
 		cvalue += ANIMATION_PERIOD
 		bar.setValue(cvalue/time*100)
 		if cvalue >= time
@@ -34,3 +37,6 @@ public class TimedBar extends Entity
 		u.unpause()
 		(u.getEntity() castTo Child).wrapBar = null
 		destroy bar
+
+init
+	print("a")

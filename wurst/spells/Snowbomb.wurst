@@ -19,8 +19,7 @@ public class Snowbomb extends PhysicsProjectile
 		this.lvl = lvl
 		let dist = target.distanceToSq(pos)
 		if dist < 512. * 512.
-			var ntarget = pos.toVec2().polarOffset(xyAngle, 512).withTerrainZ()
-			setTarget(ntarget, SPEED)
+			setTarget(target, max(SPEED * (dist / (512. .squared())), 2))
 		else
 			setTarget(target, SPEED)
 
@@ -32,7 +31,7 @@ public class Snowbomb extends PhysicsProjectile
 				let factor = (300 - pos.distanceTo(c.pos)) / 200.
 				c.addVel(angle.toVec(factor * FACTOR).withZ(14 * factor))
 				fx.getDummy().damageTarget(c.actor, 45 * factor)
-				flashEffect(Objects.critterBloodAlbatross, c.getPos())
+				flashEffect(Objects.nPCbloodVillagerWoman, c.actor, "origin")
 
 		terminate()
 

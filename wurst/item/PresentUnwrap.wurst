@@ -39,11 +39,16 @@ function sellPresent()
 			DisplayTimedTextToForce(GetPlayersAll(), 12., "|cffFFCC00>>>|r " + p.getNameColored() + "|r has returned a Present gaining |cffFFCC00+3|r Points for his team!")
 			if p.getId() <= 4
 				redscore += 3
+				if redscore > greenscore
+					for child in getEnemyChildren(p)
+						child.actor.addXp(25, true)
+						child.owner.addGold(10)
 			else
 				greenscore += 3
-
-			for child in getEnemyChildren(p)
-				child.actor.addXp(25, true)
+				if greenscore > redscore
+					for child in getEnemyChildren(p)
+						child.actor.addXp(25, true)
+						child.owner.addGold(10)
 
 			doAfter(2.5) ->
 				checkEnd()
@@ -54,7 +59,7 @@ function startBar()
 	var id = GetSpellAbilityId()
 	if id == UNWRAP_ID
 		let child = (u.getEntity() castTo Child)
-		child.wrapBar = new TimedBar(vec3(u.getX() - 60., u.getY(), -16), "|", 120, 0, 7.5, COLOR_WHITE, COLOR_GOLD, u)
+		child.wrapBar = new TimedBar(child, "|", 120, 0, 7.5, COLOR_WHITE, COLOR_GOLD, u)
 
 
 constant RUNES = ['rhe1', 'rman', 'rspd', 'gold']
@@ -62,28 +67,34 @@ constant RUNES = ['rhe1', 'rman', 'rspd', 'gold']
 class RuneItem extends ItemEntity
 
 	construct(vec2 pos)
-		super(createItem(RUNES[GetRandomInt(0, 4)], pos))
-		flashEffect(Abilities.healTarget, pos)
+		super(createItem(RUNES[GetRandomInt(0, 3)], pos))
+		flashEffect(Abilities.healingSalveTarget, pos)
 
 	override function onPickup(UnitEntity entity)
-		let tpos = getPos()
-		doAfter(GetRandomReal(30, 45)) ->
-			new RuneItem(tpos.toVec2())
-		terminate()
+		if not done
+			let tpos = getPos()
+			doAfter(GetRandomReal(25, 35)) ->
+				new RuneItem(tpos.toVec2())
+			terminate()
 
 
 	override function onDrop(UnitEntity entity)
 
 	override function onUse(UnitEntity entity)
+		if not done
+			let tpos = getPos()
+			doAfter(GetRandomReal(25, 35)) ->
+				new RuneItem(tpos.toVec2())
+			terminate()
 
 public function initPowerupCircles()
-	gg_unit_ncop_0022..setVertexColor(color(105, 195, 115))..setScale(0.55)
-	gg_unit_ncop_0023..setVertexColor(color(105, 195, 115))..setScale(0.55)
+	gg_unit_ncop_0022..setVertexColor(color(65, 195, 195))..setScale(0.45)
+	gg_unit_ncop_0023..setVertexColor(color(65, 195, 195))..setScale(0.45)
 
-	doAfter(GetRandomReal(30, 45)) ->
+	doAfter(GetRandomReal(20, 30)) ->
 		new RuneItem(gg_unit_ncop_0022.getPos())
 
-	doAfter(GetRandomReal(30, 45)) ->
+	doAfter(GetRandomReal(20, 30)) ->
 		new RuneItem(gg_unit_ncop_0023.getPos())
 
 

@@ -14,6 +14,7 @@ import Collision
 import ChannelAbilityPreset
 import Tiles
 import PlayerData
+import TextTagEntity
 
 public constant humChildren = new LinkedList<Child>()
 public constant orcChildren = new LinkedList<Child>()
@@ -42,9 +43,12 @@ public class Child extends UnitEntity
 	var slidevec = ZERO2
 	var hasPresent = false
 	int id
+	// TextTagEntity tte
 
 	construct(vec3 pos, player owner, int id)
 		super(createUnit(owner, id, pos, 0 .fromDeg()), pos, 54.)
+		// tte = new TextTagEntity(pos, ZERO3, pos.toString() + "\n" + vel.toString(), 8, 99999, COLOR_WHITE)
+		// tte.gravity = 0
 		this.id = id
 		sleeps = false
 		if owner.getId() > 4
@@ -82,13 +86,13 @@ public class Child extends UnitEntity
 			case SNOWMAN_SPELL_ID
 				new SnowmanMissile(castPos, owner, target.toVec2(), lvl)
 			case ICEWALL_SPELL_ID
-				new IceMissile(castPos, owner, target)
+				new IceMissile(castPos, owner, target, lvl)
 			case ICESHARD_SPELL_ID
-				new Iceshard(castPos, owner, angle )
+				new Iceshard(castPos, owner, angle, lvl)
 			case JUMP_ID
-				if not flying and not sliding and not actor.hasItemById('I002')
+				if not flying and not actor.hasItemById('I002')
 					actor.setAnimation("walk")
-					addVel(angle.toVec(8.55).withZ(7))
+					addVel(angle.toVec(sliding ? 3.55 : 8.55).withZ(7))
 					flashEffect(Abilities.batTrollMissile, pos)
 
 	function onDeath()
@@ -120,23 +124,26 @@ public class Child extends UnitEntity
 		physicsUpdate(this)
 		if getPos().toVec2().getTile().getType() == Tiles.northrend_Ice
 			slidespeed = slidespeed.lerp(1.75, 0.025)
+			sliding = true
 		else
 			slidespeed = slidespeed.lerp(0., 0.125)
+			sliding = false
 		actor.setMoveSpeed(275 * (1 - (slidespeed / 2)))
 		let newvec = actor.getFacingAngle().toVec(hasPresent ? slidespeed * 0.2 : slidespeed)
 		addVel((slidevec + newvec * 0.5).toVec3())
 		slidevec = newvec
 
-		if not gg_rct_arenabounds.contains(pos.toVec2())
-			setPos(vec3(0,3600,200))
-			setVel(vec3(0,0,0))
-
 		super.update()
+		// tte.ftext.tt.setText(pos.toString() + "\n" + vel.toString(), 8)
+		// tte.setPos(pos)
 
 	override function onEscapeGround()
 		actor.setPropWindow(0 .fromDeg())
 
 	override function onGroundHit()
+		if vel.z.abs() > 32
+			actor.damageTarget(actor, vel.z.abs() * 0.5)
+			flashEffect(Abilities.bloodImpact, pos)
 		actor.setPropWindow(60 .fromDeg())
 
 	function addSpawnShield()

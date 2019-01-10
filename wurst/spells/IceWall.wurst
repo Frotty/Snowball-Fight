@@ -5,19 +5,23 @@ import FxEntity
 import Collision
 import initlater Snowball
 import AbilityTooltipGenerator
+import Iceshard
+import Assets
 
 public constant ICEWALL_SPELL_ID = compiletime(ABIL_ID_GEN.next())
 
-constant real SPEED = 18.
-constant real FACTOR = 2.
-constant int COLLOSION = 'e001'
+constant SPEED = 18.
+constant FACTOR = 2.
+constant COLLOSION = 'e001'
 
 public class IceMissile extends Projectile
 	vec3 target
+	var level = 1
 
-	construct(vec3 pos, player owner, vec3 target)
+	construct(vec3 pos, player owner, vec3 target, int level)
 		super(pos, 32., owner, pos.angleTo2d(target), "Abilities\\Weapons\\WingedSerpentMissile\\WingedSerpentMissile.mdl")
 		this.target = target
+		this.level = level
 		setTimed(4.)
 		setSpeed(SPEED)
 
@@ -34,16 +38,16 @@ public class IceMissile extends Projectile
 
 
 	ondestroy
-		for i = -2 to 2
-			new Iceblock(pos.toVec2().polarOffset(xyAngle + (22. * i).asAngleDegrees(), 128).toVec3(), owner, .25 )
+		let modifier = min(3, 1 + level)
+		for i = -modifier to modifier
+			new Iceblock(pos.toVec2().polarOffset(xyAngle + (22. * i).asAngleDegrees(), 128).toVec3(), owner, GetRandomReal(3, 3.2))
 
 public class Iceblock extends FxEntity
 	real scale
 	unit collision
-	real timeout = 25.
 
 	construct(vec3 pos, player owner, real scale)
-		super(owner, pos, 24, GetRandomReal(0,360).asAngleDegrees(),  "Doodads\\Icecrown\\Rocks\\Icecrown_Crystal\\Icecrown_Crystal" + GetRandomInt(0,8).toString() + ".mdl")
+		super(owner, pos, 28, GetRandomReal(0,360).asAngleDegrees(),  "IceSpikeFullWrap.mdx")
 		this.pos.z = pos.getTerrainZ()
 		this.scale = scale
 		collision = createUnit(owner, COLLOSION, pos, angle(0))
@@ -54,15 +58,14 @@ public class Iceblock extends FxEntity
 
 	override function slowUpdate()
 		super.slowUpdate()
-		timeout -= 1.
-		if timeout <= 0.
+		if idleSeconds > 25.
 			terminate()
 
 	override function update()
 		super.update()
 
 	function onHit(Entity other)
-		if other instanceof Snowball
+		if other instanceof Snowball or other instanceof Iceshard
 			other.terminate()
 		scale -= 0.05
 		fx.setScale(scale)
@@ -72,7 +75,7 @@ public class Iceblock extends FxEntity
 
 	ondestroy
 		collision.remove()
-		addEffect("Abilities\\Spells\\Items\\AIma\\AImaTarget.mdl", pos).destr()
+		flashEffect(Abilities.frostNovaTarget, pos)
 		removeCollidable(this)
 
 @compiletime function getObjs()

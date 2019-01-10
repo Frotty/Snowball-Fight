@@ -7,8 +7,8 @@ import Collision
 import Assets
 import AbilityTooltipGenerator
 
-constant real SPEED = 9.
-constant real MELT = 112
+constant real SPEED = 9.25
+constant real MELT = 92
 
 public constant SNOWMAN_SPELL_ID = compiletime(ABIL_ID_GEN.next())
 
@@ -25,6 +25,7 @@ public class SnowmanMissile extends HomingProjectile
 		setSpeed(SPEED)
 		throwSound.playOnPoint(pos)
 		findTarget(target)
+		fx.setColor(owner.getColor().toColor().withAlpha(255))
 		registerCollider(this, SHAPE_SPHERE, (e) -> onHit(e))
 
 	function findTarget(vec2 target)
@@ -37,7 +38,7 @@ public class SnowmanMissile extends HomingProjectile
 					if dist < closestDist
 						closestDist = dist
 						closestChild = c
-			setTarget(closestChild, HOMING.angular, 0.05 + 0.01 * level)
+			setTarget(closestChild, HOMING.angular, 0.03 + 0.01 * level)
 
 	override function onHit()
 		onHit(target)
@@ -48,7 +49,7 @@ public class SnowmanMissile extends HomingProjectile
 			if child.snowman == null
 				new SnowmanDummy(child.getPos().add(0,0,-child.terrainZ), owner, child)
 			else
-				child.snowman.melttime = MELT
+				child.snowman.melttime = MELT + 10 * level
 			terminate()
 
 	ondestroy
@@ -72,7 +73,7 @@ public class SnowmanDummy extends FxEntity
 
 	override function update()
 		melttime--
-		fx..setColor(colorA(255, 255, 255, (melttime * 1.5).toInt() + 28))
+		fx..setColor(colorA(255, 255, 255, (melttime * 1.5).toInt() + 48))
 
 		if target.actor.getHP() > .405
 			setPos(target.pos)

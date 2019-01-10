@@ -60,6 +60,8 @@ public class Snowball extends PhysicsProjectile
 				flashEffect(Abilities.frostArmorDamage, pos)
 				flashEffect(Objects.bloodElfSpellThiefBlood, e.getPos())
 				childHitSound.playOnPoint(pos)
+			else
+				flashEffect(Abilities.zigguratFrostMissile, pos)
 			terminate()
 
 	override function onGroundHit()
