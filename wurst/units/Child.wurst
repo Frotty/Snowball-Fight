@@ -69,9 +69,11 @@ public class Child extends UnitEntity
 	function onCast()
 		var id = GetSpellAbilityId()
 		var target = getSpellTargetPos().withTerrainZ()
-		let castPos = getPos().add(0,0,48)
+		var castPos = getPos().add(0,0,48)
 		let angle = pos.angleTo2d(target)
 		let lvl = actor.getAbilityLevel(GetSpellAbilityId())
+
+		castPos -= angle.toVec(6)
 
 		if castPos.distanceTo(target) < 78.
 			target = (castPos + angle.toVec(128)).toVec2().withTerrainZ()

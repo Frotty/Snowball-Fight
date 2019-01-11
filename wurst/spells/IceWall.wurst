@@ -40,7 +40,7 @@ public class IceMissile extends Projectile
 	ondestroy
 		let modifier = min(3, 1 + level)
 		for i = -modifier to modifier
-			new Iceblock(pos.toVec2().polarOffset(xyAngle + (23. * i).asAngleDegrees(), 128).toVec3(), owner, GetRandomReal(3, 3.2))
+			new Iceblock(pos.toVec2().polarOffset(xyAngle + (24. * i).asAngleDegrees(), 128. + (modifier * 12).abs()).toVec3(), owner, GetRandomReal(3, 3.2))
 
 public class Iceblock extends FxEntity
 	real scale
@@ -51,6 +51,7 @@ public class Iceblock extends FxEntity
 		this.pos.z = pos.getTerrainZ()
 		this.scale = scale
 		collision = createUnit(owner, COLLOSION, pos, angle(0))
+		collision.setXY(pos)
 		fx.setScale(scale)
 		fx.setZ(0)
 		silent = true

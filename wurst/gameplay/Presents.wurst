@@ -8,6 +8,7 @@ constant int PRESENT_ID = 'I002'
 
 let presentSpawn = new SoundDefinition("war3mapImported\\bells.mp3", false)
 let treeCenter = vec2(0., 4096.)
+let itemRect = Rect(-6000,-19000,6000,10000)
 
 public class Present extends ItemEntity
 	Child holder
@@ -51,6 +52,7 @@ public function spawnPresent()
 			createItem('texp', randomPos)
 
 	printTimed("|cffFFAD29» |cffFF7329Present spawned in the middle!", 12)
+	presentSpawn.play()
 
 function isPresent() returns boolean
 	return GetItemTypeId(GetFilterItem()) == PRESENT_ID
@@ -63,17 +65,12 @@ function addOne()
 public function onPresentTime()
 	printLog(Loglevel.DEBUG, "On Present Time")
 	presents = 0
-	rect r = Rect(-6000,-19000,6000,10000)
-	EnumItemsInRect(r, Condition(function isPresent), function addOne)
-	timer t = getTimer()
-	t.start(0.01,function checkPresents)
+	EnumItemsInRect(itemRect, Condition(function isPresent), function addOne)
 
-function checkPresents()
-	if presents <= 2
-		spawnPresent()
-		presentSpawn.play()
+	nullTimer() ->
+		if presents <= 2
+			spawnPresent()
 
 init
-	timer t = getTimer()
-	t.startPeriodic(30.,function onPresentTime)
-
+	doPeriodically(30) cb ->
+		onPresentTime()
