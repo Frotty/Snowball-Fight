@@ -92,7 +92,7 @@ public class Child extends UnitEntity
 			case ICESHARD_SPELL_ID
 				new Iceshard(castPos, owner, angle, lvl)
 			case JUMP_ID
-				if not flying and not actor.hasItemById('I002')
+				if not flying
 					actor.setAnimation("walk")
 					addVel(angle.toVec(sliding ? 2.55 : 8.85).withZ(7))
 					flashEffect(Abilities.batTrollMissile, pos)
