@@ -19,7 +19,7 @@ public class IceMissile extends Projectile
 	var level = 1
 
 	construct(vec3 pos, player owner, vec3 target, int level)
-		super(pos, 32., owner, pos.angleTo2d(target), "Abilities\\Weapons\\WingedSerpentMissile\\WingedSerpentMissile.mdl")
+		super(pos, 42., owner, pos.angleTo2d(target), "Abilities\\Weapons\\WingedSerpentMissile\\WingedSerpentMissile.mdl")
 		this.target = target
 		this.level = level
 		setTimed(4.)
@@ -40,7 +40,7 @@ public class IceMissile extends Projectile
 	ondestroy
 		let modifier = min(3, 1 + level)
 		for i = -modifier to modifier
-			new Iceblock(pos.toVec2().polarOffset(xyAngle + (24. * i).asAngleDegrees(), 128. + (modifier * 12).abs()).toVec3(), owner, GetRandomReal(3, 3.2))
+			new Iceblock(pos.toVec2().polarOffset(xyAngle + (24. * i).asAngleDegrees(), 128. + (modifier * 12).abs()).toVec3(), owner, GetRandomReal(2.8, 3.0))
 
 public class Iceblock extends FxEntity
 	real scale
@@ -66,12 +66,13 @@ public class Iceblock extends FxEntity
 		super.update()
 
 	function onHit(Entity other)
-		if other instanceof Snowball or other instanceof Iceshard
+		if other.owner.isEnemyOf(owner) and other instanceof Snowball or other instanceof Iceshard
 			other.terminate()
-		scale -= 0.05
+		scale -= 0.25
 		fx.setScale(scale)
-		radius -= 6
-		if scale <= 0.1
+		radius -= 2
+		radius2 = radius * radius
+		if scale <= 1.
 			terminate()
 
 	ondestroy
@@ -88,7 +89,7 @@ public class Iceblock extends FxEntity
 	..presetHotkey("T")
 	..setName("Ice wall")
 	..presetIcon("BTNIceField")
-	..presetCooldown(lvl -> 14.75 - (lvl / 4))
+	..presetCooldown(lvl -> 13.75 - (lvl / 4))
 	..presetManaCost(lvl -> 4 - (lvl / 3).toInt())
 	..presetCastRange(lvl -> 900.)
 	..tooltipStopListen()

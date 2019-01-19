@@ -14,7 +14,6 @@ import Collision
 import ChannelAbilityPreset
 import Tiles
 import PlayerData
-import TextTagEntity
 
 public constant humChildren = new LinkedList<Child>()
 public constant orcChildren = new LinkedList<Child>()
@@ -43,12 +42,9 @@ public class Child extends UnitEntity
 	var slidevec = ZERO2
 	var hasPresent = false
 	int id
-	// TextTagEntity tte
 
 	construct(vec3 pos, player owner, int id)
 		super(createUnit(owner, id, pos, 0 .fromDeg()), pos, 54.)
-		// tte = new TextTagEntity(pos, ZERO3, pos.toString() + "\n" + vel.toString(), 8, 99999, COLOR_WHITE)
-		// tte.gravity = 0
 		this.id = id
 		sleeps = false
 		if owner.getId() > 4
@@ -94,7 +90,7 @@ public class Child extends UnitEntity
 			case JUMP_ID
 				if not flying
 					actor.setAnimation("walk")
-					addVel(angle.toVec(sliding ? 2.55 : 8.85).withZ(7))
+					addVel(angle.toVec(sliding ? 2.15 : 8.85).withZ(7))
 					flashEffect(Abilities.batTrollMissile, pos)
 
 	function onDeath()
@@ -140,9 +136,6 @@ public class Child extends UnitEntity
 			setVel(vec3(0,0,0))
 		super.update()
 
-		// tte.ftext.tt.setText(pos.toString() + "\n" + vel.toString(), 8)
-		// tte.setPos(pos)
-
 	override function onEscapeGround()
 		actor.setPropWindow(0 .fromDeg())
 
@@ -179,7 +172,7 @@ public class Child extends UnitEntity
 	..presetIcon(Icons.bTNBootsOfSpeed)
 
 @compiletime function create_w3u_H007()
-	new HeroDefinition(ORC_CHILD_ID, 'nvlk')
+	new HeroDefinition(ORC_CHILD_ID, UnitIds.villagerkid)
 	..setName("Orc Child")
 	..setRace(Race.Orc)
 	..setSpeedBase(265)
@@ -192,7 +185,7 @@ public class Child extends UnitEntity
 	..setManaInitialAmount(8)
 	..setModelFile("war3mapImported\\OrcChild_v3.mdl")
 	..setScalingValue(1.4)
-	..setProperNames("Snagakop,Nazork,Urtynob,Morzod,Shakbad,Ogsog,Snikgrod")
+	..setProperNames(commaList("Snagakop", "Nazork", "Urtynob", "Morzod", "Shakbad", "Ogsog" , "Snikgrod"))
 	..setProperNamesUsed(7)
 	..setCollisionSize(0.0)
 	..setStrengthPerLevel(1)
@@ -200,7 +193,7 @@ public class Child extends UnitEntity
 	..setIntelligencePerLevel(1)
 
 @compiletime function create_w3u_H001()
-	new HeroDefinition(HUMAN_CHILD_ID, 'nvlk')
+	new HeroDefinition(HUMAN_CHILD_ID, UnitIds.villagerkid)
 	..setName("Human Child")
 	..setRace(Race.Human)
 	..setNormalAbilities(commaList(SNOWBALL_SPELL_ID, 'AInv'))
@@ -212,7 +205,7 @@ public class Child extends UnitEntity
 	..setManaRegeneration(0.6)
 	..setManaInitialAmount(8)
 	..setScalingValue(1.4)
-	..setProperNames("Dennis,Joachim,Garret,Jens,Philip,Peter,Florian")
+	..setProperNames(commaList("Dennis", "Joachim", "Garret", "Jens", "Philip", "Peter", "Florian"))
 	..setProperNamesUsed(7)
 	..setCollisionSize(0.0)
 	..setStrengthPerLevel(1)

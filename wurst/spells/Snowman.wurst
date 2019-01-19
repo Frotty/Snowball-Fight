@@ -38,7 +38,7 @@ public class SnowmanMissile extends HomingProjectile
 					if dist < closestDist
 						closestDist = dist
 						closestChild = c
-			setTarget(closestChild, HOMING.angular, 0.03 + 0.01 * level)
+			setTarget(closestChild, HOMING.angular, 0.025 + 0.005 * level)
 
 	override function onHit()
 		onHit(target)
@@ -78,8 +78,8 @@ public class SnowmanDummy extends FxEntity
 		if target.actor.getHP() > .405
 			setPos(target.pos)
 			if target.vel.z > 0.
-				target.vel.z = 0.
-			fx.getDummy().damageTarget(target.actor, .15)
+				target.vel.z *= 0.9
+			fx.getDummy().damageTarget(target.actor, .175)
 			if melttime < 0
 				terminate()
 		else
@@ -91,6 +91,7 @@ public class SnowmanDummy extends FxEntity
 		target.actor.setVertexColor(COLOR_WHITE)
 		target.snowman = null
 		target.actor.setTimeScale(1.)
+		target.actor.getOwner().selectSingle(target.actor)
 
 
 @compiletime function getObjs()

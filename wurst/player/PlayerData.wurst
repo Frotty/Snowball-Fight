@@ -6,7 +6,6 @@ import ClosureTimers
 import Assets
 import Players
 import initlater Child
-import ClosureEvents
 
 public constant allPlayers = new LinkedList<PlayerData>()
 public Board playerboard
