@@ -31,6 +31,11 @@ public function getEnemyChildren(player owner) returns LinkedList<Child>
 		return humChildren
 	return orcChildren
 
+public function getAlliedChildren(player owner) returns LinkedList<Child>
+	if owner.getId() < 5
+		return humChildren
+	return orcChildren
+
 public class Child extends UnitEntity
 	use PhysicsModule
 
@@ -44,7 +49,7 @@ public class Child extends UnitEntity
 	int id
 
 	construct(vec3 pos, player owner, int id)
-		super(createUnit(owner, id, pos, 0 .fromDeg()), pos, 54.)
+		super(createUnit(owner, id, pos, 0 .fromDeg()), pos, 52.)
 		this.id = id
 		sleeps = false
 		if owner.getId() > 4
@@ -86,7 +91,12 @@ public class Child extends UnitEntity
 			case ICEWALL_SPELL_ID
 				new IceMissile(castPos, owner, target, lvl)
 			case ICESHARD_SPELL_ID
-				new Iceshard(castPos, owner, angle, lvl)
+				if lvl > 2
+					new Iceshard(castPos, owner, angle + 17.5 .fromDeg(), lvl - 1)
+					new Iceshard(castPos, owner, angle, lvl - 1)
+					new Iceshard(castPos, owner, angle - 17.5 .fromDeg(), lvl - 1)
+				else
+					new Iceshard(castPos, owner, angle, lvl)
 			case JUMP_ID
 				if not flying
 					actor.setAnimation("walk")
@@ -160,7 +170,6 @@ public class Child extends UnitEntity
 
 @compiletime function genJump()
 	new ChannelAbilityPreset(JUMP_ID, 1, true)
-	..presetDisableOtherAbilities(lvl -> true)
 	..presetTooltipNormal(lvl -> "[|cffFFCC00W|r] |cff7BB5F7Jump")
 	..presetTooltipNormalExtended(lvl -> "Jumps into the target direction. Allows you to jump down, but not up, cliffs.")
 	..setCooldown(1, 2.)
@@ -169,6 +178,7 @@ public class Child extends UnitEntity
 	..presetHotkey("W")
 	..presetTargetTypes(Targettype.POINT)
 	..presetButtonPosNormal(1, 2)
+	..presetFollowThroughTime(lvl -> 0.25)
 	..presetIcon(Icons.bTNBootsOfSpeed)
 
 @compiletime function create_w3u_H007()
@@ -191,6 +201,8 @@ public class Child extends UnitEntity
 	..setStrengthPerLevel(1)
 	..setAgilityPerLevel(1)
 	..setIntelligencePerLevel(1)
+	..hideHeroDeathMsg(true)
+	..setTurnRate(4.0)
 
 @compiletime function create_w3u_H001()
 	new HeroDefinition(HUMAN_CHILD_ID, UnitIds.villagerkid)
@@ -211,3 +223,5 @@ public class Child extends UnitEntity
 	..setStrengthPerLevel(1)
 	..setAgilityPerLevel(1)
 	..setIntelligencePerLevel(1)
+	..hideHeroDeathMsg(true)
+	..setTurnRate(4.0)

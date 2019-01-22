@@ -18,7 +18,7 @@ public class SnowmanMissile extends HomingProjectile
 	var level = 1
 
 	construct(vec3 pos, player owner, vec2 target, int level)
-		super(pos, 32., owner, pos.angleTo2d(target), Abilities.zigguratFrostMissile)
+		super(pos, 28., owner, pos.angleTo2d(target), "Magic Missile.mdx")
 		this.level = level
 		fx.setScale(.75)
 		setTimed(6.5)
@@ -61,9 +61,9 @@ public class SnowmanDummy extends FxEntity
 	Child target
 
 	construct(vec3 pos, player owner, Child target )
-		super(owner, pos, 0., target.actor.getFacingAngle(), "Doodads\\Icecrown\\Props\\SnowMan\\SnowMan.mdl")
+		super(owner, pos, 0., target.actor.getFacingAngle(), Doodads.snowMan)
 		fx.setScale(1.4)
-		addEffect("Abilities\\Spells\\Human\\Polymorph\\PolyMorphTarget.mdl", pos).destr()
+		addEffect(Abilities.polyMorphTarget, pos).destr()
 		this.target = target
 		target.actor.pause()
 		target.snowman = this

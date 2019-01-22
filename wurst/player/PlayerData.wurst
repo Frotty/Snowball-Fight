@@ -25,6 +25,7 @@ public class PlayerData
 
 	int deaths = 0
 	int kills = 0
+	int presents = 0
 
 	int killstreak = 0
 	boolean indouble = false
@@ -51,6 +52,7 @@ public class PlayerData
 		playerboard.setNewItem(r,0,mbname,icon)
 		playerboard.setNewItem(r,1,kills.toString(),null)
 		playerboard.setNewItem(r,2,deaths.toString(),null)
+		playerboard.setNewItem(r,3,presents.toString(),null)
 
 	ondestroy
 		child.terminate()
@@ -64,15 +66,16 @@ public class PlayerData
 			playerboard.removeRow(gameId + 1)
 
 function initMB()
-	playerboard = new Board(allPlayers.size()+1,3)
+	playerboard = new Board(allPlayers.size() + 1, 4)
 
 	for i = 0 to allPlayers.size()
 		playerboard.board.getItem(i,0)..setStyle(true,true)..setWidth(0.1)
 		playerboard.board.getItem(i,1)..setStyle(true,false)..setWidth(0.015)
 		playerboard.board.getItem(i,2)..setStyle(true,false)..setWidth(0.015)
+		playerboard.board.getItem(i,3)..setStyle(true,false)..setWidth(0.015)
 
 	for pd in allPlayers
-		pd.setMBRow(pd.gameId+1)
+		pd.setMBRow(pd.gameId + 1)
 
 
 	playerboard.board.getItem(0,0)..setStyle(true,false)..setWidth(0.1)
@@ -81,13 +84,15 @@ function initMB()
 	playerboard.setNewItem(0,1,null,"ReplaceableTextures\\CommandButtons\\BTNSacrifice.blp")
 	playerboard.board.getItem(0,2)..setStyle(false,true)..setWidth(0.015)
 	playerboard.setNewItem(0,2,null,"ReplaceableTextures\\CommandButtons\\BTNAnkh.blp")
+	playerboard.board.getItem(0,3)..setStyle(false,true)..setWidth(0.015)
+	playerboard.setNewItem(0,3,null,"ReplaceableTextures\\CommandButtons\\BTNINV_Misc_Gift_01.blp")
 	playerboard.board.display(true)
 
 function setTime()
 	seconds++
 
 	playerboard.board.setTitle("|cffffffff[|r|cffff6347" + redscore.toString() + "|r - |cff3cb371" + greenscore.toString()
-		+ "|r|cffffffff]|r" + COLOR_GOLD.toColorString() + " => " + maxkills.toString() + "|r to win | " + MAP_VER)
+		+ "|r|cffffffff]|r" + COLOR_GOLD.toColorString() + " => " + winscore.toString() + "|r to win | " + MAP_VER)
 
 	if seconds >= 60
 		seconds = 0

@@ -3,6 +3,8 @@ import SoundUtils
 import Entity
 import Child
 import ClosureTimers
+import Assets
+import GameConstants
 
 constant int PRESENT_ID = 'I002'
 
@@ -15,6 +17,7 @@ public class Present extends ItemEntity
 
 	construct(vec2 pos)
 		super(createItem(PRESENT_ID, pos))
+		flashEffect(Abilities.reviveHuman1, pos)
 
 	override function update()
 
@@ -31,8 +34,12 @@ public class Present extends ItemEntity
 
 	override function onDrop(Entity e)
 		if e instanceof Child
-			(e castTo Child).hasPresent = false
+			let child = (e castTo Child)
+			child.hasPresent = false
 			holder = null
+			if not child.actor.isAlive() and
+				(child.getPos().distanceTo(gg_unit_ncop_0021.getPos3Real()) < 256. or child.getPos().distanceTo(gg_unit_ncop_0024.getPos3Real()) < 256.)
+				announcers[7].play()
 
 	override function onUse(Entity e)
 
@@ -40,15 +47,15 @@ public class Present extends ItemEntity
 		holder.hasPresent = false
 
 public function spawnPresent()
-	var randomPos = treeCenter.polarOffset(GetRandomReal(1,360).asAngleDegrees(), GetRandomReal(300,700))
+	var randomPos = treeCenter.polarOffset(GetRandomReal(1,360).fromDeg(), GetRandomReal(300,750))
 	new Present(randomPos)
 	if GetRandomInt(0, 4) > 1
 		doAfter(GetRandomReal(10, 20)) ->
-			randomPos = treeCenter.polarOffset(GetRandomReal(1,360).asAngleDegrees(), GetRandomReal(300,700))
+			randomPos = treeCenter.polarOffset(GetRandomReal(1,360).fromDeg(), GetRandomReal(300,750))
 			createItem('texp', randomPos)
 	if GetRandomInt(0, 4) > 3
 		doAfter(GetRandomReal(20, 30)) ->
-			randomPos = treeCenter.polarOffset(GetRandomReal(1,360).asAngleDegrees(), GetRandomReal(300,700))
+			randomPos = treeCenter.polarOffset(GetRandomReal(1,360).fromDeg(), GetRandomReal(300,750))
 			createItem('texp', randomPos)
 
 	printTimed("|cffFFAD29» |cffFF7329Present spawned in the middle!", 12)
@@ -71,6 +78,21 @@ public function onPresentTime()
 		if presents <= 2
 			spawnPresent()
 
+let CD_SOUND = new SoundDefinition("321.mp3", false)
+let BEGIN_SOUND = new SoundDefinition(Sounds.clanInvitation, false)
+let WARMUP_SOUND = new SoundDefinition(Sounds.newTournament, false)
+
 init
-	doPeriodically(30) cb ->
-		onPresentTime()
+	doAfter(1) ->
+		WARMUP_SOUND.play()
+		let t = getTimer()
+		let dia = t.createTimerDialog()..setTitle("Warmup")
+		dia.display(true)
+		doAfter(17) ->
+			CD_SOUND.play()
+		t.doAfter(20) ->
+			BEGIN_SOUND.play()
+			dia.destr()
+			onPresentTime()
+			doPeriodically(30) cb ->
+				onPresentTime()

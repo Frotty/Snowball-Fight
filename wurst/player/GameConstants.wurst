@@ -6,7 +6,10 @@ public SoundDefinition array announcers = [ new SoundDefinition("war3mapImported
 											new SoundDefinition("war3mapImported\\hohoho.wav", false, false),
 											new SoundDefinition("war3mapImported\\readyForChristmas.mp3", false, false),
 											new SoundDefinition("war3mapImported\\merryFuckingChristmas.mp3", false, false),
-											new SoundDefinition("war3mapImported\\veryMerryChristmas.mp3", false, false)]
+											new SoundDefinition("war3mapImported\\veryMerryChristmas.mp3", false, false),
+											new SoundDefinition("war3mapImported\\hohoholycrap.mp3", false, false),
+											new SoundDefinition("war3mapImported\\nein.mp3", false, false),
+											new SoundDefinition("war3mapImported\\stopMe.mp3", false, false)]
 
 
 public constant MAP_VER = "|cffADADADSnowball Fight|r"

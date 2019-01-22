@@ -8,7 +8,7 @@ import AbilityTooltipGenerator
 
 public constant ICESHARD_SPELL_ID = compiletime(ABIL_ID_GEN.next())
 
-constant real SPEED = 26.75
+constant real SPEED = 25.75
 
 public class Iceshard extends PhysicsProjectile
 	var initialZ = 0.
@@ -19,9 +19,9 @@ public class Iceshard extends PhysicsProjectile
 		this.lvl = lvl
 		fx..setOwner(owner, false)
 		..setScale(0.75)
-		setTimed(1.8)
+		setTimed(1.35)
 		setSpeed(SPEED)
-		surfaceFriction = 0.961
+		surfaceFriction = 1
 		initialZ = pos.getTerrainZ() + 18.
 		registerCollidable(this, (other) -> onHit(other))
 		registerCollider(this, SHAPE_SPHERE, (other) -> onHit(other))
@@ -40,7 +40,7 @@ public class Iceshard extends PhysicsProjectile
 					var c = e castTo Child
 					flashEffect(Objects.critterBloodAlbatross, e.getPos())
 					flashEffect(Objects.critterBloodAlbatross, e.pos + vec3(0, 0, 12))
-					fx.getDummy().damageTarget(c.actor, 25 + lvl * 5.)
+					fx.getDummy().damageTarget(c.actor, 22 + lvl * 5.)
 					terminate()
 			else
 				terminate()
@@ -52,7 +52,7 @@ public class Iceshard extends PhysicsProjectile
 
 
 @compiletime function getObjs()
-	let tgen = new AbilityTooltipGenerator("Small, fast ice projectile.")
+	let tgen = new AbilityTooltipGenerator("Small, fast ice projectile. Level 3 and up throw three shards.")
 	new ChannelAbilityPreset(ICESHARD_SPELL_ID, 4, true, tgen)
 	..presetButtonPosNormal(3, 2)
 	..presetTargetTypes(Targettype.POINT)
@@ -60,6 +60,6 @@ public class Iceshard extends PhysicsProjectile
 	..presetHotkey("R")
 	..setName("Ice Shard")
 	..presetIcon("BTNIceShard")
-	..presetCooldown(lvl -> 1.75 - (lvl / 4))
+	..presetCooldown(lvl -> 1.95 + lvl * 0.25)
 	..presetManaCost(lvl -> 3 - (lvl / 3).toInt())
 	..tooltipStopListen()

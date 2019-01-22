@@ -25,9 +25,10 @@ public class TimedBar extends Entity
 		..setForeground(fg)
 
 	override function update()
-		setPos(child.getPos() + vec3(-60., 0, -16))
 		cvalue += ANIMATION_PERIOD
 		bar.setValue(cvalue/time*100)
+		let tpos = child.getPos().toVec2() + vec2(-60., 0)
+		bar.setPosXY(tpos.x, tpos.y)
 		if cvalue >= time
 			correct = true
 			terminate()
@@ -37,6 +38,3 @@ public class TimedBar extends Entity
 		u.unpause()
 		(u.getEntity() castTo Child).wrapBar = null
 		destroy bar
-
-init
-	print("a")

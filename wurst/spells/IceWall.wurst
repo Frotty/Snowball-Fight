@@ -19,7 +19,7 @@ public class IceMissile extends Projectile
 	var level = 1
 
 	construct(vec3 pos, player owner, vec3 target, int level)
-		super(pos, 42., owner, pos.angleTo2d(target), "Abilities\\Weapons\\WingedSerpentMissile\\WingedSerpentMissile.mdl")
+		super(pos, 28., owner, pos.angleTo2d(target), "Abilities\\Weapons\\WingedSerpentMissile\\WingedSerpentMissile.mdl")
 		this.target = target
 		this.level = level
 		setTimed(4.)
@@ -47,7 +47,7 @@ public class Iceblock extends FxEntity
 	unit collision
 
 	construct(vec3 pos, player owner, real scale)
-		super(owner, pos, 28, GetRandomReal(0,360).asAngleDegrees(),  "IceSpikeFullWrap.mdx")
+		super(owner, pos, 48, GetRandomReal(0,360).asAngleDegrees(),  "IceSpikeFullWrap.mdx")
 		this.pos.z = pos.getTerrainZ()
 		this.scale = scale
 		collision = createUnit(owner, COLLOSION, pos, angle(0))

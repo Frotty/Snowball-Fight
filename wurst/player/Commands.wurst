@@ -1,0 +1,21 @@
+package Commands
+import ClosureEvents
+import StringUtils
+
+init
+	EventListener.add(EVENT_PLAYER_CHAT_FILTER) ->
+		let p = GetTriggerPlayer()
+		let str = GetEventPlayerChatString()
+		let args = str.split(" ")
+		let cstr = args.get(0)
+		switch cstr
+			case "-cam"
+				var nstr = args.get(1)
+				var zCam = nstr.toInt() * 1.
+				if zCam > 3000
+					zCam = 3000
+					DisplayTimedTextToPlayer(p, 0., 0., 10,"|cffFFD621[Info]|r - Maximum Zoom is 3000")
+				else if zCam < 500
+					zCam = 500
+					DisplayTimedTextToPlayer(p, 0., 0., 10,"|cffFFD621[Info]|r - Minimum Zoom is 500")
+				SetCameraFieldForPlayer(p, CAMERA_FIELD_TARGET_DISTANCE, zCam, 1.)

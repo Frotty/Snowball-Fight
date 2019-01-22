@@ -3,39 +3,39 @@ import PlayerData
 import GameConstants
 import DialogBox
 
-public var maxkills = 30
+public var winscore = 35
 public var redscore = 0
 public var greenscore = 0
 public var gameover = false
 
 public function checkEnd()
 	if not gameover
-		if redscore >= maxkills
+		if redscore >= winscore
 			endgame(0)
-		if greenscore >= maxkills
+		if greenscore >= winscore
 			endgame(1)
 
 public function createDialog()
 	playerboard.show()
 	let dbox = new DialogBox("Select game length")
 	let nameColored = allPlayers.getFirst().p.getNameColored()
-	dbox.addButton("Short (30 Points)") ->
-		maxkills = 30
-		DisplayTimedTextToForce(GetPlayersAll(), 12.,"|cffFFAD29» " + nameColored + "|r selected a short game (30)!")
+	dbox.addButton("Short (35 Points)") ->
+		winscore = 35
+		DisplayTimedTextToForce(GetPlayersAll(), 12.,"|cffFFAD29» " + nameColored + "|r selected a short game (35)!")
 	dbox.addButton("Normal (50 Points)") ->
-		maxkills = 50
+		winscore = 50
 		DisplayTimedTextToForce(GetPlayersAll(), 12.,"|cffFFAD29» " + nameColored + "|r selected a normal game (50)!")
 	dbox.addButton("Long (70 Points)") ->
-		maxkills = 70
+		winscore = 70
 		DisplayTimedTextToForce(GetPlayersAll(), 12.,"|cffFFAD29» " + nameColored + "|r selected a long game (70)!")
 	dbox.display(allPlayers.getFirst().p, true)
 
 function endgame(int winningteam)
 	announcers[5].play()
 	if winningteam == 1
-		DisplayTimedTextToForce(GetPlayersAll(), 12., "|cffFFAD29 #===============================#\n\n|cffFFAD29» The |cff44dd66Green Team|r has won the game!\n\n|cffFFAD29 #===============================#")
+		DisplayTimedTextToForce(GetPlayersAll(), 12., "|cffFFAD29 #===============================#\n\n|cffFFAD29» The |cff44dd66Orcish Team|r has won the game!\n\n|cffFFAD29 #===============================#")
 	else if winningteam == 0
-		DisplayTimedTextToForce(GetPlayersAll(), 12., "|cffFFAD29 #===============================#\n\n|cffFFAD29» The |cffdd4444Red Team|r has won the game!\n\n|cffFFAD29 #===============================#")
+		DisplayTimedTextToForce(GetPlayersAll(), 12., "|cffFFAD29 #===============================#\n\n|cffFFAD29» The |cffdd4444Human Team|r has won the game!\n\n|cffFFAD29 #===============================#")
 	gameover = true
 	PauseGame(true)
 

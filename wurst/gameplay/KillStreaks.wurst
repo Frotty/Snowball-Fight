@@ -16,19 +16,25 @@ public function adjustKills(player killer, player dead)
 	p1.killstreak++
 	p2.killstreak = 0
 	if p1.id <= 4
-		redscore += 1
+		if redscore < winscore - 1
+			redscore += 1
 	else
-		greenscore += 1
+		if greenscore < winscore - 1
+			greenscore += 1
+
 	string announce = " -"
 	if p1.killstreak == 3
-		announcers[2].play()
+		announcers[3].play()
 		announce += " |cff860B00KillingSpree|r"
 	if p1.killstreak == 4
-		announcers[3].play()
+		announcers[4].play()
 		announce += " |cff0058A6Unstoppable!|r"
 	if p1.killstreak == 6
-		announcers[4].play()
+		announcers[6].play()
 		announce += " |cffFFDA84Godlike!!!|r"
+	if p1.killstreak > 6
+		announcers[8].play()
+		announce += " |cff11DA84Beyond Godlike!!!|r"
 	timer t = getTimer()
 	if p1.intriple
 		announcers[1].play()

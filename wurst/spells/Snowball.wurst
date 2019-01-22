@@ -21,18 +21,18 @@ public class Snowball extends PhysicsProjectile
 	var lvl = 1
 
 	construct(vec3 pos, player owner, angle xyAngle, vec3 target, int lvl)
-		super(pos, 32., owner, xyAngle, "war3mapImported\\snowball.mdx")
+		super(pos, 30., owner, xyAngle, "war3mapImported\\snowball.mdx")
 		this.lvl = lvl
 		let tdif = (pos.getTerrainZ() - target.z).abs() * 0.0075
 		gravity *= tdif
 		setTimed(2.5)
 		setFriction(0.905)
 		restitution = 0.05
-		if pos.getTerrainZ() > target.z + 8.
+		if pos.getTerrainZ() > target.z + 10.
 			gravity *= 1.5
-			setTarget(target.toVec2().withTerrainZ(16.), SPEED)
+			setTarget(target.toVec2().withTerrainZ(24.), SPEED)
 		else
-			findTarget(target.toVec2().withTerrainZ(16.), xyAngle)
+			findTarget(target.toVec2().withTerrainZ(), xyAngle)
 		throwSound.playOnPoint(pos)
 		registerCollidable(this, (other) -> onHit(other))
 		registerCollider(this, SHAPE_SPHERE, (other) -> onHit(other))
@@ -44,7 +44,8 @@ public class Snowball extends PhysicsProjectile
 
 		while dist + tdist < maxdist
 			tdist += 32.
-			if target.toVec2().polarOffset(xyAngle, tdist).getTerrainZ() > target.z + 2.
+			let diff = (target.toVec2().polarOffset(xyAngle, tdist).getTerrainZ() - target.z).abs()
+			if diff > 8.
 				tdist -= 32.
 				break
 

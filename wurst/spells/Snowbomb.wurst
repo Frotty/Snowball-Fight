@@ -4,11 +4,15 @@ import Fx
 import initlater Child
 import AbilityTooltipGenerator
 import Assets
+import InstantDummyCaster
+import Orders
 
 constant SPEED = 13.5
 constant RealLevelClosure AOE = lvl -> (225. + lvl * 35)
 constant FACTOR = 6.95
 
+
+public constant STUN_SPELL_ID = compiletime(ABIL_ID_GEN.next())
 public constant SNOWBOMB_SPELL_ID = compiletime(ABIL_ID_GEN.next())
 
 public class Snowbomb extends PhysicsProjectile
@@ -32,6 +36,8 @@ public class Snowbomb extends PhysicsProjectile
 				c.addVel(angle.toVec(factor * FACTOR).withZ(14 * factor))
 				fx.getDummy().damageTarget(c.actor, 45 * factor)
 				flashEffect(Objects.nPCbloodVillagerWoman, c.actor, "origin")
+				if factor > 0.175
+					InstantDummyCaster.castTarget(owner, STUN_SPELL_ID, 1, OrderIds.creepthunderbolt, c.actor, c.pos)
 
 		terminate()
 
@@ -47,8 +53,15 @@ public class Snowbomb extends PhysicsProjectile
 	..presetHotkey("E")
 	..setName("Snowbomb")
 	..presetIcon("BTNCRFrostShock")
-	..presetCooldown(lvl -> 18. - lvl)
-	..presetManaCost(lvl -> 5)
+	..presetCooldown(lvl -> 19. - lvl)
+	..presetManaCost(lvl -> 6 - (lvl div 3))
 	..presetCastRange(lvl -> 700. + 200 * lvl)
 	..presetAreaofEffect(AOE)
 	..tooltipStopListen()
+
+	new AbilityDefinitionThunderBoltCreep(STUN_SPELL_ID)
+	..presetDamage(lvl -> 0)
+	..presetManaCost(lvl -> 0)
+	..presetCooldown(lvl -> 0)
+	..presetDurationHero(lvl -> 0.5)
+	..presetCastRange(lvl -> 10000)
