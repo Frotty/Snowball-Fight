@@ -61,7 +61,7 @@ public class Rollingball extends Projectile
 			if e instanceof Child
 				var c = e castTo Child
 				flashEffect(Abilities.bloodImpact, pos)
-				fx.getDummy().damageTarget(c.actor, (this.size - 3) * 2.75)
+				fx.getDummy().damageTarget(c.actor, (this.size - 3) * 2.75, ATTACK_TYPE_SIEGE)
 			else if e instanceof Projectile
 				doAfter(0.01) ->
 					if e != null and not e.done and not e instanceof Child

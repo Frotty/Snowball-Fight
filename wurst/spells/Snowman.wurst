@@ -79,7 +79,7 @@ public class SnowmanDummy extends FxEntity
 			setPos(target.pos)
 			if target.vel.z > 0.
 				target.vel.z *= 0.9
-			fx.getDummy().damageTarget(target.actor, .175)
+			fx.getDummy().damageTarget(target.actor, .175, ATTACK_TYPE_MAGIC)
 			if melttime < 0
 				terminate()
 		else

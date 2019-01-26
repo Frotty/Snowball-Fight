@@ -92,9 +92,9 @@ public class Child extends UnitEntity
 				new IceMissile(castPos, owner, target, lvl)
 			case ICESHARD_SPELL_ID
 				if lvl > 2
-					new Iceshard(castPos, owner, angle + 17.5 .fromDeg(), lvl - 1)
-					new Iceshard(castPos, owner, angle, lvl - 1)
-					new Iceshard(castPos, owner, angle - 17.5 .fromDeg(), lvl - 1)
+					new Iceshard(castPos, owner, angle + 17.5 .fromDeg(), lvl - 2)
+					new Iceshard(castPos, owner, angle, lvl - 2)
+					new Iceshard(castPos, owner, angle - 17.5 .fromDeg(), lvl - 2)
 				else
 					new Iceshard(castPos, owner, angle, lvl)
 			case JUMP_ID
@@ -111,19 +111,20 @@ public class Child extends UnitEntity
 		adjustKills(p, p2)
 		flashEffect(Objects.humanBloodPeasant, pos)
 
-		doAfter(5.5) ->
+		doAfter(6.) ->
 			if pData[owner.getId()] != null
 				if owner.getId() > 4
 					actor.revive(RIGHT_SPAWN, false)
-					setPos(RIGHT_SPAWN.withTerrainZ() + vec3(64. * owner.getId() - 5, 0, 530.))
+					setPos(RIGHT_SPAWN.withTerrainZ() + vec3(64. * owner.getId() - 5, 0, 535.))
 				else
 					actor.revive(LEFT_SPAWN, false)
-					setPos(LEFT_SPAWN.withTerrainZ() + vec3(64. * owner.getId(), 0, 530.))
+					setPos(LEFT_SPAWN.withTerrainZ() + vec3(64. * owner.getId(), 0, 535.))
 
 				addSpawnShield()
 				setVel(vec3(0,0,0))
 				actor..setVertexColor(255,255,255,255)
 				..setPropWindow(60 .fromDeg())
+				UnitResetCooldown(actor)
 				owner..clearSelection()
 				..panCamToTimed(actor, 1.)
 				..select(actor)
@@ -151,7 +152,7 @@ public class Child extends UnitEntity
 
 	override function onGroundHit()
 		if vel.z.abs() > 32
-			actor.damageTarget(actor, vel.z.abs() * 0.5)
+			actor.damageTarget(actor, vel.z.abs() * 0.5, ATTACK_TYPE_MELEE)
 			flashEffect(Abilities.bloodImpact, pos)
 		actor.setPropWindow(60 .fromDeg())
 

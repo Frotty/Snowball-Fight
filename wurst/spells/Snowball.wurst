@@ -58,7 +58,7 @@ public class Snowball extends PhysicsProjectile
 			if e instanceof Child
 				if (e castTo Child).actor.isAlive()
 					let child = e castTo Child
-					fx.getDummy().damageTarget(child.actor, 55.)
+					fx.getDummy().damageTarget(child.actor, 55., ATTACK_TYPE_NORMAL)
 					flashEffect(Abilities.frostArmorDamage, pos)
 					flashEffect(Objects.bloodElfSpellThiefBlood, e.getPos())
 					childHitSound.playOnPoint(pos)

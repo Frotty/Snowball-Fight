@@ -1,0 +1,17 @@
+[Misc]
+MaxLevelHeroesDrainExp=0
+HeroAbilityLevelSkip=1
+AgiDefenseBonus=0.75
+StrRegenBonus=0.02
+StrHitPointBonus=3.0
+IntManaBonus=2.0
+IntRegenBonus=0.04
+AgiMoveBonus=2.0
+StrAttackBonus=0.0
+AgiAttackSpeedBonus=0.0
+MinUnitSpeed=1.0
+MaxUnitSpeed=522.0
+NeedHeroXPFormulaB=75.0
+NeedHeroXPFormulaA=1.15
+FoodCeiling=1
+
