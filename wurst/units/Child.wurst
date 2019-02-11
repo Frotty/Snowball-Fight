@@ -3,7 +3,6 @@ import initlater Snowball
 import initlater Snowman
 import Snowbomb
 import Rollingball
-import KillStreaks
 import Iceshard
 import TimedBar
 import PhysicsEntity
@@ -14,6 +13,7 @@ import Collision
 import ChannelAbilityPreset
 import Tiles
 import PlayerData
+import KillStreaks
 
 public constant humChildren = new LinkedList<Child>()
 public constant orcChildren = new LinkedList<Child>()
@@ -51,14 +51,19 @@ public class Child extends UnitEntity
 	construct(vec3 pos, player owner, int id)
 		super(createUnit(owner, id, pos, 0 .fromDeg()), pos, 52.)
 		this.id = id
+		let eff = actor.addEffect("GeneralHeroGlow.mdx", "origin")
 		sleeps = false
 		if owner.getId() > 4
+			eff.setColorByPlayer(players[0])
 			orcChildren.add(this)
 		else
+			eff.setColorByPlayer(players[1])
 			humChildren.add(this)
+
 		restitution = .25
 		surfaceFriction = 0.80
-		actor.addAbility(JUMP_ID)
+		actor..addAbility(JUMP_ID)
+
 		EventListener.add(actor, EVENT_PLAYER_UNIT_SPELL_EFFECT, () -> onCast())
 		EventListener.add(actor, EVENT_PLAYER_UNIT_DEATH, () -> onDeath())
 		addSpawnShield()
@@ -92,11 +97,11 @@ public class Child extends UnitEntity
 				new IceMissile(castPos, owner, target, lvl)
 			case ICESHARD_SPELL_ID
 				if lvl > 2
-					new Iceshard(castPos, owner, angle + 17.5 .fromDeg(), lvl - 2)
-					new Iceshard(castPos, owner, angle, lvl - 2)
-					new Iceshard(castPos, owner, angle - 17.5 .fromDeg(), lvl - 2)
+					new Iceshard(castPos, owner, angle + 18.5 .fromDeg(), lvl - 3)
+					new Iceshard(castPos, owner, angle, lvl - 3)
+					new Iceshard(castPos, owner, angle - 18.5 .fromDeg(), lvl - 3)
 				else
-					new Iceshard(castPos, owner, angle, lvl)
+					new Iceshard(castPos, owner, angle, lvl - 1)
 			case JUMP_ID
 				if not flying
 					actor.setAnimation("walk")
@@ -108,7 +113,7 @@ public class Child extends UnitEntity
 		var p2 = GetDyingUnit().getOwner()
 		if wrapBar != null
 			wrapBar.terminate()
-		adjustKills(p, p2)
+		adjustKills(p, p2, getEnemyChildren(p))
 		flashEffect(Objects.humanBloodPeasant, pos)
 
 		doAfter(6.) ->

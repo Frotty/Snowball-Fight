@@ -17,6 +17,7 @@ constant MAXSIZE = 23.5
 
 constant startRoll = new SoundDefinition("Abilities\\Spells\\Orc\\EarthQuake\\EarthquakeRock.wav", false, false)
 constant hitTarget = new SoundDefinition("Abilities\\Spells\\Human\\FlakCannons\\FlakCannon.wav", false, false)
+constant hitTargetBig = new SoundDefinition("big_impact.mp3", false, false)
 
 public class Rollingball extends Projectile
 	real momentum
@@ -30,9 +31,9 @@ public class Rollingball extends Projectile
 		momentum = STARTMOMENTUM
 		startRoll.play()
 		if owner.getId() > 4
-			fx.setColor(colorA(155, 255, 155, 255))
-		else
 			fx.setColor(colorA(255, 155, 155, 255))
+		else
+			fx.setColor(colorA(155, 155, 255, 255))
 		registerCollidable(this, (other) -> onHit(other))
 		registerCollider(this, SHAPE_SPHERE, (other) -> onHit(other))
 
@@ -68,8 +69,16 @@ public class Rollingball extends Projectile
 						e.terminate()
 
 	ondestroy
-		flashEffect("war3mapImported\\rollingExplosion.mdx", pos)
-		hitTarget.play()
+		let eff = addEffect("fracture.MDX", pos)..setRoll(GetRandomReal(0, 356).fromDeg())..setScale(size / 5.)
+		if owner.getId() > 4
+			eff.setColor(colorA(255, 155, 155, 255))
+		else
+			eff.setColor(colorA(155, 155, 255, 255))
+		eff..destr()
+		if size > MAXSIZE / 2.
+			hitTargetBig.playOnPoint(pos)
+		else
+			hitTarget.playOnPoint(pos)
 		removeCollidable(this)
 		removeCollider(this)
 

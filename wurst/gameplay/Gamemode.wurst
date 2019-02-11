@@ -4,15 +4,15 @@ import GameConstants
 import DialogBox
 
 public var winscore = 35
-public var redscore = 0
-public var greenscore = 0
+public var humanscore = 0
+public var orcscore = 0
 public var gameover = false
 
 public function checkEnd()
 	if not gameover
-		if redscore >= winscore
+		if humanscore >= winscore
 			endgame(0)
-		if greenscore >= winscore
+		if orcscore >= winscore
 			endgame(1)
 
 public function createDialog()

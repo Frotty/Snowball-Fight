@@ -55,11 +55,15 @@ public class Iceblock extends FxEntity
 		fx.setScale(scale)
 		fx.setZ(0)
 		silent = true
+		if owner.getId() > 4
+			fx.setColor(colorA(255, 155, 155, 255))
+		else
+			fx.setColor(colorA(155, 155, 255, 255))
 		registerCollidable(this, other -> onHit(other))
 
 	override function slowUpdate()
 		super.slowUpdate()
-		if idleSeconds > 25.
+		if idleSeconds > 16.
 			terminate()
 
 	override function update()
@@ -91,5 +95,5 @@ public class Iceblock extends FxEntity
 	..presetIcon("BTNIceField")
 	..presetCooldown(lvl -> 13.75 - (lvl / 4))
 	..presetManaCost(lvl -> 4 - (lvl / 3).toInt())
-	..presetCastRange(lvl -> 900.)
+	..presetCastRange(lvl -> 850. + 100. * lvl)
 	..tooltipStopListen()

@@ -1,10 +1,49 @@
 ---
-projectName: "InWarcraft Snowball Fight"
+projectName: InWarcraft Snowball Fight
 dependencies:
-- "https://github.com/wurstscript/wurstStdlib2"
-- "https://github.com/frotty/Frentity"
+- https://github.com/wurstscript/wurstStdlib2
+- https://github.com/frotty/Frentity
+jobs:
+- name: run
+  args:
+  - runcompiletimefunctions
+  - injectobjects
+  - stacktraces
+- name: build
+  args:
+  - runcompiletimefunctions
+  - injectobjects
+  - stacktraces
+  - opt
+  - inline
+  - localOptimizations
 buildMapData:
-  name: "Snowball fight 1.33r"
-  fileName: "Snowball fight 1.33r"
-  author: "Frotty & kari0003"
-  playerCount: 10
+  name: Snowball fight 1.33r
+  fileName: Snowball fight 1.33r
+  author: Frotty & kari0003
+  scenarioData:
+    description: WurstScript powered!
+    suggestedPlayers: DefaultSuggestedPlayers
+    loadingScreen: null
+  optionsFlags:
+    hideMinimapPreview: false
+    maskedAreasPartiallyVisible: true
+    showWavesOnCliffShores: true
+    showWavesOnRollingShores: true
+    useItemClassificationSystem: true
+  players:
+  - id: 0
+    name: DefaultPlayer
+    race: SELECTABLE
+    controller: USER
+    fixedStartLoc: false
+  forces:
+  - name: DefaultForce
+    flags:
+      allied: true
+      alliedVictory: true
+      sharedVision: true
+      sharedControl: false
+      sharedControlAdvanced: false
+    playerIds:
+    - 0

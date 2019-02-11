@@ -28,8 +28,8 @@ public class Snowball extends PhysicsProjectile
 		setTimed(2.5)
 		setFriction(0.905)
 		restitution = 0.05
-		if pos.getTerrainZ() > target.z + 10.
-			gravity *= 1.5
+		if (pos.getTerrainZ() - target.z).abs() > 24.
+			gravity *= 1.45
 			setTarget(target.toVec2().withTerrainZ(24.), SPEED)
 		else
 			findTarget(target.toVec2().withTerrainZ(), xyAngle)
@@ -45,7 +45,7 @@ public class Snowball extends PhysicsProjectile
 		while dist + tdist < maxdist
 			tdist += 32.
 			let diff = (target.toVec2().polarOffset(xyAngle, tdist).getTerrainZ() - target.z).abs()
-			if diff > 8.
+			if diff > 14.
 				tdist -= 32.
 				break
 

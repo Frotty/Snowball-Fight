@@ -42,16 +42,16 @@ function sellPresent()
 			DisplayTimedTextToForce(GetPlayersAll(), 12., "|cffFFCC00>>>|r " + p.getNameColored() + "|r has returned a Present gaining |cffFFCC00+3|r Points for his team!")
 			var factor = max(1, 1 + (getEnemyChildren(p).size() - getAlliedChildren(p).size()))
 			if p.getId() <= 4
-				redscore += 3
-				if redscore > greenscore
-					factor += ((greenscore - redscore) div 4)
+				humanscore += 3
+				if humanscore > orcscore
+					factor += ((orcscore - humanscore) div 4)
 					for child in getEnemyChildren(p)
 						child.actor.addXp(25 * factor, true)
 						child.owner.addGold(10 * factor)
 			else
-				greenscore += 3
-				if greenscore > redscore
-					factor += ((redscore - greenscore) div 4)
+				orcscore += 3
+				if orcscore > humanscore
+					factor += ((humanscore - orcscore) div 4)
 					for child in getEnemyChildren(p)
 						child.actor.addXp(25 * factor, true)
 						child.owner.addGold(10 * factor)

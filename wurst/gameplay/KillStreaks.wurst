@@ -2,10 +2,12 @@ package KillStreaks
 import PlayerData
 import GameConstants
 import Gamemode
-import TimerUtils
 import ClosureTimers
+import Assets
+import Entity
+import initlater Child
 
-public function adjustKills(player killer, player dead)
+public function adjustKills(player killer, player dead, LinkedList<Child> enemyChildren)
 	var p1 = pData[killer.getId()]
 	var p2 = pData[dead.getId()]
 	p1.kills++
@@ -16,13 +18,19 @@ public function adjustKills(player killer, player dead)
 	p1.killstreak++
 	p2.killstreak = 0
 	if p1.id <= 4
-		if redscore < winscore - 1
-			redscore += 1
+		if humanscore < winscore - 1
+			humanscore += 1
 	else
-		if greenscore < winscore - 1
-			greenscore += 1
+		if orcscore < winscore - 1
+			orcscore += 1
 
+	let aliveEnemies = enemyChildren.filter(child -> child.actor.isAlive())
 	string announce = " -"
+	if enemyChildren.size() > 1 and aliveEnemies.size() == 0
+		announcers[9].play()
+		announce += " |cff008669Team wiped!|r"
+
+
 	if p1.killstreak == 3
 		announcers[3].play()
 		announce += " |cff860B00KillingSpree|r"
@@ -32,6 +40,8 @@ public function adjustKills(player killer, player dead)
 	if p1.killstreak == 6
 		announcers[6].play()
 		announce += " |cffFFDA84Godlike!!!|r"
+	if p1.killstreak == 7
+		p1.child.actor.addEffect(Abilities.talkToMe, "overhead")
 	if p1.killstreak > 6
 		announcers[8].play()
 		announce += " |cff11DA84Beyond Godlike!!!|r"

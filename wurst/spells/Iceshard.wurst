@@ -7,7 +7,6 @@ import Collision
 import AbilityTooltipGenerator
 import DummyCaster
 import Orders
-import InstantDummyCaster
 
 public constant ICESHARD_SPELL_ID = compiletime(ABIL_ID_GEN.next())
 public constant NOVA_DUMMY_SPELL_ID = compiletime(ABIL_ID_GEN.next())
@@ -44,11 +43,14 @@ public class Iceshard extends PhysicsProjectile
 					var c = e castTo Child
 					flashEffect(Objects.critterBloodAlbatross, e.getPos())
 					flashEffect(Objects.critterBloodAlbatross, e.pos + vec3(0, 0, 12))
-					new DummyCaster()
-					..owner(owner)
-					..origin(getPos().toVec2())
-					..castTarget(NOVA_DUMMY_SPELL_ID, 1, OrderIds.frostnova, c.actor)
-					fx.getDummy().damageTarget(c.actor, 22 + lvl * 4., ATTACK_TYPE_PIERCE)
+					if not (e castTo Child).actor.hasAbility('Bfro')
+						fx.getDummy().damageTarget(c.actor, 21 + lvl * 4., ATTACK_TYPE_PIERCE)
+						new DummyCaster()
+						..owner(owner)
+						..origin(getPos().toVec2())
+						..castTarget(NOVA_DUMMY_SPELL_ID, 1, OrderIds.frostnova, c.actor)
+					else
+						fx.getDummy().damageTarget(c.actor, 4 + lvl * 4., ATTACK_TYPE_PIERCE)
 					terminate()
 			else
 				terminate()
@@ -60,7 +62,7 @@ public class Iceshard extends PhysicsProjectile
 
 
 @compiletime function getObjs()
-	let tgen = new AbilityTooltipGenerator("Small, fast ice projectile. Level 3 and up throw three shards.")
+	let tgen = new AbilityTooltipGenerator("Small, fast ice projectile that slows on hit.\nLevel 3 and up throw three shards.")
 	new ChannelAbilityPreset(ICESHARD_SPELL_ID, 4, true, tgen)
 	..presetButtonPosNormal(3, 2)
 	..presetTargetTypes(Targettype.POINT)
@@ -79,5 +81,6 @@ public class Iceshard extends PhysicsProjectile
 	..presetCooldown(lvl -> 0)
 	..setArtEffect("")
 	..presetSpecificTargetDamage(lvl -> 1)
+	..presetAreaofEffectDamage(lvl -> 1.)
 	..presetAreaofEffect(lvl -> 8.)
 	..presetDurationHero(lvl -> 2.5)

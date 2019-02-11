@@ -91,7 +91,7 @@ function initMB()
 function setTime()
 	seconds++
 
-	playerboard.board.setTitle("|cffffffff[|r|cffff6347" + redscore.toString() + "|r - |cff3cb371" + greenscore.toString()
+	playerboard.board.setTitle("|cffffffff[|r|cff3532f0" + humanscore.toString() + "|r - |cffb91c1c" + orcscore.toString()
 		+ "|r|cffffffff]|r" + COLOR_GOLD.toColorString() + " => " + winscore.toString() + "|r to win | " + MAP_VER)
 
 	if seconds >= 60
