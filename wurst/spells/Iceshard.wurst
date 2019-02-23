@@ -43,7 +43,7 @@ public class Iceshard extends PhysicsProjectile
 					var c = e castTo Child
 					flashEffect(Objects.critterBloodAlbatross, e.getPos())
 					flashEffect(Objects.critterBloodAlbatross, e.pos + vec3(0, 0, 12))
-					if not (e castTo Child).actor.hasAbility('Bfro')
+					if not c.actor.hasAbility('Bfro') and not c.hasPresent
 						fx.getDummy().damageTarget(c.actor, 21 + lvl * 4., ATTACK_TYPE_PIERCE)
 						new DummyCaster()
 						..owner(owner)

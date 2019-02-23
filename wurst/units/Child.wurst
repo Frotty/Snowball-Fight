@@ -14,6 +14,7 @@ import ChannelAbilityPreset
 import Tiles
 import PlayerData
 import KillStreaks
+import GameConstants
 
 public constant humChildren = new LinkedList<Child>()
 public constant orcChildren = new LinkedList<Child>()
@@ -40,6 +41,7 @@ public class Child extends UnitEntity
 	use PhysicsModule
 
 	var fixPos = false
+	effect excl = null
 	TimedBar wrapBar
 	SnowmanDummy snowman = null
 	var sliding = false
@@ -61,7 +63,7 @@ public class Child extends UnitEntity
 			humChildren.add(this)
 
 		restitution = .25
-		surfaceFriction = 0.80
+		surfaceFriction = 0.825
 		actor..addAbility(JUMP_ID)
 
 		EventListener.add(actor, EVENT_PLAYER_UNIT_SPELL_EFFECT, () -> onCast())
@@ -113,6 +115,11 @@ public class Child extends UnitEntity
 		var p2 = GetDyingUnit().getOwner()
 		if wrapBar != null
 			wrapBar.terminate()
+		if excl != null
+			excl.destr()
+			announcers[10].play()
+			flashEffect(Abilities.pileofGold, pos)
+			getEnemyChildren(owner).forEach(child -> child.owner.addGold(150))
 		adjustKills(p, p2, getEnemyChildren(p))
 		flashEffect(Objects.humanBloodPeasant, pos)
 
@@ -150,7 +157,25 @@ public class Child extends UnitEntity
 		if not gg_rct_arenabounds.contains(pos.toVec2())
 			setPos(vec3(0,3600,200))
 			setVel(vec3(0,0,0))
+		if excl != null
+			actor.setHP(1)
 		super.update()
+
+	override function inAir(Entity e)
+		if not e.flying
+			e.flying = true
+			onEscapeGround()
+
+		var bounce = false
+		for coll from globalWorld.collidables.staticItr()
+			if coll instanceof Iceblock and coll.owner.isEnemyOf(owner) and SHAPE_SPHERE.intersect(coll, this)
+				bounce = true
+				break
+
+		if bounce or terrainZ + 8 < (pos + vel*2).getTerrainZ()
+			flashEffect(Abilities.bloodImpact, pos)
+			vel *= -1.25
+			actor.damageTarget(actor, 20)
 
 	override function onEscapeGround()
 		actor.setPropWindow(0 .fromDeg())
@@ -168,7 +193,12 @@ public class Child extends UnitEntity
 			actor.removeAbility(AbilityIds.invulnerable)
 			eff.destr()
 
+	function addExclamationMark()
+		excl = actor.addEffect(Abilities.talkToMe, "overhead")
+
 	ondestroy
+		if excl != null
+			excl.destr()
 		humChildren.remove(this)
 		orcChildren.remove(this)
 		removeCollidable(this)

@@ -8,9 +8,8 @@ import InstantDummyCaster
 import Orders
 
 constant SPEED = 13.5
-constant RealLevelClosure AOE = lvl -> (225. + lvl * 35)
-constant FACTOR = 6.95
-
+constant RealLevelClosure AOE = lvl -> (235. + lvl * 35)
+constant RealLevelClosure FACTOR = lvl -> 6.95 + (lvl * 0.5)
 
 public constant STUN_SPELL_ID = compiletime(ABIL_ID_GEN.next())
 public constant SNOWBOMB_SPELL_ID = compiletime(ABIL_ID_GEN.next())
@@ -33,7 +32,7 @@ public class Snowbomb extends PhysicsProjectile
 			if pos.distanceToSq(c.getPos()) < AOE.run(lvl).squared()
 				let angle = pos.angleTo2d(c.pos)
 				let factor = 0.1 + (AOE.run(lvl) - pos.distanceTo(c.pos)) / 200.
-				c.addVel(angle.toVec(factor * FACTOR).withZ(14 * factor))
+				c.addVel(angle.toVec(factor * FACTOR.run(lvl)).withZ(14 * factor))
 				fx.getDummy().damageTarget(c.actor, 45 * factor, ATTACK_TYPE_SIEGE)
 				flashEffect(Objects.nPCbloodVillagerWoman, c.actor, "origin")
 				if factor > 0.175

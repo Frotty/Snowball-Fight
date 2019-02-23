@@ -10,7 +10,8 @@ public SoundDefinition array announcers = [ new SoundDefinition("war3mapImported
 											new SoundDefinition("war3mapImported\\killFrenzy.mp3", false, false),
 											new SoundDefinition("war3mapImported\\nein.mp3", false, false),
 											new SoundDefinition("war3mapImported\\stopMe.mp3", false, false),
-											new SoundDefinition("war3mapImported\\genocide.mp3", false, false)]
+											new SoundDefinition("war3mapImported\\genocide.mp3", false, false),
+											new SoundDefinition("war3mapImported\\toasted.mp3", false, false)]
 
 
 public constant MAP_VER = "|cffADADADSnowball Fight|r"

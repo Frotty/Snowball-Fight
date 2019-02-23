@@ -63,7 +63,7 @@ public class Iceblock extends FxEntity
 
 	override function slowUpdate()
 		super.slowUpdate()
-		if idleSeconds > 16.
+		if idleSeconds > 19.
 			terminate()
 
 	override function update()
