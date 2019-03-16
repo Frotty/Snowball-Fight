@@ -70,14 +70,15 @@ public class Iceblock extends FxEntity
 		super.update()
 
 	function onHit(Entity other)
-		if other.owner.isEnemyOf(owner) and other instanceof Snowball or other instanceof Iceshard
-			other.terminate()
-		scale -= 0.25
-		fx.setScale(scale)
-		radius -= 2
-		radius2 = radius * radius
-		if scale <= 1.
-			terminate()
+		if other.owner.isEnemyOf(owner)
+			if other instanceof Snowball or other instanceof Iceshard
+				other.terminate()
+			scale -= 0.25
+			fx.setScale(scale)
+			radius -= 2
+			radius2 = radius * radius
+			if scale <= 1.
+				terminate()
 
 	ondestroy
 		collision.remove()

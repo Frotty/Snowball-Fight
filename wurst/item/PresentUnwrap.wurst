@@ -44,14 +44,14 @@ function sellPresent()
 			if p.getId() <= 4
 				humanscore += 3
 				if humanscore > orcscore
-					factor += ((orcscore - humanscore) div 4)
+					factor += ((humanscore - orcscore) div 4)
 					for child in getEnemyChildren(p)
 						child.actor.addXp(25 * factor, true)
 						child.owner.addGold(10 * factor)
 			else
 				orcscore += 3
 				if orcscore > humanscore
-					factor += ((humanscore - orcscore) div 4)
+					factor += ((orcscore - humanscore) div 4)
 					for child in getEnemyChildren(p)
 						child.actor.addXp(25 * factor, true)
 						child.owner.addGold(10 * factor)
@@ -108,8 +108,8 @@ public function initPresentCircles()
 	gg_unit_ncop_0021..setVertexColor(COLOR_GOLD)
 	gg_unit_ncop_0024..setVertexColor(COLOR_GOLD)
 	CreateTrigger()
-	..registerUnitInRange(gg_unit_ncop_0021, 100, Condition(function isChild))
-	..addAction(function sellPresent)
+	..registerUnitInRange(gg_unit_ncop_0021, 100, Filter(() -> GetFilterUnit().getEntity() instanceof Child))
+	..addAction(() -> sellPresent())
 	CreateTrigger()
 	..registerUnitInRange(gg_unit_ncop_0024, 100, Condition(function isChild))
 	..addAction(function sellPresent)

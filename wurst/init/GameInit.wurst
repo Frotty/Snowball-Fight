@@ -18,13 +18,14 @@ function startGame()
 
 	if allPlayers.size() == 1
 		allPlayers.peek().child.actor.setLevel(10, false)
-		new Child(vec3(LEFT_SPAWN.x + 48 * 6, LEFT_SPAWN.y, 400.), players[8], ORC_CHILD_ID)
-		new Child(vec3(LEFT_SPAWN.x + 48 * 8, LEFT_SPAWN.y, 400.), players[9], ORC_CHILD_ID)
-		new Child(vec3(LEFT_SPAWN.x + 48 * 10, LEFT_SPAWN.y, 400.), players[10], ORC_CHILD_ID)
+		let mu = new MyUnitEntity(vec3(LEFT_SPAWN.x + 48 * 6, LEFT_SPAWN.y, 400.), players[0], ORC_CHILD_ID)
+		mu.actor.pause()
+		// new Child(vec3(LEFT_SPAWN.x + 48 * 8, LEFT_SPAWN.y, 400.), players[9], ORC_CHILD_ID)
+		// new Child(vec3(LEFT_SPAWN.x + 48 * 10, LEFT_SPAWN.y, 400.), players[10], ORC_CHILD_ID)
 
 		new Iceblock(vec2(LEFT_SPAWN.x + 48 * 10, LEFT_SPAWN.y - 88).withTerrainZ(), players[8], 3.0)
-		new Iceblock(vec2(LEFT_SPAWN.x + 48 * 70, LEFT_SPAWN.y - 88).withTerrainZ(), players[8], 3.0)
-		new Iceblock(vec2(LEFT_SPAWN.x + 48 * 140, LEFT_SPAWN.y - 88).withTerrainZ(), players[8], 3.0)
+		new Iceblock(vec2(LEFT_SPAWN.x + 48 * 11, LEFT_SPAWN.y - 88).withTerrainZ(), players[8], 3.0)
+		new Iceblock(vec2(LEFT_SPAWN.x + 48 * 12, LEFT_SPAWN.y - 88).withTerrainZ(), players[8], 3.0)
 		players[0].addGold(9999)
 		var x = -5200.
 		for i = 8 to 100

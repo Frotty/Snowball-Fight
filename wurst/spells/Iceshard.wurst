@@ -10,6 +10,7 @@ import Orders
 
 public constant ICESHARD_SPELL_ID = compiletime(ABIL_ID_GEN.next())
 public constant NOVA_DUMMY_SPELL_ID = compiletime(ABIL_ID_GEN.next())
+public constant NOVA_DUMMY_SPELL_PID = compiletime(ABIL_ID_GEN.next())
 
 constant real SPEED = 25.75
 
@@ -43,14 +44,11 @@ public class Iceshard extends PhysicsProjectile
 					var c = e castTo Child
 					flashEffect(Objects.critterBloodAlbatross, e.getPos())
 					flashEffect(Objects.critterBloodAlbatross, e.pos + vec3(0, 0, 12))
-					if not c.actor.hasAbility('Bfro') and not c.hasPresent
-						fx.getDummy().damageTarget(c.actor, 21 + lvl * 4., ATTACK_TYPE_PIERCE)
-						new DummyCaster()
-						..owner(owner)
-						..origin(getPos().toVec2())
-						..castTarget(NOVA_DUMMY_SPELL_ID, 1, OrderIds.frostnova, c.actor)
-					else
-						fx.getDummy().damageTarget(c.actor, 4 + lvl * 4., ATTACK_TYPE_PIERCE)
+					fx.getDummy().damageTarget(c.actor, 21 + lvl * 4., ATTACK_TYPE_PIERCE)
+					new DummyCaster()
+					..owner(owner)
+					..origin(getPos().toVec2())
+					..castTarget((c.actor.hasAbility('Bfro') or c.hasPresent) ? NOVA_DUMMY_SPELL_PID : NOVA_DUMMY_SPELL_ID, 1, OrderIds.frostnova, c.actor)
 					terminate()
 			else
 				terminate()
@@ -84,3 +82,14 @@ public class Iceshard extends PhysicsProjectile
 	..presetAreaofEffectDamage(lvl -> 1.)
 	..presetAreaofEffect(lvl -> 8.)
 	..presetDurationHero(lvl -> 2.5)
+
+	new AbilityDefinitionLichFrostNova(NOVA_DUMMY_SPELL_PID)
+	..setHeroAbility(false)
+	..presetManaCost(lvl -> 0)
+	..presetCastRange(lvl -> 999999.)
+	..presetCooldown(lvl -> 0)
+	..setArtEffect("")
+	..presetSpecificTargetDamage(lvl -> 1)
+	..presetAreaofEffectDamage(lvl -> 1.)
+	..presetAreaofEffect(lvl -> 8.)
+	..presetDurationHero(lvl -> 0.25)

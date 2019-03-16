@@ -3,13 +3,21 @@ import PlayerData
 import GameConstants
 import Gamemode
 import ClosureTimers
-import Assets
 import Entity
 import initlater Child
 
 public function adjustKills(player killer, player dead, LinkedList<Child> enemyChildren)
 	var p1 = pData[killer.getId()]
 	var p2 = pData[dead.getId()]
+	if p1 == p2
+		DisplayTimedTextToForce(GetPlayersAll(), 12., p1.p.getNameColored() + " killed himself! (|cffff0000-1|r)")
+		p1.killstreak = 0
+		p1.deaths++
+		if p1.id <= 4
+			humanscore -= 1
+		else
+			orcscore -= 1
+		return
 	p1.kills++
 	p2.deaths++
 	playerboard.updateValue(p1.gameId + 1, 1, p1.kills.toString())
@@ -60,9 +68,9 @@ public function adjustKills(player killer, player dead, LinkedList<Child> enemyC
 		t..setData(killer.getId())..start(20,function clearKillMultiplier)
 		p1.indouble = true
 	if announce != " -"
-		DisplayTimedTextToForce(GetPlayersAll(), 12., killer.getNameColored() + " hit " + dead.getNameColored() + "|r in the face with a snowball!" + announce + " (|cffFFCC00+1|r)")
+		DisplayTimedTextToForce(GetPlayersAll(), 11., killer.getNameColored() + " hit " + dead.getNameColored() + "|r in the face with a snowball!" + announce + " (|cffFFCC00+1|r)")
 	else
-		DisplayTimedTextToForce(GetPlayersAll(), 12., killer.getNameColored() + " hit " + dead.getNameColored() + "|r in the face with a snowball! (|cffFFCC00+1|r)")
+		DisplayTimedTextToForce(GetPlayersAll(), 11., killer.getNameColored() + " hit " + dead.getNameColored() + "|r in the face with a snowball! (|cffFFCC00+1|r)")
 
 	doAfter(2.5) ->
 		checkEnd()

@@ -37,6 +37,10 @@ public function getAlliedChildren(player owner) returns LinkedList<Child>
 		return humChildren
 	return orcChildren
 
+public class MyUnitEntity extends UnitEntity
+	construct(vec3 pos, player owner, int id)
+		super(createUnit(owner, id, pos, 0 .fromDeg()), pos, 52.)
+
 public class Child extends UnitEntity
 	use PhysicsModule
 
@@ -63,7 +67,7 @@ public class Child extends UnitEntity
 			humChildren.add(this)
 
 		restitution = .25
-		surfaceFriction = 0.825
+		surfaceFriction = 0.755
 		actor..addAbility(JUMP_ID)
 
 		EventListener.add(actor, EVENT_PLAYER_UNIT_SPELL_EFFECT, () -> onCast())
@@ -117,6 +121,7 @@ public class Child extends UnitEntity
 			wrapBar.terminate()
 		if excl != null
 			excl.destr()
+			excl = null
 			announcers[10].play()
 			flashEffect(Abilities.pileofGold, pos)
 			getEnemyChildren(owner).forEach(child -> child.owner.addGold(150))
@@ -157,8 +162,8 @@ public class Child extends UnitEntity
 		if not gg_rct_arenabounds.contains(pos.toVec2())
 			setPos(vec3(0,3600,200))
 			setVel(vec3(0,0,0))
-		if excl != null
-			actor.setHP(1)
+		if excl != null and actor.getHP() > 50
+			actor.setHP(50)
 		super.update()
 
 	override function inAir(Entity e)
@@ -166,16 +171,17 @@ public class Child extends UnitEntity
 			e.flying = true
 			onEscapeGround()
 
-		var bounce = false
+		Iceblock bounce = null
 		for coll from globalWorld.collidables.staticItr()
 			if coll instanceof Iceblock and coll.owner.isEnemyOf(owner) and SHAPE_SPHERE.intersect(coll, this)
-				bounce = true
+				bounce = coll castTo Iceblock
 				break
 
-		if bounce or terrainZ + 8 < (pos + vel*2).getTerrainZ()
+		if bounce != null or terrainZ + 8 < (pos + vel*2).getTerrainZ()
 			flashEffect(Abilities.bloodImpact, pos)
-			vel *= -1.25
-			actor.damageTarget(actor, 20)
+			vel *= -0.5
+			setPos(pos + vel)
+			(bounce != null ? bounce.getDummy() : actor).damageTarget(actor, 20)
 
 	override function onEscapeGround()
 		actor.setPropWindow(0 .fromDeg())
@@ -199,6 +205,7 @@ public class Child extends UnitEntity
 	ondestroy
 		if excl != null
 			excl.destr()
+			excl = null
 		humChildren.remove(this)
 		orcChildren.remove(this)
 		removeCollidable(this)

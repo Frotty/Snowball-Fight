@@ -88,7 +88,6 @@ public class Rollingball extends Projectile
 	..presetButtonPosNormal(1, 1)
 	..presetTargetTypes(Targettype.POINT)
 	..setRequiredLevel(1)
-	..tooltipStartListen()
 	..presetHotkey("D")
 	..setName("Rolling ball")
 	..presetIcon("BTNSnowBall")

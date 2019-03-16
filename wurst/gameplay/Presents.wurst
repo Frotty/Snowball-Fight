@@ -6,18 +6,31 @@ import ClosureTimers
 import Assets
 import GameConstants
 
-constant int PRESENT_ID = 'I002'
+constant PRESENT_ID = 'I002'
 
 let presentSpawn = new SoundDefinition("war3mapImported\\bells.mp3", false)
 let treeCenter = vec2(0., 4096.)
 let itemRect = Rect(-6000,-19000,6000,10000)
 
 public class Present extends ItemEntity
-	Child holder
+	Child holder = null
 
 	construct(vec2 pos)
 		super(createItem(PRESENT_ID, pos))
 		flashEffect(Abilities.reviveHuman1, pos)
+		deactivate()
+
+	override function slowUpdate()
+		super.slowUpdate()
+		if idleSeconds % 5 == 0
+			if holder != null and not holder.done and holder.actor.isAlive()
+				let hpos = holder.getPos()
+				if holder.owner.getId() < 5
+					PingMinimapEx(hpos.x, hpos.y, 2.5, 55, 55, 255, false)
+				else
+					PingMinimapEx(hpos.x, hpos.y, 2.5, 255, 55, 55, false)
+			else
+				PingMinimapEx(pos.x, pos.y, 2.5, 55, 255, 55, false)
 
 	override function update()
 
@@ -28,7 +41,7 @@ public class Present extends ItemEntity
 				setNewActor(createItem(PRESENT_ID, getPos()))
 				createTTEx(child.actor.getPos3Real(), vec2(0,0.05), "|cffcccc00You can only carry one!|r", 10,  2., colorA(255,255,255,0), child.owner )
 			else
-				printTimed(child.owner.getNameColored() + " has acquired a present!", 12.)
+				printTimed(child.owner.getNameColored() + " has acquired a present!", 8.)
 				holder = child
 				child.hasPresent = true
 
@@ -40,6 +53,7 @@ public class Present extends ItemEntity
 			if not child.actor.isAlive() and
 				(child.getPos().distanceTo(gg_unit_ncop_0021.getPos3Real()) < 256. or child.getPos().distanceTo(gg_unit_ncop_0024.getPos3Real()) < 256.)
 				announcers[7].play()
+				printTimed(child.owner.getNameColored() + " almost got it.", 5.)
 
 	override function onUse(Entity e)
 

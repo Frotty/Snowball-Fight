@@ -4,7 +4,7 @@ dependencies:
 - "https://github.com/wurstscript/wurstStdlib2"
 - "https://github.com/frotty/Frentity"
 buildMapData:
-  name: "Snowball fight 1.33v"
-  fileName: "Snowball fight 1.33v"
+  name: "Snowball fight 1.33y"
+  fileName: "Snowball fight 1.33y"
   author: "Frotty & kari0003"
   playerCount: 10
