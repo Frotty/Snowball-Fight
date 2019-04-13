@@ -1,10 +1,39 @@
 ---
-projectName: "InWarcraft Snowball Fight"
+projectName: InWarcraft Snowball Fight
 dependencies:
-- "https://github.com/wurstscript/wurstStdlib2"
-- "https://github.com/frotty/Frentity"
+- https://github.com/wurstscript/wurstStdlib2
+- https://github.com/frotty/Frentity
 buildMapData:
-  name: "Snowball fight 1.33y"
-  fileName: "Snowball fight 1.33y"
-  author: "Frotty & kari0003"
-  playerCount: 10
+  name: Snowball fight 1.34b
+  fileName: Snowball fight 1.34b
+  author: Frotty & kari0003
+  scenarioData:
+    description: |
+      WurstScript powered!
+      Of course.
+  players:
+  - {}
+  - id: 1
+  - id: 2
+  - id: 3
+  - id: 4
+  - id: 5
+  - id: 6
+  - id: 7
+  - id: 8
+  - id: 9
+  forces:
+  - name: Human
+    playerIds:
+    - 0
+    - 1
+    - 2
+    - 3
+    - 4
+  - name: Orc
+    playerIds:
+    - 5
+    - 6
+    - 7
+    - 8
+    - 9

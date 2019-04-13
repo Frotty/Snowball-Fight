@@ -15,6 +15,7 @@ public function checkEnd()
 		if orcscore >= winscore
 			endgame(1)
 
+
 public function createDialog()
 	playerboard.show()
 	let dbox = new DialogBox("Select game length")

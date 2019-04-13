@@ -33,7 +33,7 @@ public class Snowbomb extends PhysicsProjectile
 				let angle = pos.angleTo2d(c.pos)
 				let factor = 0.1 + (AOE.run(lvl) - pos.distanceTo(c.pos)) / 200.
 				c.addVel(angle.toVec(factor * FACTOR.run(lvl)).withZ(14 * factor))
-				fx.getDummy().damageTarget(c.actor, 45 * factor, ATTACK_TYPE_SIEGE)
+				fx.getDummy().damageTarget(c.actor, 55 * factor, ATTACK_TYPE_SIEGE)
 				flashEffect(Objects.nPCbloodVillagerWoman, c.actor, "origin")
 				if factor > 0.175
 					InstantDummyCaster.castTarget(owner, STUN_SPELL_ID, 1, OrderIds.creepthunderbolt, c.actor, c.pos)
@@ -52,7 +52,7 @@ public class Snowbomb extends PhysicsProjectile
 	..presetHotkey("E")
 	..setName("Snowbomb")
 	..presetIcon("BTNCRFrostShock")
-	..presetCooldown(lvl -> 19. - lvl)
+	..presetCooldown(lvl -> 17. - lvl)
 	..presetManaCost(lvl -> 6 - (lvl div 3))
 	..presetCastRange(lvl -> 700. + 200 * lvl)
 	..presetAreaofEffect(AOE)

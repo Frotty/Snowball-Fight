@@ -111,7 +111,7 @@ public class Child extends UnitEntity
 			case JUMP_ID
 				if not flying
 					actor.setAnimation("walk")
-					addVel(angle.toVec(sliding ? 2.15 : 8.85).withZ(7))
+					addVel(angle.toVec(sliding ? 2.35 : 10.05).withZ(7.05))
 					flashEffect(Abilities.batTrollMissile, pos)
 
 	function onDeath()
@@ -215,7 +215,7 @@ public class Child extends UnitEntity
 	new ChannelAbilityPreset(JUMP_ID, 1, true)
 	..presetTooltipNormal(lvl -> "[|cffFFCC00W|r] |cff7BB5F7Jump")
 	..presetTooltipNormalExtended(lvl -> "Jumps into the target direction. Allows you to jump down, but not up, cliffs.")
-	..setCooldown(1, 2.)
+	..setCooldown(1, 1.95)
 	..setManaCost(1, 0)
 	..presetCastRange(lvl -> 9999.)
 	..presetHotkey("W")
