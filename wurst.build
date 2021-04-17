@@ -3,16 +3,17 @@ projectName: InWarcraft Snowball Fight
 dependencies:
 - https://github.com/wurstscript/wurstStdlib2
 - https://github.com/frotty/Frentity
+- https://github.com/Frotty/Ability-Tooltip-Generator
 buildMapData:
-  name: Snowball fight 1.34b
-  fileName: Snowball fight 1.34b
+  name: Snowball fight 1.34c
+  fileName: Snowball fight 1.34c
   author: Frotty & kari0003
   scenarioData:
     description: |
-      WurstScript powered!
-      Of course.
+      A fun skirmish in a snowy landscape.
+      Throw snowballs at enemy children and collect presents for points.
   players:
-  - {}
+  - id: 0
   - id: 1
   - id: 2
   - id: 3

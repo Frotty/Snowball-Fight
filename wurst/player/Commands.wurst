@@ -10,7 +10,7 @@ init
 		let cstr = args.get(0)
 		switch cstr
 			case "-cam"
-				var nstr = args.get(1)
+				let nstr = args.get(1)
 				var zCam = nstr.toInt() * 1.
 				if zCam > 3000
 					zCam = 3000

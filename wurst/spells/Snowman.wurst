@@ -95,7 +95,7 @@ public class SnowmanDummy extends FxEntity
 
 
 @compiletime function getObjs()
-	let tgen = new AbilityTooltipGenerator("Homing projectile that freezes on impact.")
+	let tgen = new AbilityTooltipGenerator("Homing projectile that freezes the target into a snowman on impact.")
 	new ChannelAbilityPreset(SNOWMAN_SPELL_ID, 4, true, tgen)
 	..presetTargetTypes(Targettype.POINT)
 	..setRequiredLevel(3)

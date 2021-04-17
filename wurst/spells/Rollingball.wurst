@@ -83,16 +83,16 @@ public class Rollingball extends Projectile
 		removeCollider(this)
 
 @compiletime function getObjs()
-	let tgen = new AbilityTooltipGenerator("Rolling ball that gains size and momentum. Cannot roll uphill.")
+	let tgen = new AbilityTooltipGenerator("A slowly rolling ball that gains size and momentum over time. Cannot roll uphill.")
 	new ChannelAbilityPreset(ROLLINGBALL_SPELL_ID, 4, true, tgen)
 	..presetButtonPosNormal(1, 1)
 	..presetTargetTypes(Targettype.POINT)
 	..setRequiredLevel(1)
+	..tooltipStartListen()
 	..presetHotkey("D")
 	..setName("Rolling ball")
 	..presetIcon("BTNSnowBall")
 	..presetCooldown(lvl -> 25. - lvl)
 	..presetManaCost(lvl -> 9 - (lvl / 2).toInt())
 	..presetCastRange(lvl -> 500. + 50 * lvl)
-
 	..tooltipStopListen()
