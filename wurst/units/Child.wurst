@@ -128,7 +128,7 @@ public class Child extends UnitEntity
 		adjustKills(p, p2, getEnemyChildren(p))
 		flashEffect(Objects.humanBloodPeasant, pos)
 
-		doAfter(6.) ->
+		doAfter(6.5) ->
 			if pData[owner.getId()] != null
 				if owner.getId() > 4
 					actor.revive(RIGHT_SPAWN, false)

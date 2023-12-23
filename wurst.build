@@ -5,8 +5,8 @@ dependencies:
 - https://github.com/frotty/Frentity
 - https://github.com/Frotty/Ability-Tooltip-Generator
 buildMapData:
-  name: Snowball fight 1.34c
-  fileName: Snowball fight 1.34c
+  name: Snowball fight 1.34e
+  fileName: Snowball fight 1.34e
   author: Frotty & kari0003
   scenarioData:
     description: |

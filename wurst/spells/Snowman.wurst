@@ -38,7 +38,7 @@ public class SnowmanMissile extends HomingProjectile
 					if dist < closestDist
 						closestDist = dist
 						closestChild = c
-			setTarget(closestChild, HOMING.angular, 0.025 + 0.005 * level)
+			setTarget(closestChild, HOMING.angular, 0.0225 + 0.005 * level)
 
 	override function onHit()
 		onHit(target)
